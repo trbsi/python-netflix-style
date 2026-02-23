@@ -25,6 +25,7 @@ urlpatterns = (
             path('notification/', include('src.notification.urls')),
             path('accounts/', include('allauth.urls')),
             path('user/', include('src.user.urls')),
+            path('tiktok/', include('src.tiktok.urls')),
             path('.privatnomjesto/', admin.site.urls),
         ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 )

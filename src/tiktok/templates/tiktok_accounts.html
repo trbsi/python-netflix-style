@@ -1,0 +1,122 @@
+{% extends "core/layout.html" %}
+{% block content %}
+<div class="bg-white shadow-xl rounded-2xl w-full max-w-lg p-8">
+
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Create Content</h2>
+
+    {% if error %}
+    <div class="bg-red-100 text-red-700 p-3 rounded-lg mb-4">
+        {{ error }}
+    </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
+        {% csrf_token %}
+
+        <!-- Content Type -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Content Type</label>
+            <select name="content_type"
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                <option value="video"
+                    {% if form_data.content_type == "video" %}selected{% endif %}>
+                    Video
+                </option>
+                <option value="image"
+                    {% if form_data.content_type == "image" %}selected{% endif %}>
+                    Image
+                </option>
+            </select>
+        </div>
+
+        <!-- Platform -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Platform</label>
+            <select name="site"
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                <option value="tiktok"
+                    {% if form_data.site == "tiktok" %}selected{% endif %}>
+                    TikTok
+                </option>
+                <option value="facebook"
+                    {% if form_data.site == "facebook" %}selected{% endif %}>
+                    Facebook
+                </option>
+            </select>
+        </div>
+
+        <!-- Site Username -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Account Username</label>
+            <input type="text"
+                   name="site_username"
+                   value="{{ form_data.site_username|default:'' }}"
+                   class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                   required>
+        </div>
+
+        <!-- Title -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <input type="text"
+                   name="title"
+                   value="{{ form_data.title|default:'' }}"
+                   class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- Caption / Content -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Caption / Content</label>
+            <textarea name="content"
+                      rows="4"
+                      class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
+                      required>{{ form_data.content|default:'' }}</textarea>
+        </div>
+
+        <!-- Timezone -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+            <select name="timezone"
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                {% for tz in timezones %}
+                <option value="{{ tz }}"
+                    {% if form_data.timezone == tz %}selected{% endif %}>
+                    {{ tz }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- File Upload -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Upload File</label>
+            <input type="file"
+                   name="file"
+                   class="w-full border rounded-lg px-3 py-2 bg-white">
+        </div>
+
+        <!-- Status -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select name="status"
+                    class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500">
+                <option value="none"
+                    {% if form_data.status == "none" %}selected{% endif %}>
+                    None
+                </option>
+                <option value="uploaded"
+                    {% if form_data.status == "uploaded" %}selected{% endif %}>
+                    Uploaded
+                </option>
+            </select>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit"
+                class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+            Save Content
+        </button>
+
+    </form>
+</div>
+{% endblock content %}
