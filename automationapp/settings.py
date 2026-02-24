@@ -116,7 +116,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'dbprotect.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
 
@@ -182,12 +182,13 @@ STORAGE_CONFIG = {
 }
 STORAGE_CDN_URL = env('STORAGE_CDN_URL')
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://redis:6379",
+if env('DB_ENGINE') == 'mysql':
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": "redis://redis:6379",
+        }
     }
-}
 
 # Auth
 ACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -227,3 +228,6 @@ SLACK_CHANNEL_ID = env('SLACK_CHANNEL_ID')
 # TikTok
 TIKTOK_CLIENT_KEY = env('TIKTOK_CLIENT_KEY')
 TIKTOK_CLIENT_SECRET = env('TIKTOK_CLIENT_SECRET')
+
+# Proxy
+HTTP_PROXY = env('HTTP_PROXY')

@@ -3,28 +3,76 @@ import os
 
 import requests
 
+from automationapp import settings
 from src.core.utils import get_access_token
+from src.media.models import PostContent
 
 
 class TikTokUploadFileService:
     # https://developers.tiktok.com/doc/content-posting-api-get-started-upload-content?enter_method=left_navigation
     # https://developers.tiktok.com/doc/content-posting-api-reference-upload-video#
-    def upload_video(self, file_path: str, tiktok_username: str):
-        data = self._get_upload_url(tiktok_username, file_path)
-        self._upload_to_tiktok(data, file_path)
+    def upload_video(self, content: PostContent):
+        if content.is_video():
+            data = self._get_upload_url(content)
+            self._upload_video(data, content)
+        else:
+            self._upload_image(content)
 
-    def _upload_to_tiktok(self, data: dict, file_path: str):
+    def _upload_image(self, content: PostContent):
+        url = "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/"
+
+        headers = {
+            "Authorization": "Bearer " + get_access_token(content.site_username),
+            "Content-Type": "application/json",
+        }
+
+        payload = {
+            "post_info": {
+                "title": content.title,
+                "description": content.content
+            },
+            "source_info": {
+                "source": "PULL_FROM_URL",
+                "photo_cover_index": 1,
+                "privacy_level": "PUBLIC_TO_EVERYONE",
+                "photo_images": [
+                    content.get_file_url()
+                ]
+            },
+            "post_mode": "DIRECT_POST",
+            "media_type": "PHOTO"
+        }
+
+        proxies = {}
+        if content.needs_proxy():
+            proxies = {
+                "http": settings.HTTP_PROXY,
+                "https": settings.HTTP_PROXY,
+            }
+
+        response = requests.post(url, headers=headers, json=payload, proxies=proxies)
+        print(response.json())
+
+    def _upload_video(self, data: dict, content: PostContent):
+        file_path = content.get_file_path()
         mime_type, encoding = mimetypes.guess_type(file_path)
         headers = {
             "Content-Type": mime_type,
         }
 
-        with open(file_path, "rb") as f:
-            response = requests.put(data['upload_url'], headers=headers, data=f)
+        proxies = {}
+        if content.needs_proxy():
+            proxies = {
+                "http": settings.HTTP_PROXY,
+                "https": settings.HTTP_PROXY,
+            }
 
-        print(response.text)
+        with open(file_path, "rb") as file:
+            response = requests.put(data['upload_url'], headers=headers, data=file, proxies=proxies)
 
-    def _get_upload_url(self, tiktok_username: str, file_path: str):
+        print(response.json())
+
+    def _get_upload_url(self, content: PostContent):
         """
         {
             "data": {
@@ -38,6 +86,8 @@ class TikTokUploadFileService:
              }
         }
         """
+        tiktok_username = content.site_username
+        file_path = content.get_file_path()
         url = "https://open.tiktokapis.com/v2/post/publish/inbox/video/init/"
         size_bytes = os.path.getsize(file_path)
 
@@ -55,7 +105,14 @@ class TikTokUploadFileService:
             }
         }
 
-        response = requests.post(url, headers=headers, json=payload)
+        proxies = {}
+        if content.needs_proxy():
+            proxies = {
+                "http": settings.HTTP_PROXY,
+                "https": settings.HTTP_PROXY,
+            }
+
+        response = requests.post(url, headers=headers, json=payload, proxies=proxies)
         result = response.json()
 
         return result['data']

@@ -4,70 +4,29 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <section class="bg-orange-50 py-24 px-6">
-        <div class="max-w-5xl mx-auto text-center">
-            <!-- Headline -->
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
-                A secure video player that makes downloading and re-sharing difficult
-            </h1>
+<section class="bg-orange-50 py-24 px-6">
+    <div class="max-w-5xl mx-auto text-center">
+        <!-- Headline -->
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+            Social Network Poster
+        </h1>
 
-            <!-- Subheadline -->
-            <p class="mt-6 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
-                Designed to reduce leaks and unauthorized uploads by adding friction —
-                without hurting playback quality for real viewers.
-            </p>
+        <!-- Subheadline -->
+        <p class="mt-6 text-lg md:text-xl text-gray-700 max-w-3xl mx-auto">
+            Designed to post automatically to TikTok and other networks.
+        </p>
 
-            <!-- Key points -->
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-                <div class="p-6 rounded-2xl bg-white border border-orange-100 shadow-sm">
-                    <h3 class="text-lg font-semibold text-gray-900">
-                        Playback first
-                    </h3>
-                    <p class="mt-2 text-gray-600">
-                        Videos stream smoothly in the browser. Viewers can watch instantly,
-                        without downloads or file access.
-                    </p>
-                </div>
-
-                <div class="p-6 rounded-2xl bg-white border border-orange-100 shadow-sm">
-                    <h3 class="text-lg font-semibold text-gray-900">
-                        Download-resistant
-                    </h3>
-                    <p class="mt-2 text-gray-600">
-                        Common download tools and “save video” tricks don’t work.
-                        Copying becomes slow, manual, and inconvenient.
-                    </p>
-                </div>
-
-                <div class="p-6 rounded-2xl bg-white border border-orange-100 shadow-sm">
-                    <h3 class="text-lg font-semibold text-gray-900">
-                        Fewer leaks, more control
-                    </h3>
-                    <p class="mt-2 text-gray-600">
-                        Not impossible to copy — but hard enough to reduce casual leaking
-                        and large-scale re-uploads.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Trust / honesty note -->
-            <p class="mt-10 text-sm text-gray-500 max-w-2xl mx-auto">
-                If someone can press play, they can eventually capture a video.
-                This player doesn’t promise the impossible — it raises the cost,
-                time, and effort required to do it.
-            </p>
-
-            <!-- CTA -->
-            <div class="mt-10">
-                <a
-                        href="{% url 'account_signup' %}"
-                        class="tw inline-flex items-center justify-center px-6 py-3 rounded-lg
+        <!-- CTA -->
+        <div class="mt-10">
+            <a
+                    href="{% url 'account_signup' %}"
+                    class="tw inline-flex items-center justify-center px-6 py-3 rounded-lg
                bg-orange-400 text-white font-medium
                hover:bg-orange-500 transition"
-                >
-                    Register now
-                </a>
-            </div>
+            >
+                Register now
+            </a>
         </div>
-    </section>
+    </div>
+</section>
 {% endblock %}

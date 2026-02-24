@@ -75,7 +75,7 @@
 <!-- HERO -->
 <main>
     <section class="container mx-auto  sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto bg-white p-4  shadow-sm">
+        <div class="mx-auto bg-white p-4  shadow-sm">
             {% block content %}
             {% endblock content %}
         </div>
@@ -88,8 +88,8 @@
                     © <span id="year"></span> {{ TEMPLATE_APP_NAME }}. All rights reserved.
                 </div>
                 <div class="flex gap-4 text-sm">
-                    <a href="#" class="tw underline hover:text-primary">Privacy</a>
-                    <a href="#" class="tw underline hover:text-primary">Terms</a>
+                    <a href="{% url 'privacy_policy' %}" class="tw underline hover:text-primary">Privacy</a>
+                    <a href="{% url 'terms_of_use' %}" class="tw underline hover:text-primary">Terms</a>
                     <a href="{% url 'contact' %}" class="tw underline hover:text-primary">Contact</a>
                 </div>
                 <div class="flex gap-4 text-sm">

@@ -1,5 +1,5 @@
 from src.core.utils import get_access_token
-from src.post.models import PostContent
+from src.media.models import PostContent
 from src.tiktok.services.post.tiktok_refresh_token_service import TikTokRefreshTokenService
 from src.tiktok.services.post.tiktok_upload_file_service import TikTokUploadFileService
 
@@ -15,6 +15,6 @@ class TikTokPostService:
         if not access_token:
             self.refresh_token_service.refresh_token(tiktok_username)
 
-        self.upload_file_service.upload_video(content.get_file_path(), content.site_username)
+        self.upload_file_service.upload_video(content)
         content.status = PostContent.STATUS_UPLOADED
         content.save()

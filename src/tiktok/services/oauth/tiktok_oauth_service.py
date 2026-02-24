@@ -1,9 +1,8 @@
 import requests
 
 from automationapp import settings
-from src.core.utils import save_to_cache
-from src.tiktok.models import TikTokUser
-from src.tiktok.views import _redirect_url
+from src.core.utils import save_to_cache, full_url_for_route
+from src.media.models import SocialAccount
 from src.user.models import User
 
 
@@ -27,7 +26,10 @@ class TikTokOAuthService:
             "client_secret": settings.TIKTOK_CLIENT_SECRET,
             "code": authorization_code,
             "grant_type": "authorization_code",
-            "redirect_uri": _redirect_url(tiktok_username),
+            "redirect_uri": full_url_for_route(
+                'tiktok.auth_redirect_from_tiktok',
+                query_params={'tiktok_username': tiktok_username}
+            ),
         }
 
         headers = {
@@ -40,9 +42,10 @@ class TikTokOAuthService:
         )
         result = response.json()
 
-        tiktok_model = TikTokUser()
+        tiktok_model = SocialAccount()
         tiktok_model.user = user
-        tiktok_model.tiktok_username = tiktok_username
+        tiktok_model.username = tiktok_username
+        tiktok_model.site = SocialAccount.TIKTOK
         tiktok_model.save()
 
         save_to_cache(result, tiktok_username)

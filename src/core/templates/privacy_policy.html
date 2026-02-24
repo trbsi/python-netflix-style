@@ -1,0 +1,39 @@
+{% extends "core/layout.html" %}
+{% block content %}
+
+
+<div class="max-w-4xl mx-auto p-8">
+    <h1 class="text-4xl font-bold mb-4 text-gray-900">Privacy Policy</h1>
+
+    <p class="mb-4">{{TEMPLATE_APP_NAME}} (“we”, “our”, “us”) respects your privacy and is committed to protecting your
+        personal information.</p>
+
+    <h2 class="text-2xl font-semibold mt-6 mb-2">Information We Collect</h2>
+    <ul class="list-disc list-inside space-y-1 mb-4">
+        <li>TikTok account information (username, profile ID) via Login Kit.</li>
+        <li>Videos and media you upload for scheduling and publishing.</li>
+        <li>Basic usage data to improve service performance.</li>
+    </ul>
+
+    <h2 class="text-2xl font-semibold mt-6 mb-2">How We Use Information</h2>
+    <ul class="list-disc list-inside space-y-1 mb-4">
+        <li>Authenticate your account and provide scheduling/publishing functionality.</li>
+        <li>Upload and publish videos on your behalf, according to your instructions.</li>
+        <li>Improve our platform and support your account.</li>
+    </ul>
+
+    <h2 class="text-2xl font-semibold mt-6 mb-2">Third-Party Services</h2>
+    <p class="mb-4">We use TikTok’s official APIs to upload and publish content. We access only the minimum data
+        required to perform these actions.</p>
+
+    <h2 class="text-2xl font-semibold mt-6 mb-2">Data Security</h2>
+    <p class="mb-4">We implement reasonable measures to protect your data. However, no method of internet transmission
+        or storage is completely secure.</p>
+
+    <h2 class="text-2xl font-semibold mt-6 mb-2">User Control</h2>
+    <p class="mb-4">You may disconnect your TikTok account at any time, revoking access. You may also request deletion
+        of your account data by contacting us.</p>
+
+</div>
+
+{% endblock content %}

@@ -1,13 +1,12 @@
 from pathlib import Path
 
-from automationapp import settings
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET
 
-from src.core.utils import reverse_lazy_with_query
+from automationapp import settings
 from src.notification.services.notification_service import NotificationService
 from src.notification.value_objects.email_value_object import EmailValueObject
 from src.notification.value_objects.push_notification_value_object import PushNotificationValueObject
@@ -47,16 +46,12 @@ def legal_documents(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def terms_of_use(request: HttpRequest) -> HttpResponse:
-    return redirect(
-        reverse_lazy_with_query(route_name='legal_documents', query_params={'document': 'terms_of_service'})
-    )
+    return render(request, 'terms_of_use.html')
 
 
 @require_GET
 def privacy_policy(request: HttpRequest) -> HttpResponse:
-    return redirect(
-        reverse_lazy_with_query(route_name='legal_documents', query_params={'document': 'privacy_policy'})
-    )
+    return render(request, 'privacy_policy.html')
 
 
 @require_GET

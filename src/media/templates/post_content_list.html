@@ -1,8 +1,8 @@
 {% extends "core/layout.html" %}
 {% block content %}
-<div class="bg-white shadow-xl rounded-2xl w-full max-w-lg p-8">
+<div class="max-w-6xl mx-auto">
 
-    <h2 class="text-2xl font-bold mb-6 text-gray-800">Edit Content</h2>
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Edit Posts</h2>
 
     {% if error %}
     <div class="bg-red-100 text-red-700 p-3 rounded-lg mb-4">
@@ -10,111 +10,120 @@
     </div>
     {% endif %}
 
-    <form method="post" enctype="multipart/form-data" class="space-y-4">
-        {% csrf_token %}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        <!-- Content Type -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Content Type</label>
-            <select name="content_type"
-                    class="w-full border rounded-lg px-3 py-2">
-                <option value="video" {% if post.content_type == "video" %}selected{% endif %}>Video</option>
-                <option value="image" {% if post.content_type == "image" %}selected{% endif %}>Image</option>
-            </select>
+        {% for post in posts %}
+        <div class="bg-white rounded-2xl shadow p-6 space-y-4">
+
+            <form method="post" enctype="multipart/form-data" action="{% url 'media.edit' %}">
+                {% csrf_token %}
+
+                <input type="hidden" name="post_id" value="{{ post.id }}">
+
+                <!-- Platform -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Platform</label>
+                    <select name="site"
+                            class="w-full border rounded-lg px-3 py-2">
+                        {% for site in sites%}
+                        <option value="{{site}}" {% if post.site == site %}selected{% endif %}>
+                            {{site}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Social Account -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Account Username</label>
+                    <select name="social_account"
+                            class="w-full border rounded-lg px-3 py-2" required>
+                        <option value="">Select account</option>
+                        {% for account in social_accounts %}
+                        <option value="{{ account.id }}"
+                                {% if post.user.id == account.id %}selected{% endif %}>
+                            [{{account.site}}] {{ account.username }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Title -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                    <input type="text"
+                           name="title"
+                           value="{{ post.title|default:'' }}"
+                           class="w-full border rounded-lg px-3 py-2">
+                </div>
+
+                <!-- Caption / Content -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Caption / Content</label>
+                    <textarea name="content"
+                              rows="3"
+                              class="w-full border rounded-lg px-3 py-2"
+                              required>{{ post.content }}</textarea>
+                </div>
+
+                <!-- Timezone -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+                    <select name="timezone"
+                            class="w-full border rounded-lg px-3 py-2">
+                        {% for tz in timezones %}
+                        <option value="{{ tz }}"
+                                {% if post.timezone == tz %}selected{% endif %}>
+                            {{ tz }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Current File Preview -->
+                {% if post.file_name %}
+                <div class="mt-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Current File</label>
+                    <div class="border rounded-lg p-2 mb-2">
+                        {% if post.content_type == "video" %}
+                        <video controls class="w-full max-h-64 object-cover">
+                            <source src="{{ post.get_file_url }}">
+                        </video>
+                        {% else %}
+                        <img src="{{ post.get_file_url }}"
+                             class="w-full max-h-64 object-cover rounded-lg">
+                        {% endif %}
+                    </div>
+
+                    <label class="flex items-center gap-2 text-sm text-red-600">
+                        <input type="checkbox" name="delete_file" value="1">
+                        Delete current file
+                    </label>
+                </div>
+                {% endif %}
+
+                <!-- Replace File -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Upload New File (optional)
+                    </label>
+                    <input type="file"
+                           name="file"
+                           class="w-full border rounded-lg px-3 py-2 bg-white">
+                </div>
+
+                <!-- Submit -->
+                <button type="submit"
+                        class="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
+                    Update Post
+                </button>
+
+            </form>
+
         </div>
+        {% endfor %}
 
-        <!-- Platform -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Platform</label>
-            <select name="site"
-                    class="w-full border rounded-lg px-3 py-2">
-                <option value="tiktok" {% if post.site == "tiktok" %}selected{% endif %}>TikTok</option>
-                <option value="facebook" {% if post.site == "facebook" %}selected{% endif %}>Facebook</option>
-            </select>
-        </div>
+    </div>
 
-        <!-- Username -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Account Username</label>
-            <input type="text"
-                   name="site_username"
-                   value="{{ post.site_username }}"
-                   class="w-full border rounded-lg px-3 py-2"
-                   required>
-        </div>
-
-        <!-- Title -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
-            <input type="text"
-                   name="title"
-                   value="{{ post.title|default:'' }}"
-                   class="w-full border rounded-lg px-3 py-2">
-        </div>
-
-        <!-- Content -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Caption / Content</label>
-            <textarea name="content"
-                      rows="4"
-                      class="w-full border rounded-lg px-3 py-2"
-                      required>{{ post.content }}</textarea>
-        </div>
-
-        <!-- Timezone -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
-            <select name="timezone"
-                    class="w-full border rounded-lg px-3 py-2">
-                {% for tz in timezones %}
-                <option value="{{ tz }}"
-                    {% if post.timezone == tz %}selected{% endif %}>
-                    {{ tz }}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <!-- Current File -->
-        {% if post.file_name %}
-        <div class="bg-gray-50 border rounded-lg p-3">
-            <p class="text-sm text-gray-700 mb-2">
-                Current file: <strong>{{ post.file_name }}</strong>
-            </p>
-
-            <label class="flex items-center gap-2 text-sm text-red-600">
-                <input type="checkbox" name="delete_file" value="1"
-                       class="w-4 h-4">
-                Delete current file
-            </label>
-        </div>
-        {% endif %}
-
-        <!-- Replace File -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-                Upload New File (optional)
-            </label>
-            <input type="file"
-                   name="file"
-                   class="w-full border rounded-lg px-3 py-2 bg-white">
-        </div>
-
-        <!-- Status -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select name="status"
-                    class="w-full border rounded-lg px-3 py-2">
-                <option value="none" {% if post.status == "none" %}selected{% endif %}>None</option>
-                <option value="uploaded" {% if post.status == "uploaded" %}selected{% endif %}>Uploaded</option>
-            </select>
-        </div>
-
-        <button type="submit"
-                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
-            Update Content
-        </button>
-
-    </form>
 </div>
 {% endblock content %}

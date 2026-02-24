@@ -6,7 +6,7 @@ from django.views.decorators.http import require_GET
 
 from automationapp import settings
 from src.core.utils import full_url_for_route
-from src.tiktok.models import TikTokUser
+from src.media.models import SocialAccount
 from src.tiktok.services.oauth.tiktok_oauth_service import TikTokOAuthService
 
 
@@ -15,7 +15,10 @@ def auth_redirect_to_tiktok(request: HttpRequest):
     """
     https://developers.tiktok.com/doc/login-kit-manage-user-access-tokens?enter_method=left_navigation
     """
-    redirect_uri = _redirect_url(request.GET.get('tiktok_username'))
+    redirect_uri = full_url_for_route(
+        'tiktok.auth_redirect_from_tiktok',
+        query_params={'tiktok_username': request.GET.get('tiktok_username')}
+    )
     url = f'https://www.tiktok.com/v2/auth/authorize/?client_key={settings.TIKTOK_CLIENT_KEY}&response_type=code&scope=user.info.basic&redirect_uri={redirect_uri}'
 
     return redirect(url)
@@ -33,7 +36,7 @@ def auth_redirect_from_tiktok(request: HttpRequest):
 
 
 def tiktok_accounts(request):
-    tiktok_users = TikTokUser.objects.filter(user=request.user)
+    tiktok_users = SocialAccount.objects.filter(user=request.user, site=SocialAccount.TIKTOK)
     return render(request, "tiktok_accounts.html", {
         "tiktok_users": tiktok_users
     })
