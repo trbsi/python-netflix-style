@@ -20,6 +20,7 @@ class PostContent(models.Model):
     file_name = models.CharField(max_length=50)
     timezone = models.CharField(max_length=50)
     status = models.CharField(max_length=20)
+    group = models.CharField(max_length=50,blank=True, null=True)
 
     objects = models.Manager()
 

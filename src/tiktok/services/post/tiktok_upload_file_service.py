@@ -35,9 +35,7 @@ class TikTokUploadFileService:
                 "source": "PULL_FROM_URL",
                 "photo_cover_index": 1,
                 "privacy_level": "PUBLIC_TO_EVERYONE",
-                "photo_images": [
-                    content.get_file_url()
-                ]
+                "photo_images": self._get_files(content),
             },
             "post_mode": "DIRECT_POST",
             "media_type": "PHOTO"
@@ -52,6 +50,17 @@ class TikTokUploadFileService:
 
         response = requests.post(url, headers=headers, json=payload, proxies=proxies)
         print(response.json())
+
+    def _get_files(self, content:PostContent)->list:
+        if not content.group:
+            return [content.get_file_url()]
+
+        result = []
+        posts = PostContent.objects.filter(group=content.group).order_by('id')
+        for post in posts:
+            result.append(post.get_file_url())
+
+        return result
 
     def _upload_video(self, data: dict, content: PostContent):
         file_path = content.get_file_path()

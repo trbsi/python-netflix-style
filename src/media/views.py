@@ -26,6 +26,7 @@ def upload_file(request):
         form_data = request.POST.dict()
         context['form_data'] = form_data
         file = request.FILES.get('file')
+        print(context)
 
         service = UploadFileService()
         service.upload_file(request.user, file, form_data)

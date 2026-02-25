@@ -23,4 +23,5 @@ class UploadFileService():
             file_name=file_name,
             timezone=data.get("timezone"),
             status=PostContent.STATUS_NONE,
+            group=data.get("group") or None,
         )

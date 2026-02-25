@@ -39,3 +39,9 @@ class ContentPostCommand(BaseCommand):
 
             single_content.status = PostContent.STATUS_UPLOADED
             single_content.save()
+
+            if single_content.group:
+                posts = PostContent.objects.filter(group=single_content.group).order_by('id')
+                for post in posts:
+                    post.status = PostContent.STATUS_UPLOADED
+                    post.save()
