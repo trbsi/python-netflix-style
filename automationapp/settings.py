@@ -52,8 +52,6 @@ INSTALLED_APPS = [
     'src.notification.apps.NotificationConfig',
     'src.user.apps.UserConfig',
     'src.authentication.apps.AuthenticationConfig',
-    'src.tiktok.apps.TiktokConfig',
-    'src.media.apps.MediaConfig',
 
     'django_celery_beat',
 
@@ -231,10 +229,3 @@ bugsnag.configure(
 # Slack
 SLACK_BOT_TOKEN = env('SLACK_BOT_TOKEN')
 SLACK_CHANNEL_ID = env('SLACK_CHANNEL_ID')
-
-# TikTok
-TIKTOK_CLIENT_KEY = env('TIKTOK_CLIENT_KEY')
-TIKTOK_CLIENT_SECRET = env('TIKTOK_CLIENT_SECRET')
-
-# Proxy
-HTTP_PROXY = env('HTTP_PROXY')
