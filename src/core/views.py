@@ -3,10 +3,10 @@ from pathlib import Path
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
 from django.views.decorators.http import require_GET
 
 from automationapp import settings
+from src.media.views import media_home
 from src.notification.services.notification_service import NotificationService
 from src.notification.value_objects.email_value_object import EmailValueObject
 from src.notification.value_objects.push_notification_value_object import PushNotificationValueObject
@@ -14,11 +14,7 @@ from src.notification.value_objects.push_notification_value_object import PushNo
 
 @require_GET
 def home(request: HttpRequest) -> HttpResponse:
-    return render(
-        request,
-        'home.html',
-        {'feed_api_url': reverse_lazy('media.api.get_media')}
-    )
+    return media_home(request)
 
 
 @require_GET

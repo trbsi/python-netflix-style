@@ -1,0 +1,208 @@
+{% load static %}
+<!--Nav Start-->
+<header class="header-center-home header-default header-sticky">
+    <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar header-hover-menu py-xl-0">
+        <div class="container-fluid navbar-inner">
+            <div class="d-flex align-items-center justify-content-between w-100 landing-header">
+                <div class="d-flex gap-3 gap-xl-0 align-items-center">
+                    <div class="d-flex align-items-center gap-2 gap-md-3">
+                        <div class="logo-default">
+                            <a class="navbar-brand text-primary me-0" href="/">
+                                {{TEMPLATE_APP_NAME}}
+                            </a>
+                        </div>
+                        <div class="logo-hotstar">
+                            <a class="navbar-brand text-primary me-0" href="./index.html">
+                                <img class="img-fluid logo" src="{% static 'assets/images/logo-hotstar.webp' %}" loading="lazy"
+                                     alt="streamit"/>
+                            </a>
+                        </div>
+                        <div class="logo-prime">
+                            <a class="navbar-brand text-primary me-0" href="./index.html">
+                                <img class="img-fluid logo" src="{% static 'assets/images/logo-prime.webp' %}" loading="lazy"
+                                     alt="streamit"/>
+                            </a>
+                        </div>
+                        <div class="logo-hulu">
+                            <a class="navbar-brand text-primary me-0" href="./index.html">
+                                <img class="img-fluid logo" src="{% static 'assets/images/logo-hulu.webp' %}" loading="lazy"
+                                     alt="streamit"/>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+                <nav id="navbar_main"
+                     class="offcanvas mobile-offcanvas nav navbar navbar-expand-xl hover-nav horizontal-nav mega-menu-content py-xl-0 w-100">
+                    <div class="container-fluid p-lg-0">
+                        <div class="offcanvas-header px-0">
+                            <div class="navbar-brand ms-3">
+                                <div class="logo-default">
+                                    <a class="navbar-brand text-primary me-0" href="/">
+                                        {{TEMPLATE_APP_NAME}}
+                                    </a>
+                                </div>
+                                <div class="logo-hotstar">
+                                    <a class="navbar-brand text-primary me-0" href="/">
+                                        <img class="img-fluid logo" src="{% static 'assets/images/logo-hotstar.webp' %}"
+                                             loading="lazy" alt="streamit"/>
+                                    </a>
+                                </div>
+                                <div class="logo-prime">
+                                    <a class="navbar-brand text-primary me-0" href="/">
+                                        <img class="img-fluid logo" src="{% static 'assets/images/logo-prime.webp' %}"
+                                             loading="lazy" alt="streamit"/>
+                                    </a>
+                                </div>
+                                <div class="logo-hulu">
+                                    <a class="navbar-brand text-primary me-0" href="/">
+                                        <img class="img-fluid logo" src="{% static 'assets/images/logo-hulu.webp' %}"
+                                             loading="lazy" alt="streamit"/>
+                                    </a>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-close float-end px-3" data-bs-dismiss="offcanvas"
+                                    aria-label="Close"></button>
+                        </div>
+                        <ul class="navbar-nav iq-nav-menu  list-unstyled" id="header-menu">
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="collapse" href="#homePages" role="button"
+                                   aria-expanded="false"
+                                   aria-controls="homePages">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="item-name">Home</span>
+                                        <span class="menu-icon">
+                              <i class="ph ph-caret-down align-middle"></i>
+                            </span>
+                                    </div>
+                                </a>
+                                <ul class="sub-nav mega-menu-item collapse justify-content-center list-unstyled"
+                                    id="homePages">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="/">
+                                            <img src="{% static './assets/images/mega-menu/new-home.webp' %}" alt="img"
+                                                 class="img-fluid d-xl-block d-none">
+                                            <span class="d-inline-block ">OTT Home</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="./home.html">
+                                            <img src="{% static './assets/images/mega-menu/home.webp' %}" alt="img"
+                                                 class="img-fluid d-xl-block d-none">
+                                            <span class="d-inline-block ">Main Home</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="./movie.html">
+                                            <img src="{% static './assets/images/mega-menu/movie.webp' %}" alt="img"
+                                                 class="img-fluid d-xl-block d-none">
+                                            <span class="d-inline-block ">Movies</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="./tv-show.html">
+                                            <img src="{% static './assets/images/mega-menu/tv-show.webp' %}" alt="img"
+                                                 class="img-fluid d-xl-block d-none">
+                                            <span class="d-inline-block ">TV Shows</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="./video.html">
+                                            <img src="{% static './assets/images/mega-menu/video.webp' %}" alt="img"
+                                                 class="img-fluid d-xl-block d-none">
+                                            <span class="d-inline-block ">Videos</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link "
+                                           href="./merchandise-store.html">
+                                            <img src="{% static './assets/images/mega-menu/shop-home.webp' %}" alt="img"
+                                                 class="img-fluid d-xl-block d-none">
+                                            <span class="d-inline-block ">Merchandise Store</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="collapse" href="#features" role="button"
+                                   aria-expanded="false"
+                                   aria-controls="homePages">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="item-name">Features</span>
+                                        <span class="menu-icon">
+                              <i class="ph ph-caret-down align-middle"></i>
+                            </span>
+                                    </div>
+                                </a>
+                                <ul class="sub-nav collapse  list-unstyled" id="features">
+                                    <li class="nav-item">
+                                        <a class="nav-link "
+                                           href="./download-movie.html">
+                                            <span>Download Movie</span> </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link "
+                                           href="./restricted-content.html"> <span>Restricted Content </span></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link "
+                                           href="./related-merchandise.html"> <span>Related Merchandise </span></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="./geners.html"> <span>Genres</span>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="./tags.html"> <span>Tags</span> </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link " href="./cast.html"> <span>Casts</span> </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="css_prefix-header-right d-flex align-items-center gap-2">
+                    <ul
+                            class="list-inline d-flex align-items-center gap-3 gap-md-4 mb-0 ps-0 justify-content-md-end justify-content-between">
+                        <li class="nav-item dropdown iq-responsive-menu d-xl-block d-none">
+                            <div class="search-box">
+                                <a href="#" class="nav-link p-0 text-white" id="search-drop"
+                                   data-bs-toggle="dropdown">
+                                    <div class="btn-icon btn-sm rounded-pill btn-action">
+                                  <span class="btn-inner">
+                                     <i class="ph ph-magnifying-glass p-0"></i>
+                                  </span>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu p-0 dropdown-search m-0 iq-search-bar"
+                                    style="width: 20rem;">
+                                    <li class="p-0">
+                                        <div class="form-group input-group mb-0">
+                                            <input type="text" class="form-control border-0"
+                                                   placeholder="Search...">
+                                            <button type="submit" class="search-submit">
+                                                <i class="ph ph-magnifying-glass"></i>
+                                            </button>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        {% comment %}
+                        {% include "core/components/user_menu.html" %}
+                        {% endcomment %}
+                    </ul>
+                    <button class="navbar-toggler d-block d-xl-none text-white" type="button"
+                            data-bs-toggle="offcanvas"
+                            data-bs-target="#navbar_main" aria-controls="navbar_main">
+                        <i class="ph ph-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!--Nav End-->

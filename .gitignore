@@ -5,7 +5,6 @@
 __pycache__
 *.sqlite3
 ./media
-media
 .env
 .idea
 docker/.env
@@ -14,7 +13,6 @@ celerybeat-schedule-shm
 celerybeat-schedule-wal
 test/
 static/js/all.min.js
-assets
 temp
 docker/docker-compose.override.yml
 docker/nginx/certs

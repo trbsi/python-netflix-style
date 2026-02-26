@@ -1,109 +1,121 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="csrf-token" content="{{ csrf_token }}">
-    <title>{% block title %}{% endblock title %} | {{ TEMPLATE_APP_NAME }} | Protect your videos from piracy
-    </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{ TEMPLATE_APP_NAME }} | {% block title %}{% endblock %}</title>
+    <!-- Google Font Api KEY-->
+    <meta name="google_font_api" content="AIzaSyBG58yNdAjc20_8jAvLNSVi9E4Xhwjau_k">
 
-    <link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}"/>
 
-    <!-- Tailwidncss -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Library / Plugin Css Build -->
+    <link rel="stylesheet" href="{% static 'assets/css/core/libs.min.css' %}"/>
 
-    <!-- Remixicon -->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css"
-          rel="stylesheet"/>
+    <!-- font-awesome css -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}"/>
 
-    <!-- JS libs -->
-    <script src="https://unpkg.com/alpinejs" defer></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
-            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- Iconly css -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/iconly/css/style.css' %}"/>
 
-    <!-- Video js -->
-    <link href="https://vjs.zencdn.net/8.23.4/video-js.css" rel="stylesheet"/>
-    <script src="https://vjs.zencdn.net/8.23.4/video.min.js"></script>
+    <!-- Animate css -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/animate.min.css' %}"/>
 
-    <!-- Toastr -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    <!-- SwiperSlider css -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/swiperSlider/swiper.min.css' %}">
+
+
+    <!-- Sweetlaert2 css -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/sweetalert2/sweetalert2.min.css' %}"/>
+
+
+    <!-- Streamit Design System Css -->
+    <link rel="stylesheet" href="{% static 'assets/css/streamit.min.css?v=5.4.0' %}"/>
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="{% static 'assets/css/custom.min.css?v=5.4.0' %}"/>
+
+    <!-- Rtl Css -->
+    <link rel="stylesheet" href="{% static 'assets/css/rtl.min.css?v=5.4.0' %}"/>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300&display=swap"
           rel="stylesheet">
+
+
+    <!-- Phosphor icons  -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/regular/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/duotone/style.css' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/fill/style.css' %}">
+
+
+    <link rel="stylesheet" href="{% static 'assets/vendor/streamit-font/iconly.css' %}">
 </head>
-<body class="antialiased text-gray-800 bg-gray-50">
-<!-- NAV -->
-<header class="bg-white shadow-md sticky top-0 z-50">
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-16">
-            <a href="/" class="flex items-center gap-3">
-                <span class="font-semibold text-lg logo">{{ TEMPLATE_APP_NAME }}</span>
-            </a>
-            <!-- Desktop links -->
-            {% include "core/components/desktop_navigation.html" %}
-            <!-- Mobile menu button -->
-            <div class="md:hidden">
-                <button id="nav-toggle"
-                        aria-controls="mobile-menu"
-                        aria-expanded="false"
-                        class="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
-                    <svg id="icon-open"
-                         class="w-6 h-6"
-                         fill="none"
-                         stroke="currentColor"
-                         viewBox="0 0 24 24"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                    <svg id="icon-close"
-                         class="w-6 h-6 hidden"
-                         fill="none"
-                         stroke="currentColor"
-                         viewBox="0 0 24 24"
-                         xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        </div>
+
+<body class="  ">
+<span class="screen-darken"></span>
+<!-- loader Start -->
+<!-- loader Start -->
+<div class="loader simple-loader">
+    <div class="loader-body">
+        <img src="{% static 'assets/images/loader.gif' %}" alt="loader" class="img-fluid " width="300">
     </div>
-    <!-- Mobile menu -->
-    {% include "core/components/mobile_navigation.html" %}
-</header>
-<!-- HERO -->
-<main>
-    <section class="container mx-auto  sm:px-6 lg:px-8">
-        <div class="mx-auto bg-white p-4  shadow-sm">
-            {% block content %}
-            {% endblock content %}
-        </div>
-    </section>
-    <!-- FOOTER -->
-    <footer class="mt-8 primary-color text-white border-t">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="text-sm">
-                    © <span id="year"></span> {{ TEMPLATE_APP_NAME }}. All rights reserved.
-                </div>
-                <div class="flex gap-4 text-sm">
-                    <a href="{% url 'privacy_policy' %}" class="tw underline hover:text-primary">Privacy</a>
-                    <a href="{% url 'terms_of_use' %}" class="tw underline hover:text-primary">Terms</a>
-                    <a href="{% url 'contact' %}" class="tw underline hover:text-primary">Contact</a>
-                </div>
-                <div class="flex gap-4 text-sm">
-                    <a href="#" id="open_preferences_center" class="tw underline text-white ">Update cookies
-                        preferences</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+</div>
+<!-- loader END -->  <!-- loader END -->
+<main class="main-content">
+    {% include "core/components/navigation.html" %}
+
+    <!--bread-crumb-->
+    <!--bread-crumb-->
+    {% block content %} {% endblock content %}
+
+    {% include "core/components/mobile_menu.html" %}
 </main>
 
+{% include "core/components/footer.html" %}
+{% include "core/components/settings.html" %}
+
+
+<div id="back-to-top" class="back-to-top" style="display: none;">
+    <a class="p-0 btn bg-primary btn-sm position-fixed top border-0 rounded-circle text-white" id="top" href="#top">
+        <i class="ph ph-caret-up fw-bold"></i>
+    </a>
+</div>
+<!-- Wrapper End-->
+<!-- Library Bundle Script -->
+<script src="{% static 'assets/js/core/libs.min.js' %}"></script>
+<!-- Plugin Scripts -->
+
+<!-- Sweet-alert Script -->
+<script src="{% static 'assets/vendor/sweetalert2/sweetalert2.min.js' %}" async></script>
+<script src="{% static 'assets/js/plugins/sweet-alert.js' %}" defer></script>
+
+<!-- SwiperSlider Script -->
+<script src="{% static 'assets/vendor/swiperSlider/swiper.min.js' %}"></script>
+
+
+<!-- Lodash Utility -->
+<script src="{% static 'assets/vendor/lodash/lodash.min.js' %}"></script>
+<!-- External Library Bundle Script -->
+<script src="{% static 'assets/js/core/external.min.js' %}"></script>
+<!-- countdown Script -->
+<script src="{% static 'assets/js/plugins/countdown.js' %}"></script>
+<!-- utility Script -->
+<script src="{% static 'assets/js/utility.js' %}"></script>
+<!-- Setting Script -->
+<script src="{% static 'assets/js/setting.js' %}"></script>
+<script src="{% static 'assets/js/setting-init.js' %}" defer></script>
+<!-- Streamit Script -->
+<script src="{% static 'assets/js/streamit.js' %}" defer></script>
+<script src="{% static 'assets/js/swiper.js' %}" defer></script>
+
 <script src="{% static 'js/core/core.js' %}"></script>
-{% block javascript_global %}
-{% endblock javascript_global %}
 
 {% block javascript_include %}
 {% endblock javascript_include %}
@@ -111,4 +123,5 @@
 {% include "core/components/javascript.html" %}
 {% include "core/components/cookie_consent.html" %}
 </body>
+
 </html>

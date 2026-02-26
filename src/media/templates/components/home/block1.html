@@ -1,0 +1,302 @@
+{% load static %}
+<div class="container-fluid">
+    <div class="overflow-hidden">
+        <div class="continue-watching-block home-continue-watch section-padding-top">
+            <div class="d-flex align-items-center justify-content-between px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">Continue Watch Movies</h4>
+            </div>
+            <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="3" data-tab="3"
+                 data-mobile="2"
+                 data-mobile-sm="2" data-autoplay="false" data-loop="true" data-navigation="true"
+                 data-pagination="false">
+                <ul class="p-0 swiper-wrapper m-0  list-inline">
+                    {% for item in continue_watch%}
+                    <li class="swiper-slide">
+                        <div class="iq-watching-block">
+                            <div class="block-images position-relative">
+                                <div class="iq-image-box overly-images">
+                                    <a href="./movie-detail.html" class="d-block">
+                                        <img src="{{item.thumb_large}}" alt="movie-card"
+                                             class="w-100 d-block border-0 rounded-3 continue-image">
+                                    </a>
+                                </div>
+                                <div class="iq-preogress">
+                              <span class="px-2 text-white fw-semibold font-size-14 iq-progress-left-data">{{item.duration_formatted}}</span>
+                                    <div class="d-flex align-items-center justify-content-between px-2 mb-1">
+                                        <ul class="list-inline m-0 p-0 d-flex row-gap-1 column-gap-3 flex-wrap movie-list-item">
+                                            <li class="iq-preogress-movie-title position-relative font-size-14"><span
+                                                    class="text-capitalize fw-semibold ">{{item.title}}</span></li>
+                                            <li class="flex-shrink-0 fw-semibold font-size-14">
+                                          <span>
+                                              {{item.pub_date_formatted}}
+                                          </span>
+                                            </li>
+                                        </ul>
+                                        <a>
+                                            <i class="ph-fill ph-play iq-preogress-play-btn fs-6"></i>
+                                        </a>
+                                    </div>
+                                    <div class="progress" role="progressbar" aria-label="Example 2px high"
+                                         aria-valuenow="25" aria-valuemin="0"
+                                         aria-valuemax="100" style="height: 2px">
+                                        <div class="progress-bar" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <div class="close-icon-section">
+                                    <div class="position-absolute d-flex align-items-center justify-content-center iq-watching-close-icon"
+                                         data-bs-toggle="tooltip" data-bs-placement="left"
+                                         aria-label="Remove from list" data-bs-original-title="Remove from list">
+                                        <i class="ph ph-x font-size-14 fw-bold align-middle"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="d-none d-lg-block">
+                    <div class="swiper-button swiper-button-next"></div>
+                    <div class="swiper-button swiper-button-prev"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="top-ten-block">
+            <div class="d-flex align-items-center justify-content-between  px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">top 10 movies to watch</h4>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card iq-top-ten-block-slider" data-slide="6"
+                     data-laptop="6"
+                     data-tab="3" data-mobile="2" data-mobile-sm="2" data-autoplay="false" data-loop="false"
+                     data-navigation="true" data-pagination="true">
+                    <ul class="p-0 swiper-wrapper mb-5 list-inline">
+                        {% for key, item in enumerate(top_10_movies) %}
+                        <li class="swiper-slide">
+                            <div class="iq-top-ten-block position-relative">
+                                <div class="block-image position-relative">
+                                    <div class="img-box">
+                                        <a class="overly-images" href="./movie-detail.html">
+                                            <img src="{{item.thumb_large}}"
+                                                 alt="movie-card"
+                                                 class="object-cover rounded-3">
+                                        </a>
+                                        <span class="top-ten-numbers texture-text">{{key+1}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="d-none d-lg-block">
+                        <div class="swiper-button swiper-button-next"></div>
+                        <div class="swiper-button swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="streamit-block section-wraper">
+            <div class="d-flex align-items-center justify-content-between  px-1 mb-4">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">Only on {{TEMPLATE_APP_NAME}}</h4>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="6" data-tab="3"
+                     data-mobile="2" data-mobile-sm="2" data-autoplay="false" data-loop="true"
+                     data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        {% for item in only_on_site %}
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{{item.thumb_large}}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">Adult</a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">{{item.title}}</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+                    <div class="d-none d-lg-block">
+                        <div class="swiper-button swiper-button-next"></div>
+                        <div class="swiper-button swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="streamit-card-height-block">
+            <div class="d-flex align-items-center justify-content-between  px-1 mb-4">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">Fresh Picks Just For You</h4>
+                <a href="./view-all-movie.html" class="text-primary iq-view-all text-decoration-none flex-none">View
+                    All</a>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="5" data-laptop="3" data-tab="3"
+                     data-mobile="2" data-mobile-sm="2" data-autoplay="false" data-loop="true"
+                     data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        {% for item in fresh_picks %}
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover landscape-card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{{item.thumb_large}}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Adult </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize mb-0">
+                                                    <a href="./movie-detail.html">{{item.title}}</a>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play
+                                                    Now</a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 premium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="swiper-button swiper-button-next"></div>
+                    <div class="swiper-button swiper-button-prev"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="upcomimg-block section-wraper">
+            <div class="d-flex align-items-center justify-content-between px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">Upcoming Movies</h4>
+                <a href="./view-all-movie.html" class="text-primary iq-view-all text-decoration-none flex-none">View
+                    All</a>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="4" data-tab="3"
+                     data-mobile="2" data-mobile-sm="2" data-autoplay="false" data-loop="true"
+                     data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        {% for item in upcoming_movies %}
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{{item.thumb_large}}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Adult </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">{{item.title}}</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="d-none d-lg-block">
+                        <div class="swiper-button swiper-button-next"></div>
+                        <div class="swiper-button swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

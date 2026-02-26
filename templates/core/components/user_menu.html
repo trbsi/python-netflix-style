@@ -1,0 +1,70 @@
+{% load static %}
+<li class="nav-item dropdown cust-itemdropdown1" id="itemdropdown1">
+    <a class="nav-link d-flex align-items-center p-0" href="#" id="navbarDropdown"
+       role="button"
+       data-bs-toggle="dropdown" aria-expanded="false">
+        <div class="st-avatar style-1">
+            <img src="{% static 'assets/images/user/user6.jpg' %}" alt="user"
+                 class="img-fluid rounded-circle dropdown-user-menu-image header-user-image">
+        </div>
+    </a>
+    <div class="dropdown-menu dropdown-user-menu dropdown-menu-end border border-gray-900 rounded-3"
+         data-popper-placement="bottom-end"
+         style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate(0px, 74px);">
+        <div class="user-dropdown-inner">
+            <!-- User Info -->
+            <div class="d-flex align-items-center gap-3 rounded mb-4">
+                <div class="image flex-shrink-0">
+                    <img src="./assets/images/user/user6.jpg"
+                         class="img-fluid rounded-3 dropdown-user-menu-image"
+                         alt="Marvin McKinney">
+                </div>
+                <div class="content">
+                    <h6 class="mb-1">Marvin McKinney</h6>
+                </div>
+            </div>
+
+            <!-- Menu Items -->
+            <ul class="d-flex flex-column gap-3 list-inline m-0 p-0">
+                <li>
+                    <a href="./profile-marvin.html"
+                       class="link-body-emphasis font-size-14 d-flex align-items-center gap-2">
+                        <i class="ph ph-user"></i>
+                        <span class="fw-medium">Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./watchlist-detail.html"
+                       class="link-body-emphasis font-size-14 d-flex align-items-center gap-2">
+                        <i class="ph ph-plus"></i>
+                        <span class="fw-medium">Watch List</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./archive-playlist.html"
+                       class="link-body-emphasis font-size-14 d-flex align-items-center gap-2">
+                        <i class="ph ph-playlist"></i>
+                        <span class="fw-medium">Playlist</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="./profile-marvin.html"
+                       class="link-body-emphasis font-size-14 d-flex align-items-center gap-2">
+                        <i class="ph ph-bell"></i>
+                        <span class="fw-medium">Notification</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Logout -->
+        <a href="./login.html"
+           class="btn btn-link p-3 d-block font-size-14 text-center text-decoration-none border-top">
+                               <span class="d-flex align-items-center justify-content-center gap-2 fw-medium">
+                                  <i class="ph ph-sign-out"></i>
+                                  Logout
+                               </span>
+        </a>
+    </div>
+
+</li>

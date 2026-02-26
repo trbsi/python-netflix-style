@@ -1,0 +1,73 @@
+{% load static %}
+<footer class="footer footer-default">
+    <div class="footer-top">
+        <div class="container-fluid">
+            <div class="row gy-4">
+                <div class="col-lg-3 col-sm-6">
+                    <div class="footer-logo">
+                        <!--Logo -->
+                        <div class="logo-default">
+                            <a class="navbar-brand text-primary me-0" href="/">
+                                {{TEMPLATE_APP_NAME}}
+                            </a>
+                        </div>
+                        <div class="logo-hotstar">
+                            <a class="navbar-brand text-primary me-0" href="./index.html">
+                                <img class="img-fluid logo" src="{% static 'assets/images/logo-hotstar.webp' %}" loading="lazy"
+                                     alt="streamit"/>
+                            </a>
+                        </div>
+                        <div class="logo-prime">
+                            <a class="navbar-brand text-primary me-0" href="./index.html">
+                                <img class="img-fluid logo" src="{% static 'assets/images/logo-prime.webp' %}" loading="lazy"
+                                     alt="streamit"/>
+                            </a>
+                        </div>
+                        <div class="logo-hulu">
+                            <a class="navbar-brand text-primary me-0" href="./index.html">
+                                <img class="img-fluid logo" src="{% static 'assets/images/logo-hulu.webp' %}" loading="lazy"
+                                     alt="streamit"/>
+                            </a>
+                        </div>
+                    </div>
+                    <div>Email us: <span class="text-white">{{TEMPLATE_CONTACT_EMAIL}}</span>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-sm-6">
+                    <h4 class="footer-link-title text-capitalize">Movies to Watch</h4>
+                    <ul class="list-unstyled footer-menu mb-0">
+                        <li>
+                            <a class="text-capitalize" href="./view-all-movie.html"><span>Top trending</span></a>
+                        </li>
+                        <li>
+                            <a class="text-capitalize" href="./view-all-movie.html"><span>Recommended</span></a>
+                        </li>
+                        <li>
+                            <a class="text-capitalize" href="./view-all-movie.html"><span>Popular</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-sm-6">
+                    <h4 class="footer-link-title text-capitalize">About company</h4>
+                    <ul class="list-unstyled footer-menu mb-0">
+                        <li>
+                            <a class="" href="{% url 'terms_of_use' %}"><span>Terms and Use</span></a>
+                        </li>
+                        <li>
+                            <a class="text-capitalize" href="{% url 'privacy_policy' %}"><span>privacy policy</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="font-size-14 mb-0">© <span class="currentYear"></span> <span class="text-primary">{{TEMPLATE_APP_NAME}}.</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

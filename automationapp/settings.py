@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'src.notification.apps.NotificationConfig',
     'src.user.apps.UserConfig',
     'src.authentication.apps.AuthenticationConfig',
+    'src.media.apps.MediaConfig',
 
     'django_celery_beat',
 

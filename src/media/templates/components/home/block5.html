@@ -1,0 +1,872 @@
+{% load static %}
+<div class="container-fluid">
+    <div class="overflow-hidden">
+        <div class="movie-geners-block section-wraper">
+            <div class="d-flex align-items-center justify-content-between  px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">movie geners</h4>
+                <a href="./all-geners.html" class="text-primary iq-view-all text-decoration-none flex-none">View
+                    All</a>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="6" data-tab="3"
+                     data-mobile="2" data-mobile-sm="2" data-autoplay="false" data-loop="true"
+                     data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline geners-card genres-list">
+                        <li class="swiper-slide">
+                            <div class="iq-card-geners position-relative card-hover-style-two">
+                                <div class="img-box position-relative">
+                                    <a href="view-all-movie.html">
+                                        <img src="{% static 'assets/images/genre/action.webp' %}" alt="geners-img"
+                                             class="img-fluid">
+                                        <h6 class="blog-description">action</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card-geners position-relative card-hover-style-two">
+                                <div class="img-box position-relative">
+                                    <a href="view-all-movie.html">
+                                        <img src="{% static 'assets/images/genre/adventure.webp' %}" alt="geners-img"
+                                             class="img-fluid">
+                                        <h6 class="blog-description">adventure</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card-geners position-relative card-hover-style-two">
+                                <div class="img-box position-relative">
+                                    <a href="view-all-movie.html">
+                                        <img src="{% static 'assets/images/genre/animation.webp' %}" alt="geners-img"
+                                             class="img-fluid">
+                                        <h6 class="blog-description">animation</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card-geners position-relative card-hover-style-two">
+                                <div class="img-box position-relative">
+                                    <a href="view-all-movie.html">
+                                        <img src="{% static 'assets/images/genre/Crime.webp' %}" alt="geners-img"
+                                             class="img-fluid">
+                                        <h6 class="blog-description">Crime</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card-geners position-relative card-hover-style-two">
+                                <div class="img-box position-relative">
+                                    <a href="view-all-movie.html">
+                                        <img src="{% static 'assets/images/genre/horror.webp' %}" alt="geners-img"
+                                             class="img-fluid">
+                                        <h6 class="blog-description">horror</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card-geners position-relative card-hover-style-two">
+                                <div class="img-box position-relative">
+                                    <a href="view-all-movie.html">
+                                        <img src="{% static 'assets/images/genre/mystery.webp' %}" alt="geners-img"
+                                             class="img-fluid">
+                                        <h6 class="blog-description">mystery</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card-geners position-relative card-hover-style-two">
+                                <div class="img-box position-relative">
+                                    <a href="view-all-movie.html">
+                                        <img src="{% static 'assets/images/genre/romance.webp' %}" alt="geners-img"
+                                             class="img-fluid">
+                                        <h6 class="blog-description">romance</h6>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="d-none d-lg-block">
+                        <div class="swiper-button swiper-button-next"></div>
+                        <div class="swiper-button swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="recommended-block section-wraper">
+            <div class="d-flex align-items-center justify-content-between  px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">recommended for you</h4>
+                <a href="./view-all-movie.html" class="text-primary iq-view-all text-decoration-none flex-none">View
+                    All</a>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="6" data-tab="3"
+                     data-mobile="2" data-mobile-sm="2" data-autoplay="false" data-loop="true"
+                     data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/pirates-ofdayones-orignal.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Pirates of Day One</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/the-hunter-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">The Hunter</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/lost-in-space-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Lost in Space</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/castle-rock-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Castle Rock</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/breaking-bad-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Breaking Bad</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/assassins-creed-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Assassins Creed</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/vikings-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Vikings</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="d-none d-lg-block">
+                        <div class="swiper-button swiper-button-next"></div>
+                        <div class="swiper-button swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="top-pics-block section-wraper">
+            <div class="d-flex align-items-center justify-content-between  px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">Top picks for you</h4>
+                <a href="./view-all-movie.html" class="text-primary iq-view-all text-decoration-none flex-none">View
+                    All</a>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="6" data-tab="3"
+                     data-mobile="2" data-mobile-sm="2" data-autoplay="false" data-loop="true"
+                     data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/batter-caill-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Better Caill Saul</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/jumanji-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Jumanji</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/another-danger-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Another Danger</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/spiderman-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Spiderman</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/war-for-the-planet-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">War for the Planet</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </li>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/fast-furious-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">Fast &amp; Furious</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </li>
+
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="./movie-detail.html"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{% static 'assets/images/media/joker-portrait.webp' %}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                                    Action </a>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="./movie-detail.html">joker</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <i class="ph ph-translate"></i>
+                                                        <small class="font-size-12">English</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <a href="./watchlist-detail.html"
+                                               class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                               data-bs-toggle="tooltip" data-bs-placement="top"
+                                               data-bs-custom-class="custom-tooltip"
+                                               data-bs-title="Add to Watchlist">
+                                                <i class="ph ph-plus font-size-18"></i>
+                                            </a>
+                                            <div class="iq-play-button iq-button">
+                                                <a href="./movie-detail.html" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </li>
+                    </ul>
+                    <div class="d-none d-lg-block">
+                        <div class="swiper-button swiper-button-next"></div>
+                        <div class="swiper-button swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

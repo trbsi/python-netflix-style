@@ -1,0 +1,104 @@
+{% load static %}
+<div class="iq-banner-thumb-slider overflow-hidden">
+    <div class="slider">
+        <div class="position-relative slider-bg my-auto">
+            <div class="horizontal_thumb_slider" data-swiper="slider-thumbs-ott">
+                <div class="banner-thumb-slider-nav">
+                    <div class="swiper-container " data-swiper="slider-thumbs-inner-ott">
+                        <div class="swiper-wrapper">
+                            {% for item in main_header %}
+                            <div class="swiper-slide swiper-bg">
+                                <div class="block-images position-relative ">
+                                    <div class="img-box">
+                                        <img src="{{item.thumb_large}}"
+                                             class="img-fluid"
+                                             alt="img"
+                                             loading="lazy">
+                                        <div class="block-description">
+                                            <h6 class="iq-title fw-500 line-count-1">{{item.title}}</h6>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="ph ph-clock"></i>
+                                                <span class="fs-12">{{item.duration_formatted}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="slider-prev swiper-button d-flex align-items-center justify-content-center">
+                        <i class="ph ph-caret-left"></i>
+                    </div>
+                    <div class="slider-next swiper-button d-flex align-items-center justify-content-center">
+                        <i class="ph ph-caret-right"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-images" data-swiper="slider-images-ott">
+                <div class="swiper-container" data-swiper="slider-images-inner-ott">
+                    <div class="swiper-wrapper m-0">
+                        {% for item in main_header %}
+                        <div class="swiper-slide banner-bg p-0">
+                            <div class="slider--image block-images"
+                                 style="background-image: url({{item.thumb_large}});">
+                                <div class="container-fluid position-relative">
+                                    <div class="row align-items-center h-100 slider-content-full-height">
+                                        <div class="col-lg-5 col-md-12">
+                                            <div class="slider-content">
+                                                <h2
+                                                        class="texture-text big-font letter-spacing-1 line-count-1 RightAnimate-two mb-1 mb-md-3">
+                                                    {{item.title}} </h2>
+                                                <div class="d-flex flex-wrap align-items-center gap-3 py-2 RightAnimate-three">
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <ul class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left gap-1">
+                                                            {% for i in "12345" %}
+                                                            {% if forloop.counter <= video.rating %}
+                                                            <li><i class="ph-fill ph-star" aria-hidden="true"></i></li>
+                                                            {% else %}
+                                                            <li><i class="ph ph-star" aria-hidden="true"></i></li>
+                                                            {% endif %}
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <i class="ph ph-clock"></i>
+                                                        <span class="font-size-16 fw-500">{{item.duration_formatted}}</span>
+                                                    </div>
+                                                </div>
+                                                <p class="line-count-3 my-3 RightAnimate-two">Game of Heros is an
+                                                    action-packed
+                                                    fantasy epic where the fate of the world is decided in a battle
+                                                    of legendary
+                                                    warriors. When an ancient prophecy foretells an all-out war
+                                                    between the greatest
+                                                    heroes of all realms, champions from different eras and
+                                                    dimensions are summoned
+                                                    to fight for ultimate supremacy. Each warrior possesses unique
+                                                    abilities,
+                                                    weapons, and a past that drives them to victory—or doom.</p>
+
+                                                <div class="RightAnimate-four mt-4 pt-2">
+                                                    <a href="movie-detail.html"
+                                                       class="btn btn-primary text-capitalize position-relative rounded-3">
+                                                       <span class="d-flex align-items-center gap-2">
+                                                           <span class="button-text">play now</span>
+                                                           <i class="ph-fill ph-play fs-6"></i>
+                                                       </span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-7 col-md-12"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="swiper-pagination d-block d-lg-none"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
