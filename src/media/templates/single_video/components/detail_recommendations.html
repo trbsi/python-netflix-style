@@ -1,0 +1,428 @@
+<div class="container-fluid">
+    <div class="overflow-hidden">
+        <div class="recommended-block section-padding-top">
+            <div class="d-flex align-items-center justify-content-between px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0">Recommended</h4>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6 " data-laptop="6" data-tab="3"
+                     data-mobile="2"
+                     data-mobile-sm="2" data-autoplay="false" data-loop="false" data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        {% for item in recommended %}
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="{% url 'media.single_video' id=item.id %}"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{{item.thumb_large}}" alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <span tabindex="0" class="font-size-14 ">Adult </span>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="{% url 'media.single_video' id=item.id %}">{{item.title}}</a>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="{% url 'media.single_video' id=item.id %}" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        {% endfor %}
+
+                    </ul>
+                    <div class="swiper-button swiper-button-next d-none d-lg-block"></div>
+                    <div class="swiper-button swiper-button-prev d-none d-lg-block"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="favourite-person-block">
+            <div class="overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                    <h4 class="main-title text-capitalize mb-0">More to watch</h4>
+                </div>
+                <div class="position-relative swiper swiper-card" data-slide="11" data-laptop="11" data-tab="4"
+                     data-mobile="2"
+                     data-mobile-sm="2" data-autoplay="false" data-loop="false" data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline personality-card">
+                        {% for item in more_to_watch %}
+                        <li class="swiper-slide">
+                            <a href="{% url 'media.single_video' id=item.id %}">
+                                <img src="{{item.thumb_large}}" alt="personality"
+                                     class="img-fluid object-cover mb-3 rounded-3 personality-img">
+                            </a>
+                            <div class="text-center">
+                                <h6 class="mb-0">
+                                    <a href="{% url 'media.single_video' id=item.id %}"
+                                       class="font-size-14 text-decoration-none cast-title text-capitalize">{{item.title}}</a>
+                                </h6>
+                                <a href="{% url 'media.single_video' id=item.id %}"
+                                   class="font-size-12 fw-semibold text-decoration-none text-capitalize text-body">{{item.duration_formatted}}</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="swiper-button swiper-button-next d-none d-lg-block"></div>
+                    <div class="swiper-button swiper-button-prev d-none d-lg-block"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="favourite-person-block">
+            <div class="overflow-hidden">
+                <div class="d-flex align-items-center justify-content-between px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                    <h4 class="main-title text-capitalize mb-0">You will enjoy this</h4>
+                </div>
+                <div class="position-relative swiper swiper-card" data-slide="11" data-laptop="11" data-tab="4"
+                     data-mobile="2"
+                     data-mobile-sm="2" data-autoplay="false" data-loop="false" data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline personality-card">
+                        {% for item in enjoy_this %}
+                        <li class="swiper-slide">
+                            <a href="{% url 'media.single_video' id=item.id %}">
+                                <img src="{{item.thumb_large}}" alt="personality"
+                                     class="img-fluid object-cover mb-3 rounded-3 personality-img">
+                            </a>
+                            <div class="text-center">
+                                <h6 class="mb-0">
+                                    <a href="{% url 'media.single_video' id=item.id %}"
+                                       class="font-size-14 text-decoration-none cast-title text-capitalize">{{item.title}}</a>
+                                </h6>
+                                <a href="{% url 'media.single_video' id=item.id %}"
+                                   class="font-size-12 fw-semibold text-decoration-none text-capitalize text-body">{{item.pub_date_formatted}}</a>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="swiper-button swiper-button-next d-none d-lg-block"></div>
+                    <div class="swiper-button swiper-button-prev d-none d-lg-block"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="related-movie-block">
+            <div class="d-flex align-items-center justify-content-between px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0">New</h4>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="6" data-tab="3"
+                     data-mobile="2"
+                     data-mobile-sm="2" data-autoplay="false" data-loop="false" data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        {% for item in new %}
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="{% url 'media.single_video' id=item.id %}"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{{item.thumb_large}}" alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <span tabindex="0" class="font-size-14 ">Adult</span>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="{% url 'media.single_video' id=item.id %}">{{item.title}}</a>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="{% url 'media.single_video' id=item.id %}" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="swiper-button swiper-button-next d-none d-lg-block"></div>
+                    <div class="swiper-button swiper-button-prev d-none d-lg-block"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Start -->
+        <div class="upcomimg-block">
+            <div class="d-flex align-items-center justify-content-between px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0">Upcoming</h4>
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="6" data-tab="3"
+                     data-mobile="2"
+                     data-mobile-sm="2" data-autoplay="false" data-loop="false" data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        {% for item in upcoming_movies %}
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="{% url 'media.single_video' id=item.id %}"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{{item.thumb_large}}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <span tabindex="0" class="font-size-14 ">Adult</span>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="{% url 'media.single_video' id=item.id %}">{{item.title}}</a>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="{% url 'media.single_video' id=item.id %}" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="swiper-button swiper-button-next"></div>
+                    <div class="swiper-button swiper-button-prev"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Upcoming End -->
+
+        <div class="section-padding-bottom">
+            <div class="rate-review-details">
+                <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+                    <h5 class="main-title text-capitalize m-0 fw-medium">Review</h5>
+                    <div class="d-flex align-items-center gap-3">
+                        <a id="openReviewButton" class="btn btn-link p-0 custom-fs-14 openReviewButton"
+                           data-bs-toggle="offcanvas"
+                           href="#offcanvasReview" role="button" aria-controls="offcanvasReview">
+                            Add Review </a>
+                        <a class="btn btn-link p-0 custom-fs-14" href="./view-more.html">View More</a>
+                    </div>
+                </div>
+                <div class="comments-section">
+                    <div class="review-card">
+                        <div class="review-detail rounded-3">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center justify-content-center gap-3">
+                                    <!-- Display user avatar -->
+                                    <img src=".//assets/images/user/user.jpg" class="img-fluid user-img rounded-circle"
+                                         alt="admin">
+
+                                    <div>
+                                        <!-- Display comment author's name and date -->
+                                        <h6 class="line-count-1 m-0">Marvin McKinney</h6>
+                                        <p class="mb-0 mt-1 small-date-font">2025-02-04 05:14:19</p>
+                                    </div>
+                                </div>
+
+                                <!-- Display star rating -->
+                                <div class="star-rating" data-rating="5">
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                </div>
+                            </div>
+
+                            <!-- Display comment content -->
+                            <p class="mb-0 mt-3 pt-3 border-top fw-medium">A spectacular visual treat with a heartfelt
+                                story at its
+                                core.</p>
+
+                            <!-- actions  -->
+                        </div>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-detail rounded-3">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center justify-content-center gap-3">
+                                    <!-- Display user avatar -->
+                                    <img src="./assets/images/user/user2.jpg" class="img-fluid user-img rounded-circle"
+                                         alt="admin">
+
+                                    <div>
+                                        <!-- Display comment author's name and date -->
+                                        <h6 class="line-count-1 m-0">freya</h6>
+                                        <p class="mb-0 mt-1 small-date-font">2025-01-17 06:51:59</p>
+                                    </div>
+                                </div>
+
+                                <!-- Display star rating -->
+                                <div class="star-rating" data-rating="5">
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                </div>
+                            </div>
+
+                            <!-- Display comment content -->
+                            <p class="mb-0 mt-3 pt-3 border-top fw-medium">Cinematography was stunning!</p>
+
+                            <!-- actions  -->
+                        </div>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-detail rounded-3">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="d-flex align-items-center justify-content-center gap-3">
+                                    <!-- Display user avatar -->
+                                    <img src="./assets/images/user/robert.jpg" class="img-fluid user-img rounded-circle"
+                                         alt="admin">
+
+                                    <div>
+                                        <!-- Display comment author's name and date -->
+                                        <h6 class="line-count-1 m-0">robert</h6>
+                                        <p class="mb-0 mt-1 small-date-font">2025-02-04 05:14:19</p>
+                                    </div>
+                                </div>
+
+                                <!-- Display star rating -->
+                                <div class="star-rating" data-rating="5">
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                    <i class="ph-fill ph-star text-warning" aria-hidden="true"></i>
+                                </div>
+                            </div>
+
+                            <!-- Display comment content -->
+                            <p class="mb-0 mt-3 pt-3 border-top fw-medium">Loved every second of it!</p>
+
+                            <!-- actions  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="offcanvas overflow-y-auto widget-shopping-cart-content offcanvas-end offcanvas-sidebar sidebar-container on-rtl end border-left-0"
+                 tabindex="-1" id="offcanvasReview" aria-modal="true" role="dialog">
+                <div class="offcanvas-header position-relative border-bottom">
+                    <h5 class="offcanvas-title fw-500" id="offcanvasReviewLabel">
+                        Add Review </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <form>
+                        <!-- Add Nonce for security -->
+                        <input type="hidden" id="st_ajax_nonce" name="st_ajax_nonce" value="a19cf1e628"><input
+                            type="hidden"
+                            name="_wp_http_referer" value="/product/wp/streamit/tvshows/vikings/"> <input id="cm_id"
+                                                                                                          type="hidden"
+                                                                                                          name="comment_id"
+                                                                                                          value="">
+
+                        <!-- Hidden fields for post type and post ID -->
+                        <input id="cm_post_type" type="hidden" name="post_type" value="tvshow">
+                        <input id="cm_post_id" type="hidden" name="post_id" value="1">
+
+                        <!-- User ID for logged-in users -->
+                        <input id="cm_user_id" type="hidden" name="user_id" value="12">
+
+                        <!-- Display logged-in user's name -->
+                        <div class="form-group">
+                            <input id="cm_name" name="cm_name" type="hidden" value="Marvin McKinney">
+                            <input id="cm_email" name="cm_email" type="hidden" value="marvin@demo.com">
+                            <p class="mt-0 text-heading">Logged in as: Marvin McKinney</p>
+                        </div>
+
+                        <!-- Rating section -->
+                        <div class="form-group mb-4">
+                            <label class="form-label mb-3">Your Rating</label>
+                            <div class="star-rating" id="starRating">
+                                <input type="radio" id="star5" name="rating" value="5">
+                                <label for="star5" title="5 stars"><i class="ph-fill ph-star"
+                                                                      aria-hidden="true"></i></label>
+                                <input type="radio" id="star4" name="rating" value="4">
+                                <label for="star4" title="4 stars"><i class="ph-fill ph-star"
+                                                                      aria-hidden="true"></i></label>
+                                <input type="radio" id="star3" name="rating" value="3">
+                                <label for="star3" title="3 stars"><i class="ph-fill ph-star"
+                                                                      aria-hidden="true"></i></label>
+                                <input type="radio" id="star2" name="rating" value="2">
+                                <label for="star2" title="2 stars"><i class="ph-fill ph-star"
+                                                                      aria-hidden="true"></i></label>
+                                <input type="radio" id="star1" name="rating" value="1">
+                                <label for="star1" title="1 star"><i class="ph-fill ph-star"
+                                                                     aria-hidden="true"></i></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label flex-grow-1" for="Description">
+                                Your Review
+                            </label>
+                            <textarea id="Description" class="form-control review-text-area" rows="8"
+                                      cols="45"></textarea>
+                        </div>
+
+                        <!-- Submit button -->
+                        <div class="iq-button">
+                            <a href="javascript:void()" class="btn btn-primary text-capitalize">
+                                <span class="button-text">Submit Review</span>
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

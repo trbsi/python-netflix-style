@@ -1,0 +1,103 @@
+{% load static %}
+<div class="container-fluid">
+    <div class="overflow-hidden">
+        <div class="favourite-person-block section-wraper">
+            <div class="d-flex align-items-center justify-content-between  px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">Favorites</h4>
+                {% comment %}
+                <a href="./all-personality" class="text-primary iq-view-all text-decoration-none">View All</a>
+                {% endcomment %}
+            </div>
+            <div class="position-relative swiper swiper-card" data-slide="11" data-laptop="11" data-tab="4"
+                 data-mobile="2"
+                 data-mobile-sm="2" data-autoplay="false" data-loop="true" data-navigation="true"
+                 data-pagination="true">
+                <ul class="p-0 swiper-wrapper m-0  list-inline personality-card">
+                    {% for item in favourite_personality %}
+                    <li class="swiper-slide">
+                        <a href="{% url 'media.single_video' id=item.id %}">
+                            <img src="{{item.thumb_large}}" alt="personality"
+                                 class="img-fluid object-cover mb-3 rounded-3 personality-img">
+                        </a>
+                        <div class="text-center">
+                            <h6 class="mb-0">
+                                <a href="{% url 'media.single_video' id=item.id %}"
+                                   class="font-size-14 text-decoration-none cast-title text-capitalize">{{item.title}}</a>
+                            </h6>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="d-none d-lg-block">
+                    <div class="swiper-button swiper-button-next"></div>
+                    <div class="swiper-button swiper-button-prev"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="popular-movies-block section-wraper">
+            <div class="d-flex align-items-center justify-content-between  px-1 mb-2 pb-1 mb-md-4 pb-md-0">
+                <h4 class="main-title text-capitalize mb-0 fw-medium">popular movies</h4>
+                {% comment %}
+                <a href="./view-all-movie" class="text-primary iq-view-all text-decoration-none flex-none">View All</a>
+                {% endcomment %}
+            </div>
+            <div class="card-style-slider">
+                <div class="position-relative swiper swiper-card" data-slide="6" data-laptop="6" data-tab="3"
+                     data-mobile="2" data-mobile-sm="2" data-autoplay="false" data-loop="true"
+                     data-navigation="true"
+                     data-pagination="true">
+                    <ul class="p-0 swiper-wrapper m-0  list-inline">
+                        {% for item in popular_movies %}
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="{% url 'media.single_video' id=item.id %}"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{{item.thumb_large}}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                        </a>
+                                    </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                <span tabindex="0" class="font-size-14 ">Adult </span>
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="{% url 'media.single_video' id=item.id %}">{{item.title}}</a>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="{% url 'media.single_video' id=item.id %}" class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Premium"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="d-none d-lg-block">
+                        <div class="swiper-button swiper-button-next"></div>
+                        <div class="swiper-button swiper-button-prev"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

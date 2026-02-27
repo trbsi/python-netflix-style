@@ -1,0 +1,15 @@
+{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}{{video.titel}}{% endblock %}
+
+{% block content %}
+    <div class="back-btn">
+        <a class="btn btn-link text-white text-decoration-none p-0" href="{% url 'media.single_video' id=video.id %}"> <i
+                class="ph ph-x"></i></a>
+    </div>
+
+    <div class="video-container">
+        {{video.embed_code}}
+    </div>
+{% endblock content %}
+

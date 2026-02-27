@@ -1,0 +1,266 @@
+{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}{{video.titel}}{% endblock %}
+
+{% block content %}
+<!-- Banner Start -->
+<div class="position-relative">
+    <div class="iq-main-slider site-video position-relative">
+        <video id="my-video" poster="{{video.thumb_large}}"
+               class="my-video video-js vjs-big-play-centered w-100" loop autoplay muted preload="auto" data-setup='{
+                  "techOrder": ["youtube"],
+                  "sources": [{
+                      "type": "video/youtube",
+                      "src": " https://www.youtube.com/watch?v=eq_aKPXuOTg"
+                  }],
+                  "youtube": {
+                      "modestbranding": 1,
+                      "rel": 0,
+                      "showinfo": 0,
+                      "autoplay": 1
+                  },
+                  "fullscreen": true
+              }'>
+        </video>
+    </div>
+
+    <div class="movie-detail-part position-relative">
+        <div class="trending-info pt-0 pb-0">
+            <div class="details-parts">
+                <!-- Movie Description Start-->
+                <ul class="p-0 mb-2 list-inline d-flex flex-wrap movie-tag">
+                    <li class="trending-list"><span>Adult</span></li>
+                </ul>
+                <div class="d-block d-lg-flex align-items-center">
+                    <h3 class="trending-text fw-bold texture-text text-uppercase my-0 fadeInLeft animated d-inline-block"
+                        data-animation-in="fadeInLeft" data-delay-in="0.6"
+                        style="opacity: 1; animation-delay: 0.6s">
+                        {{video.title}}
+                    </h3>
+                </div>
+                {% comment %}
+                <div class="movie-description mt-3 mb-4" id="readmore-wrapper">
+                    <p class="line-count-3 RightAnimate-two mb-0">Game of Heros is an action-packed fantasy epic
+                        where the fate of the
+                        world is decided in a battle of legendary warriors. When an ancient prophecy foretells an
+                        all-out war between the
+                        greatest heroes of all realms, champions from different eras and dimensions are summoned to
+                        fight for ultimate
+                        supremacy. Each warrior possesses unique abilities, weapons, and a past that drives them to
+                        victory—or doom.</p>
+                    <div class="iq-blog-meta-cat-tag iq-blogtag readmore-tags">
+                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewMoreDataModal"
+                           class="position-relative">Read More</a>
+                    </div>
+                </div>
+                {% endcomment %}
+
+                <ul class="list-inline mx-0 p-0 d-flex align-items-center flex-wrap gap-3 movie-metalist">
+                    <!-- Movie Views  -->
+                    <li>
+                        <div class="d-flex align-items-center gap-1">
+                            <i class="ph ph-eye"></i>
+                            <span class="">84 views</span>
+                        </div>
+                    </li>
+
+                    <!-- Movie Runtime  -->
+                    <li>
+                        <span class="d-flex align-items-center gap-1">
+                          <span class="d-flex align-items-center justify-content-center"><i
+                                  class="ph ph-clock"></i></span>
+                            {{video.duration_formatted}}
+                        </span>
+                    </li>
+
+                    <!-- Movie Releas data  -->
+                    <li>
+                    <span class="d-flex align-items-center gap-1">
+                      <span class="fw-medium">{{video.pub_date_formatted}}  </span>
+                    </span>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center flex-wrap gap-3 gap-md-4 my-5">
+                    <div class="iq-play-button iq-button">
+                        <a href="video_player.html"
+                           class="btn btn-primary w-100 rounded d-flex align-items-center justify-content-center gap-2 lh-1">
+                            <span><i class="ph-fill ph-play"></i></span>
+                            <span>Start Watching</span>
+                        </a>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal"
+                                data-bs-target="#likeModal"
+                                id="like-toggle">
+                          <span id="like-movies">
+                            <span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top"
+                                  data-bs-title="Like">
+                              <i class="ph ph-heart heart-icon"></i>
+                            </span>
+                          </span>
+                        </button>
+
+                        <button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal"
+                                data-bs-target="#shareModal">
+                          <span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top"
+                                data-bs-title="Share">
+                            <i class="ph ph-share-network"></i>
+                          </span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Movie Description End -->
+
+                <!-- Modals -->
+                <div class="modal fade view-more-data-modal" id="shareModal" tabindex="-1" aria-modal="true"
+                     role="dialog">
+                    <div class="modal-dialog modal-dialog-centered share-modal">
+                        <div class="modal-content">
+                            <div class="modal-header pb-0">
+                                <h5 class="modal-title" id="exampleModalLabelshare">Share</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="share-media-box">
+                                    <div class="media-box">
+                                        <a href="https://www.facebook.com/" target="_blank">
+                                            <span class="image-icon">
+                                                <i class="icon-facebook-icon"></i>
+                                            </span>
+                                            <span class="titles">Facebook</span>
+                                        </a>
+                                    </div>
+                                    <div class="media-box">
+                                        <a href="https://twitter.com/" target="_blank">
+                                            <span class="image-icon">
+                                                <i class="icon-twitter-icon"></i>
+                                            </span>
+                                            <span class="titles text-center">Twitter</span>
+                                        </a>
+                                    </div>
+                                    <div class="media-box">
+                                        <a href="https://www.linkedin.com" target="_blank">
+                                            <span class="image-icon">
+                                                <i class="icon-instagram-icon"></i>
+                                            </span>
+                                            <span class="titles">Instagram</span>
+                                        </a>
+                                    </div>
+                                    <div class="media-box">
+                                        <a href="https://api.whatsapp.com" target="_blank">
+                                            <span class="image-icon">
+                                                <i class="icon-whatsapp-icon"></i>
+                                            </span>
+                                            <span class="titles">Whatsapp</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="copy-link">
+                                    <h6 id="basic-addon1">Copy Link </h6>
+                                    <div class="input-group mb-0">
+                                        <input type="text" id="copyInput" class="form-control copy-post-url"
+                                               placeholder="Username"
+                                               value="https://templates.iqonic.design/streamit-dist/frontend/html/index.html"
+                                               aria-label="Username" readonly="">
+                                        <button class="input-group-text copy-url-btn" id="copyButton"><i
+                                                class="ph ph-copy-simple"
+                                                id="copyIcon"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modals End -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Banner End -->
+
+{% include "single_video/components/detail_recommendations.html" %}
+
+{% comment %}
+<div class="modal fade view-more-data-modal" id="viewMoreDataModal" tabindex="-1" aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header pb-0">
+                <h3 class="text-uppercase m-0 texture-text texture-text-modal fw-bold">ZOMBIE ISLAND</h3>
+            </div>
+            <div class="modal-body pt-1">
+                <ul class="list-inline d-flex align-items-center flex-wrap gap-3 mt-4">
+                    <li>
+                        <span class="fw-medium">2017</span>
+                    </li>
+
+                    <li>
+                        <span class="d-flex align-items-center gap-1">
+                            <span class="d-flex align-items-center justify-content-center"><i
+                                    class="ph ph-clock"></i></span>
+                            50mins </span>
+                    </li>
+
+                    <li>
+                        <span class="d-flex align-items-center gap-1">
+                            <i class="icon-eye-2"></i> 84 views
+                        </span>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-baseline flex-wrap gap-2 mt-md-1 mt-2">
+                    <h6 class="m-0">Category:</h6>
+                    <ul class="p-0 mb-0 list-inline d-flex flex-wrap movie-tag">
+                        <li class="trending-list"><a href="./view-all-movie.html">Adventure</a></li>
+                        <li class="trending-list"><a href="./view-all-movie.html">Animation</a>
+                        </li>
+                        <li class="trending-list"><a href="./view-all-movie.html">Crime</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="d-flex align-items-baseline flex-wrap gap-2 mt-3">
+                    <h6 class="m-0">Tags:</h6>
+                    <ul
+                            class="iq-blog-meta-cat-tag iq-blogtag mb-0 list-inline d-flex flex-wrap align-items-center gap-1 gap-md-3 mt-2 mt-md-3  tvshow-tags">
+                        <li>
+                            <a href=".//blog/blog-tag.html" class="position-relative">Action</a>
+                        </li>
+                        <li>
+                            <a href=".//blog/blog-tag.html" class="position-relative">Adventure</a>
+                        </li>
+                        <li>
+                            <a href=".//blog/blog-tag.html" class="position-relative">Astronomy</a>
+                        </li>
+                        <li>
+                            <a href=".//blog/blog-tag.html" class="position-relative">circus</a>
+                        </li>
+                        <li>
+                            <a href=".//blog/blog-tag.html" class="position-relative">Crime</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mt-4">
+                    <div class="d-flex align-items-center gap-1">
+                        <i class="icon-translate"></i>
+                        <ul class="list-inline m-0 d-inline-flex align-items-center gap-2">
+                            <li><small>English (New Zealand)</small></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="mt-4 mb-0">
+                    Game of Heros is an action-packed fantasy epic where the fate of the world is decided in a
+                    battle of legendary warriors. When an ancient prophecy foretells an all-out war between the
+                    greatest heroes of all realms, champions from different eras and dimensions are summoned to
+                    fight for ultimate supremacy. Each warrior possesses unique abilities, weapons, and a past that
+                    drives them to victory—or doom.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endcomment %}
+{% endblock content %}

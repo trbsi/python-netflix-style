@@ -42,3 +42,7 @@ class VideoItem(models.Model):
     @property
     def pub_date_formatted(self):
         return self.pub_date.strftime("%b %d, %Y")
+
+    @property
+    def thumbnail_large(self):
+        return self.thumb_large.replace('320:240', '640:360')

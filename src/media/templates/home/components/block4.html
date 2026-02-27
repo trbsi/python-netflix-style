@@ -1,0 +1,348 @@
+{% load static %}
+<div class="tab-slider otthome-tab-slider">
+    <div class="slider">
+        <div class="position-relative swiper swiper-card" data-slide="1" data-laptop="1" data-tab="1"
+             data-mobile="1"
+             data-mobile-sm="1" data-autoplay="false" data-loop="true" data-navigation="true" data-pagination="true"
+             data-effect="fade">
+            <ul class="p-0 swiper-wrapper m-0 list-inline">
+                {% for item in big_middle_area%}
+                <li class="swiper-slide tab-slider-banner p-0">
+                    <div class="tab-slider-banner-images" style="background-image: url({{item.thumb_large}});">
+                        <div class="block-images position-relative w-100">
+                            <div class="container-fluid">
+                                <div class="row align-items-center  h-100 my-4">
+                                    <div class="col-lg-5 col-xxl-5">
+                                        <div class="tab-left-details">
+                                            <div class="d-flex align-items-center gap-3 mb-4">
+                                                <a href="javascriptvoid(0);"><img
+                                                        src="{{item.thumb_large}}"
+                                                        class="img-fluid trending-label-img rounded-3"
+                                                        alt="img"></a>
+                                                <span class="text-gold fw-bold font-size-18">#1 in Series today</span>
+                                            </div>
+                                            <h1 class="mb-2 fw-500 text-capitalize texture-text">{{item.title}}</h1>
+                                            {% comment %}
+                                            <p class="my-3 line-count-3 RightAnimate-three"> Pirates of Day One is
+                                                an original, epic
+                                                series that reimagines the classic pirate genre by blending
+                                                adventure, fantasy, and
+                                                historical drama. Set in an alternative 17th-century world where
+                                                mythical creatures,
+                                                ancient magic, and powerful artifacts exist, the series follows a
+                                                ragtag crew of
+                                                pirates with diverse backgrounds and mysterious pasts. Each
+                                                character is drawn to
+                                                the high seas for different reasons—revenge, freedom, treasure, or
+                                                secrets. They
+                                                form an unlikely family as they face formidable foes and legendary
+                                                sea monsters,
+                                                uncovering secrets that could reshape the world.</p>
+                                            {% endcomment %}
+                                            <ul class="d-flex align-items-center list-inline gap-2 movie-tag p-0 mt-3 mb-40">
+                                                <li class="font-size-18 trending-list">{{item.pub_date_formatted}}</li>
+                                            </ul>
+                                            <a href="{% url 'media.single_video' id=item.id %}"
+                                               class="btn btn-primary text-capitalize position-relative rounded-3">
+                                                 <span class="d-flex align-items-center gap-2">
+                                                     <span class="button-text">play now</span>
+                                                     <i class="ph-fill ph-play fs-6"></i>
+                                                 </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-lg-2 col-xxl-3">
+                                    </div>
+                                    {% comment %}
+                                    <div class="col-md-6 col-lg-5 col-xxl-3 mt-5 mt-md-0 d-none d-lg-block">
+                                        <div class="tab-block">
+                                            <h4 class="tab-title text-capitalize mb-0">All Episode</h4>
+                                            <div class="tab-bottom-bordered border-0">
+                                                <ul class="nav nav-tabs nav-pills mb-3 overflow-x-scroll"
+                                                    role="tablist">
+                                                    <li class="nav-item" role="presentation">
+                                                        <button class="nav-link active" data-bs-toggle="pill"
+                                                                data-bs-target="#streamit-series-first-one"
+                                                                type="button" role="tab"
+                                                                aria-selected="false">Season 1
+                                                        </button>
+                                                    </li>
+                                                    <li class="nav-item" role="presentation">
+                                                        <button class="nav-link" data-bs-toggle="pill"
+                                                                data-bs-target="#streamit-series-first-two"
+                                                                type="button" role="tab"
+                                                                aria-selected="false">Season 2
+                                                        </button>
+                                                    </li>
+                                                    <li class="nav-item" role="presentation">
+                                                        <button class="nav-link" data-bs-toggle="pill"
+                                                                data-bs-target="#streamit-series-first-three"
+                                                                type="button" role="tab"
+                                                                aria-selected="false">Season 3
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="tab-content iq-tab-fade-up">
+                                                <div class="tab-pane fade show active"
+                                                     id="streamit-series-first-one"
+                                                     role="tabpanel" tabindex="0">
+                                                    <ul class="list-inline m-0 p-0">
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s1e4-island-of-secrets.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Island of Secrets</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>45m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s1e3-rivals-and-revelations.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Rivals and Revelations</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>40m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s1e2-hidden-allies.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Hidden Allies</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>30m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img src="{% static 'assets/images/media/episode/s1e1-setting-sail.webp' %}"
+                                                                         alt="image-icon" class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Setting Sail</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>45m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="tab-pane fade" id="streamit-series-first-two"
+                                                     role="tabpanel"
+                                                     tabindex="0">
+                                                    <ul class="list-inline m-0 p-0">
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s2e4-tides-of-betrayal.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Tides of Betrayal</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>45m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s2e3-uncharted-waters.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Uncharted Waters</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>50m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s2e2-betrayals-and-bonds.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Betrayals and Bonds</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>40m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img src="{% static 'assets/images/media/episode/s2e1-lost-legends.webp' %}"
+                                                                         alt="image-icon" class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Lost Legends</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>45m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="tab-pane fade" id="streamit-series-first-three"
+                                                     role="tabpanel"
+                                                     tabindex="0">
+                                                    <ul class="list-inline m-0 p-0">
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s3e4-legacy-of-the-sea.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    legacy of the Sea </a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>59m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s3e3-cursed-waters.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Cursed Waters</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>45m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s3e2-uncharted-horizons.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Uncharted Horizons</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>43m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="d-flex align-items-center gap-3">
+                                                            <div class="image-box flex-shrink-0">
+                                                                <a href="./tv-show-detail">
+                                                                    <img
+                                                                            src="{% static 'assets/images/media/episode/s3e1-betrayals-and-bonds.webp' %}"
+                                                                            alt="image-icon"
+                                                                            class="img-fluid rounded">
+                                                                </a>
+                                                            </div>
+                                                            <div class="image-details">
+                                                                <h6 class="mb-1 text-capitalize"><a
+                                                                        href="./tv-show-detail">
+                                                                    Betrayals and Bonding</a></h6>
+                                                                <div class="episode-time d-flex align-items-center gap-1 mt-2">
+                                                                    <i class="ph ph-clock font-size-14"></i>
+                                                                    <small>41m</small>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="joint-arrows  d-none d-lg-block">
+                <div class="swiper-button swiper-button-next"></div>
+                <div class="swiper-button swiper-button-prev"></div>
+            </div>
+            <div class="swiper-pagination d-block d-lg-none"></div>
+
+        </div>
+    </div>
+</div>
