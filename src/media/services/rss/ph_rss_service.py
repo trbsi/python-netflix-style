@@ -27,7 +27,7 @@ class PhRssService:
                 title=item.findtext("title"),
                 link=item.findtext("link"),
                 duration=item.findtext("duration"),
-                thumb=item.findtext("thumb"),
+                thumb_small=item.findtext("thumb"),
                 thumb_large=item.findtext("thumb_large"),
                 embed_code=item.findtext("embed"),
                 pub_date=dt,

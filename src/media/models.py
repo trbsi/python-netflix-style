@@ -1,4 +1,5 @@
 import hashlib
+import random
 
 from django.db import models
 
@@ -8,12 +9,14 @@ class VideoItem(models.Model):
     title = models.TextField()
     link = models.URLField()
     duration = models.PositiveIntegerField(help_text="Duration in seconds")
-    thumb = models.URLField()
-    thumb_large = models.URLField()
+    thumb_small = models.TextField()
+    thumb_large = models.TextField()
     embed_code = models.TextField(help_text="Raw iframe HTML")
     pub_date = models.DateTimeField()
     site = models.CharField(max_length=20)
     external_id = models.CharField(max_length=50)
+    tags = models.TextField()
+    categories = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -45,4 +48,8 @@ class VideoItem(models.Model):
 
     @property
     def thumbnail_large(self):
-        return self.thumb_large.replace('320:240', '640:360')
+        return random.choice(self.thumb_large.split(';'))
+
+    @property
+    def thumbnail_small(self):
+        return random.choice(self.thumb.split(';'))
