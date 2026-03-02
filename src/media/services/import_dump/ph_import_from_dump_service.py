@@ -1,12 +1,15 @@
 import os
 import re
+import shutil
 import zipfile
+from collections import deque
 
 import requests
 from django.utils import timezone
+from django.utils.text import slugify
 
 from automationapp import settings
-from src.media.models import VideoItem
+from src.media.models import VideoItem, VideoCategory
 
 
 class PhImportFromDumpService:
@@ -18,7 +21,7 @@ class PhImportFromDumpService:
         csv_file_path = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
         self._save_to_database(csv_file_path)
 
-    def import_from_dump(self):
+    def import_from_dump(self, import_all: bool = False):
         # 1. Download zip file
         print("Downloading ZIP...")
         response = requests.get(self.ZIP_URL, stream=True)
@@ -51,7 +54,21 @@ class PhImportFromDumpService:
             raise Exception("CSV file not found after extraction.")
 
         print("CSV found at:", csv_file_path)
+        # Create new file with last 100k rows
+        if not import_all:
+            with open(csv_file_path, "r", encoding="utf-8") as f:
+                header = f.readline()
+                last_lines = deque(f, maxlen=100_000)
+
+            output_file = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
+            with open(output_file, "w", encoding="utf-8") as f:
+                f.write(header)
+                f.writelines(last_lines)
+
+            csv_file_path = output_file
+
         self._save_to_database(csv_file_path)
+        shutil.rmtree(self.EXTRACT_DIR)
 
     def _save_to_database(self, csv_file_path: str):
         print("Reading CSV...")
@@ -62,6 +79,17 @@ class PhImportFromDumpService:
 
                 if (settings.APP_ENV != 'production' and index > 100):
                     break
+
+                categories = fields[5]
+                categories_array = categories.split(";")
+                for category in categories_array:
+                    if VideoCategory.objects.filter(slug=category).exists():
+                        continue
+
+                    VideoCategory.objects.create(
+                        slug=slugify(category),
+                        title=category,
+                    )
 
                 external_id = self._get_external_id(fields[0])
                 if VideoItem.objects.filter(external_id=external_id).exists():
@@ -76,7 +104,7 @@ class PhImportFromDumpService:
                     embed_code=fields[0],
                     pub_date=timezone.now(),
                     tags=fields[4],
-                    categories=fields[5],
+                    categories=categories,
                     site='pornhub',
                     external_id=external_id
                 )

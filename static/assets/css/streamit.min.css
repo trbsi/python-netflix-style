@@ -17369,11 +17369,19 @@ table.table-border tfoot tr td {
   padding-bottom: 0.5em;
 }
 
+.navbar-brand::first-letter {
+    font-size: 2rem;       /* bigger first letter */
+    line-height: 1;
+    float: left;
+}
+
 .navbar-brand {
   font-size: unset;
   padding: 0;
   font-family: "Water Fuel Rocket";
-  font-size: 1.5rem;
+  font-size: 1rem;
+  display: inline-block;
+  line-height: 2;
 }
 .navbar-brand img.logo {
   max-height: 5.375em;
@@ -19259,3 +19267,7 @@ footer .navbar-brand img.logo {
           box-shadow: none;
 }
 
+.video-container iframe {
+    width: 100%;
+    height: calc(100dvh - 90px);
+}

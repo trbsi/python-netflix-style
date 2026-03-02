@@ -1,39 +1,118 @@
 {% extends "core/layout.html" %}
 {% block content %}
+<div class="terms-of-use section-padding">
+    <div class="container">
+        <div class="max-w-4xl mx-auto px-6 py-12">
 
+            <h3 class="text-4xl font-bold mb-2 text-white">Privacy Policy</h3>
+            <p class="text-gray-400 mb-10">Last updated: 2026-03-03</p>
 
-<div class="max-w-4xl mx-auto p-8">
-    <h1 class="text-4xl font-bold mb-4 text-gray-900">Privacy Policy</h1>
+            <section class="space-y-6">
 
-    <p class="mb-4">{{TEMPLATE_APP_NAME}} (“we”, “our”, “us”) respects your privacy and is committed to protecting your
-        personal information.</p>
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">1. Overview</h5>
+                    <p class="text-gray-300">
+                        This website functions as an indexing interface that displays videos
+                        embedded from third-party platforms. We do not host video files
+                        and we collect minimal personal data.
+                    </p>
+                </div>
 
-    <h2 class="text-2xl font-semibold mt-6 mb-2">Information We Collect</h2>
-    <ul class="list-disc list-inside space-y-1 mb-4">
-        <li>TikTok account information (username, profile ID) via Login Kit.</li>
-        <li>Videos and media you upload for scheduling and publishing.</li>
-        <li>Basic usage data to improve service performance.</li>
-    </ul>
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">2. Information We Collect</h5>
+                    <p class="text-gray-300 mb-2">We may collect limited technical information, including:</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>IP address and basic connection data</li>
+                        <li>Browser type and device information</li>
+                        <li>Pages visited on our website</li>
+                        <li>Cookies necessary for site functionality</li>
+                    </ul>
+                </div>
 
-    <h2 class="text-2xl font-semibold mt-6 mb-2">How We Use Information</h2>
-    <ul class="list-disc list-inside space-y-1 mb-4">
-        <li>Authenticate your account and provide scheduling/publishing functionality.</li>
-        <li>Upload and publish videos on your behalf, according to your instructions.</li>
-        <li>Improve our platform and support your account.</li>
-    </ul>
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">3. Embedded Third-Party Players</h5>
+                    <p class="text-gray-300 mb-2">
+                        Videos displayed on this website are delivered through embedded players
+                        provided by third-party platforms.
+                    </p>
 
-    <h2 class="text-2xl font-semibold mt-6 mb-2">Third-Party Services</h2>
-    <p class="mb-4">We use TikTok’s official APIs to upload and publish content. We access only the minimum data
-        required to perform these actions.</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        <li>Video playback occurs on third-party servers</li>
+                        <li>Third-party platforms may collect data directly from you</li>
+                        <li>We do not control third-party tracking technologies</li>
+                        <li>Third-party privacy policies govern their data practices</li>
+                    </ul>
 
-    <h2 class="text-2xl font-semibold mt-6 mb-2">Data Security</h2>
-    <p class="mb-4">We implement reasonable measures to protect your data. However, no method of internet transmission
-        or storage is completely secure.</p>
+                    <p class="text-gray-300 mt-2">
+                        When you interact with an embedded video player, the third-party provider
+                        may collect information according to their own privacy policy.
+                    </p>
+                </div>
 
-    <h2 class="text-2xl font-semibold mt-6 mb-2">User Control</h2>
-    <p class="mb-4">You may disconnect your TikTok account at any time, revoking access. You may also request deletion
-        of your account data by contacting us.</p>
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">4. Cookies and Tracking</h5>
+                    <p class="text-gray-300">
+                        Our website may use essential cookies for functionality and performance.
+                        Embedded video providers may set their own cookies or tracking technologies
+                        when their player loads.
+                    </p>
+                </div>
 
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">5. Data Sharing</h5>
+                    <p class="text-gray-300">
+                        We do not sell, rent, or trade personal information. Limited technical data
+                        may be processed by hosting providers strictly for service operation.
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">6. Data Security</h5>
+                    <p class="text-gray-300">
+                        We implement reasonable safeguards to protect collected information.
+                        However, no internet-based service can guarantee absolute security.
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">7. Your Rights</h5>
+                    <p class="text-gray-300">
+                        Depending on your jurisdiction, you may have rights to request access,
+                        correction, or deletion of personal data. Contact us for assistance.
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">8. External Links</h5>
+                    <p class="text-gray-300">
+                        This website may contain links to external websites. We are not responsible
+                        for the privacy practices of third-party services.
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">9. Changes to This Policy</h5>
+                    <p class="text-gray-300">
+                        We may update this Privacy Policy at any time. Continued use of the website
+                        constitutes acceptance of the updated policy.
+                    </p>
+                </div>
+
+                <div>
+                    <h5 class="text-2xl font-semibold text-white mb-2">10. Contact Information</h5>
+                    <p class="text-gray-300">
+                        For privacy-related inquiries, contact:
+                        <span class="text-pink-400">{{TEMPLATE_CONTACT_EMAIL}}</span>
+                    </p>
+                </div>
+
+            </section>
+
+            <div class="mt-12 border-t border-gray-800 pt-6 text-sm text-gray-500">
+                © {% now "Y" %} Your Website Name. All rights reserved.
+            </div>
+
+        </div>
+    </div>
 </div>
-
 {% endblock content %}

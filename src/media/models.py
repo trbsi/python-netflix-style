@@ -4,6 +4,19 @@ import random
 from django.db import models
 
 
+class VideoCategory(models.Model):
+    id = models.AutoField(primary_key=True)
+    title = models.CharField(max_length=50)
+    slug = models.SlugField()
+
+    objects = models.Manager()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['slug']),
+        ]
+
+
 class VideoItem(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.TextField()
@@ -25,6 +38,12 @@ class VideoItem(models.Model):
         ]
 
     objects = models.Manager()
+
+    categories = models.ManyToManyField(
+        VideoCategory,
+        through="VideoCategoryPivot",
+        related_name="videos"
+    )
 
     @property
     def duration_formatted(self) -> str:
@@ -52,4 +71,24 @@ class VideoItem(models.Model):
 
     @property
     def thumbnail_small(self):
-        return random.choice(self.thumb.split(';'))
+        return random.choice(self.thumb_small.split(';'))
+
+
+class VideoCategoryPivot(models.Model):
+    video = models.ForeignKey(
+        VideoItem,
+        on_delete=models.CASCADE,
+        related_name="video_category_links"
+    )
+    category = models.ForeignKey(
+        VideoCategory,
+        on_delete=models.CASCADE,
+        related_name="video_category_links"
+    )
+
+    class Meta:
+        unique_together = ("video", "category")
+        indexes = [
+            models.Index(fields=["category", "video"]),
+            models.Index(fields=["video"]),
+        ]

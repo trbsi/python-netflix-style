@@ -83,7 +83,7 @@
 
                 <div class="d-flex align-items-center flex-wrap gap-3 gap-md-4 my-5">
                     <div class="iq-play-button iq-button">
-                        <a href="video_player.html"
+                        <a href="{% url 'media.play_video' id=video.id %}"
                            class="btn btn-primary w-100 rounded d-flex align-items-center justify-content-center gap-2 lh-1">
                             <span><i class="ph-fill ph-play"></i></span>
                             <span>Start Watching</span>

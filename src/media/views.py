@@ -8,7 +8,6 @@ from src.media.services.home.list_media_service import ListMediaService
 def media_home(request: HttpRequest) -> HttpResponse:
     service = ListMediaService()
     videos = service.home_video_list()
-    print((videos['top_10_movies']))
     return render(request, 'home/home.html', videos)
 
 

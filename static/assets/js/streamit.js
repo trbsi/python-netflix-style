@@ -470,4 +470,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+   // Toggle search box on mobile icon click
+    jQuery('#mobile-search-icon').on('click', function(e) {
+        e.preventDefault(); // prevent link navigation
+        var dropdownEl = document.getElementsByClassName('iq-search-bar')[0];
+        var bsDropdown = bootstrap.Dropdown.getOrCreateInstance(dropdownEl);
+        bsDropdown.toggle();
+    });
 })();
