@@ -6,19 +6,19 @@
                 <div class="banner-thumb-slider-nav">
                     <div class="swiper-container " data-swiper="slider-thumbs-inner-ott">
                         <div class="swiper-wrapper">
-                            {% for item in main_header %}
+                            {% for video in main_header %}
                                 <div class="swiper-slide swiper-bg">
                                     <div class="block-images position-relative ">
                                         <div class="img-box">
-                                            <img src="{{ item.thumbnail_large }}"
+                                            <img src="{{ video.thumbnail_large }}"
                                                  class="img-fluid"
                                                  alt="img"
                                                  loading="lazy">
                                             <div class="block-description">
-                                                <h6 class="iq-title fw-500 line-count-1">{{ item.title }}</h6>
+                                                <h6 class="iq-title fw-500 line-count-1">{{ video.title }}</h6>
                                                 <div class="d-flex align-items-center gap-1">
                                                     <i class="ph ph-clock"></i>
-                                                    <span class="fs-12">{{ item.duration_formatted }}</span>
+                                                    <span class="fs-12">{{ video.duration_formatted }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -38,17 +38,17 @@
             <div class="slider-images" data-swiper="slider-images-ott">
                 <div class="swiper-container" data-swiper="slider-images-inner-ott">
                     <div class="swiper-wrapper m-0">
-                        {% for item in main_header %}
+                        {% for video in main_header %}
                             <div class="swiper-slide banner-bg p-0">
                                 <div class="slider--image block-images"
-                                     style="background-image: url({{ item.thumbnail_large }});">
+                                     style="background-image: url({{ video.thumbnail_large }});">
                                     <div class="container-fluid position-relative">
                                         <div class="row align-items-center h-100 slider-content-full-height">
                                             <div class="col-lg-5 col-md-12">
                                                 <div class="slider-content">
                                                     <h2
                                                             class="texture-text big-font letter-spacing-1 line-count-1 RightAnimate-two mb-1 mb-md-3">
-                                                        {{ item.title }} </h2>
+                                                        {{ video.title }} </h2>
                                                     <div class="d-flex flex-wrap align-items-center gap-3 py-2 RightAnimate-three">
                                                         <div class="d-flex align-items-center gap-3">
                                                             <ul class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left gap-1">
@@ -65,7 +65,7 @@
                                                         </div>
                                                         <div class="d-flex align-items-center gap-1">
                                                             <i class="ph ph-clock"></i>
-                                                            <span class="font-size-16 fw-500">{{ item.duration_formatted }}</span>
+                                                            <span class="font-size-16 fw-500">{{ video.duration_formatted }}</span>
                                                         </div>
                                                     </div>
                                                     <p class="line-count-3 my-3 RightAnimate-two">Game of Heros is an
@@ -81,7 +81,7 @@
                                                         weapons, and a past that drives them to victory—or doom.</p>
 
                                                     <div class="RightAnimate-four mt-4 pt-2">
-                                                        <a href="{% url 'media.single_video' id=item.id %}"
+                                                        <a href="{% url 'media.single_video' id=video.id %}"
                                                            class="btn btn-primary text-capitalize position-relative rounded-3">
                                                        <span class="d-flex align-items-center gap-2">
                                                            <span class="button-text">play now</span>

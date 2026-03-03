@@ -1,0 +1,121 @@
+{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="section-padding view-all-movies">
+    <div class="container-fluid">
+        <div class="card-style-grid">
+            <div class="row gy-4 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 data-listing">
+                {% for video in videos %}
+                <div class="col">
+                    <div class="iq-card card-hover">
+                        <div class="block-images position-relative w-100">
+                            <div class="img-box w-100">
+                                <a href="{% url 'media.single_video' id=video.id %}"
+                                   class="position-relative top-0 bottom-0 start-0 end-0">
+                                    <img src="{{video.thumbnail_small}}" alt="movie-card"
+                                         class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                </a>
+                            </div>
+                            <div class="card-description with-transition">
+                                <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                    <li class="fw-semi-bold">
+                                        {% for category in video.categories_array %}
+                                        <a href="{% url 'media.categories_search' slug=category.slug %}" tabindex="0"
+                                           class="font-size-14 ">{{category.title}} </a> |
+                                        {% endfor %}
+                                    </li>
+
+                                </ul>
+                                <div class="cart-content">
+                                    <div class="content-left">
+                                        <h5 class="iq-title text-capitalize">
+                                            <a href="{% url 'media.single_video' id=video.id %}">{{video.title}}</a>
+                                        </h5>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="ph ph-clock font-size-12"></i>
+                                                <small class="font-size-12">{{video.duration_formatted}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                    <div class="iq-play-button iq-button">
+                                        <a href="{% url 'media.single_video' id=video.id %}"
+                                           class="btn btn-primary w-100">Play Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="col hidden-tags" style="display: none;">
+                    <div class="iq-card card-hover">
+                        <div class="block-images position-relative w-100">
+                            <div class="img-box w-100">
+                                <a href="./" class="position-relative top-0 bottom-0 start-0 end-0">
+                                    <img src="./assets/images/media/batter-caill-portrait.webp" alt="movie-card"
+                                         class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                </a>
+                            </div>
+                            <div class="card-description with-transition">
+                                <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                    <li class="fw-semi-bold">
+                                        <a href="./view-all-movie.html" tabindex="0" class="font-size-14 ">
+                                            Action </a>
+                                    </li>
+                                </ul>
+                                <div class="cart-content">
+                                    <div class="content-left">
+                                        <h5 class="iq-title text-capitalize">
+                                            <a href="./">Better Call
+                                                Saul</a>
+                                        </h5>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <div class="d-flex align-items-center gap-1">
+                                                <i class="ph ph-clock font-size-12"></i>
+                                                <small class="font-size-12">2:30</small>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="ph ph-translate"></i>
+                                                <small class="font-size-12">English (UK)</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                    <a href="./watchlist-detail.html"
+                                       class="d-flex align-items-center justify-content-center flex-shrink-0 border-0 add-to-wishlist-btn btn btn-secondary"
+                                       data-bs-toggle="tooltip" data-bs-placement="top"
+                                       data-bs-custom-class="custom-tooltip"
+                                       data-bs-title="Add to Watchlist">
+                                        <i class="ph ph-plus font-size-18"></i>
+                                    </a>
+                                    <div class="iq-play-button iq-button">
+                                        <a href="./" class="btn btn-primary w-100">Play Now
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- Static Load More -->
+            <div class="text-center mt-4">
+                <button type="button" class="btn btn-primary position-relative load-more-btn">
+                    <span class="button-text">Load More</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

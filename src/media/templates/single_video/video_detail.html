@@ -29,7 +29,13 @@
             <div class="details-parts">
                 <!-- Movie Description Start-->
                 <ul class="p-0 mb-2 list-inline d-flex flex-wrap movie-tag">
-                    <li class="trending-list"><span>Adult</span></li>
+                    <li class="trending-list">
+                        {% for category in video.categories_array %}
+                        <a href="{% url 'media.categories_search' slug=category.slug %}"
+                           tabindex="0"
+                           class="font-size-14 ">{{category.title}}</a> |
+                        {% endfor %}
+                    </li>
                 </ul>
                 <div class="d-block d-lg-flex align-items-center">
                     <h3 class="trending-text fw-bold texture-text text-uppercase my-0 fadeInLeft animated d-inline-block"

@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from automationapp import settings
-from src.media.models import VideoItem, VideoCategory
+from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 
 
 class PhImportFromDumpService:
@@ -76,26 +76,13 @@ class PhImportFromDumpService:
             for index, line in enumerate(f):
                 line = line.strip()
                 fields = line.split("|")
-
-                if (settings.APP_ENV != 'production' and index > 100):
-                    break
-
                 categories = fields[5]
-                categories_array = categories.split(";")
-                for category in categories_array:
-                    if VideoCategory.objects.filter(slug=category).exists():
-                        continue
-
-                    VideoCategory.objects.create(
-                        slug=slugify(category),
-                        title=category,
-                    )
 
                 external_id = self._get_external_id(fields[0])
                 if VideoItem.objects.filter(external_id=external_id).exists():
                     continue
 
-                VideoItem.objects.create(
+                video: VideoItem = VideoItem.objects.create(
                     title=fields[3],
                     link='',
                     duration=fields[7],
@@ -108,6 +95,22 @@ class PhImportFromDumpService:
                     site='pornhub',
                     external_id=external_id
                 )
+
+                categories_array = categories.split(";")
+                for category_label in categories_array:
+                    slug = slugify(category_label)
+                    category = VideoCategory.objects.filter(slug=slug).first()
+                    if not category:
+                        category = VideoCategory.objects.create(
+                            slug=slug,
+                            title=category_label,
+                            image='',
+                        )
+
+                    VideoCategoryPivot.objects.create(
+                        video=video,
+                        category=category,
+                    )
 
     def _get_external_id(self, embed_code: str) -> str:
         match = re.search(r'/embed/([a-zA-Z0-9]+)', embed_code)

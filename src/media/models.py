@@ -2,12 +2,14 @@ import hashlib
 import random
 
 from django.db import models
+from django.utils.text import slugify
 
 
 class VideoCategory(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50)
     slug = models.SlugField()
+    image = models.CharField(max_length=20)
 
     objects = models.Manager()
 
@@ -32,18 +34,18 @@ class VideoItem(models.Model):
     categories = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    categories_relation = models.ManyToManyField(
+        VideoCategory,
+        through="VideoCategoryPivot",
+        related_name="videos"
+    )
+
     class Meta:
         indexes = [
             models.Index(fields=['external_id']),
         ]
 
     objects = models.Manager()
-
-    categories = models.ManyToManyField(
-        VideoCategory,
-        through="VideoCategoryPivot",
-        related_name="videos"
-    )
 
     @property
     def duration_formatted(self) -> str:
@@ -64,6 +66,20 @@ class VideoItem(models.Model):
     @property
     def pub_date_formatted(self):
         return self.pub_date.strftime("%b %d, %Y")
+
+    @property
+    def categories_formatted(self):
+        array = self.categories.split(";")
+        return ' | '.join(array)
+
+    @property
+    def categories_array(self):
+        array = self.categories.split(";")
+        result = []
+        for category in array:
+            result.append({'title': category, 'slug': slugify(category)})
+
+        return result
 
     @property
     def thumbnail_large(self):

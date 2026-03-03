@@ -7,20 +7,20 @@
                 <div class="slider-thumbs" data-swiper="slider-thumbs">
                     <div class="swiper-container " data-swiper="slider-thumbs-inner">
                         <div class="swiper-wrapper top-ten-slider-nav">
-                            {% for item in slider_videos %}
+                            {% for video in slider_videos %}
                                 <div class="swiper-slide swiper-bg">
                                     <div class="block-images position-relative ">
                                         <div class="img-box slider--image">
-                                            <img src="{{ item.thumbnail_large }}"
+                                            <img src="{{ video.thumbnail_large }}"
                                                  class="w-100 rounded-3" alt="img"
                                                  loading="lazy">
                                         </div>
                                         <div class="block-description">
-                                            <h6 class="iq-title">{{ item.title }}</h6>
+                                            <h6 class="iq-title">{{ video.title }}</h6>
                                             <div class="movie-time d-flex align-items-center my-2">
                                                 <div class="d-flex align-items-center gap-1 font-size-12">
                                                     <i class="ph ph-clock "></i>
-                                                    <span class="text-body">{{ item.duration_formatted }}</span>
+                                                    <span class="text-body">{{ video.duration_formatted }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -35,10 +35,10 @@
             <div class="slider-images" data-swiper="slider-images">
                 <div class="swiper-container " data-swiper="slider-images-inner">
                     <div class="swiper-wrapper ">
-                        {% for item in slider_videos %}
+                        {% for video in slider_videos %}
                             <div class="swiper-slide">
                                 <div class="slider--image block-images"><img
-                                        src="{{ item.thumbnail_large }}"
+                                        src="{{ video.thumbnail_large }}"
                                         loading="lazy" alt="img"/></div>
                                 <div class="description">
                                     <div class="block-description">
@@ -64,7 +64,7 @@
                                     </ul>
                                     {% endcomment %}
                                         <h2 class="iq-title m-0 line-count-2"><a
-                                                href="{% url 'media.single_video' id=item.id %}">{{ item.title }}</a>
+                                                href="{% url 'media.single_video' id=video.id %}">{{ video.title }}</a>
                                         </h2>
                                         <div
                                                 class="d-flex align-items-center gap-3 py-2 justify-content-center justify-content-lg-start flex-wrap">
@@ -82,7 +82,7 @@
                                             </div>
                                             <div class="d-flex align-items-center gap-1">
                                                 <i class="ph ph-clock font-size-14"></i>
-                                                <span class="text-body">{{ item.duration_formatted }}</span>
+                                                <span class="text-body">{{ video.duration_formatted }}</span>
                                             </div>
                                         </div>
                                         {% comment %}
@@ -94,7 +94,7 @@
                                         rebuilding
                                         civilization—or ensuring its final extinction.</p>
                                     {% endcomment %}
-                                        <a href="{% url 'media.single_video' id=item.id %}"
+                                        <a href="{% url 'media.single_video' id=video.id %}"
                                            class="btn btn-primary text-capitalize position-relative rounded-3">
                                <span class="d-flex align-items-center gap-2">
                                    <span class="button-text">play now</span>

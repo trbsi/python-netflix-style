@@ -6,10 +6,10 @@
              data-mobile-sm="1" data-autoplay="false" data-loop="true" data-navigation="true" data-pagination="true"
              data-effect="fade">
             <ul class="p-0 swiper-wrapper m-0 list-inline">
-                {% for item in big_middle_area %}
+                {% for video in big_middle_area %}
                     <li class="swiper-slide tab-slider-banner p-0">
                         <div class="tab-slider-banner-images"
-                             style="background-image: url({{ item.thumbnail_large }});">
+                             style="background-image: url({{ video.thumbnail_large }});">
                             <div class="block-images position-relative w-100">
                                 <div class="container-fluid">
                                     <div class="row align-items-center  h-100 my-4">
@@ -17,12 +17,12 @@
                                             <div class="tab-left-details">
                                                 <div class="d-flex align-items-center gap-3 mb-4">
                                                     <a href="javascriptvoid(0);"><img
-                                                            src="{{ item.thumbnail_large }}"
+                                                            src="{{ video.thumbnail_large }}"
                                                             class="img-fluid trending-label-img rounded-3"
                                                             alt="img"></a>
                                                     <span class="text-gold fw-bold font-size-18">#1 in Series today</span>
                                                 </div>
-                                                <h1 class="mb-2 fw-500 text-capitalize texture-text">{{ item.title }}</h1>
+                                                <h1 class="mb-2 fw-500 text-capitalize texture-text">{{ video.title }}</h1>
                                                 {% comment %}
                                             <p class="my-3 line-count-3 RightAnimate-three"> Pirates of Day One is
                                                 an original, epic
@@ -41,9 +41,9 @@
                                                 uncovering secrets that could reshape the world.</p>
                                             {% endcomment %}
                                                 <ul class="d-flex align-items-center list-inline gap-2 movie-tag p-0 mt-3 mb-40">
-                                                    <li class="font-size-18 trending-list">{{ item.pub_date_formatted }}</li>
+                                                    <li class="font-size-18 trending-list">{{ video.pub_date_formatted }}</li>
                                                 </ul>
-                                                <a href="{% url 'media.single_video' id=item.id %}"
+                                                <a href="{% url 'media.single_video' id=video.id %}"
                                                    class="btn btn-primary text-capitalize position-relative rounded-3">
                                                  <span class="d-flex align-items-center gap-2">
                                                      <span class="button-text">play now</span>
