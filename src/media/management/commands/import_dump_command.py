@@ -1,3 +1,7 @@
+import time
+
+import bugsnag
+
 from automationapp import settings
 from src.core.management.commands.base_command import BaseCommand
 from src.media.services.import_dump.ph_import_from_dump_service import PhImportFromDumpService
@@ -12,7 +16,10 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
+        start = time.time()
+
         self.info('Importing dump from PH')
+
         ph_dump_service = PhImportFromDumpService()
         if settings.env == 'production':
             self.info('Importing dump from production')
@@ -20,3 +27,8 @@ class Command(BaseCommand):
         else:
             self.info('Importing dump from staging')
             ph_dump_service.import_from_dump_locally()
+
+        end = time.time()
+        message = (f"ImportDumpCommand. Execution time: {end - start:.2f} seconds")
+        print(message)
+        bugsnag.notify(Exception(message))

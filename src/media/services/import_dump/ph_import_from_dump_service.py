@@ -3,8 +3,10 @@ import re
 import shutil
 import zipfile
 from collections import deque
+from datetime import datetime
 
 import requests
+from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -62,7 +64,7 @@ class PhImportFromDumpService:
         if not import_all:
             with open(csv_file_path, "r", encoding="utf-8") as f:
                 header = f.readline()
-                last_lines = deque(f, maxlen=100_000)
+                last_lines = deque(f, maxlen=50_000)
 
             output_file = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
             with open(output_file, "w", encoding="utf-8") as f:
@@ -76,8 +78,13 @@ class PhImportFromDumpService:
 
     def _save_to_database(self, csv_file_path: str):
         print("Reading CSV...")
-        batch = 10_000
-        items=[]
+        videos_batch = 10_000
+        categories_batch = 1000
+        videos_array = []
+        categories_array = []
+        saved_videos = []
+        pivots_to_create = []
+
         with open(csv_file_path, "r", encoding="utf-8", errors="ignore") as f:
             for index, line in enumerate(f):
                 line = line.strip()
@@ -88,7 +95,8 @@ class PhImportFromDumpService:
                 if VideoItem.objects.filter(external_id=external_id).exists():
                     continue
 
-                video  = VideoItem(
+                # VIDEOS
+                video = VideoItem(
                     title=fields[3],
                     link='',
                     duration=fields[7],
@@ -99,50 +107,86 @@ class PhImportFromDumpService:
                     tags=fields[4],
                     categories=categories,
                     site='pornhub',
-                    external_id=external_id
+                    external_id=external_id,
+                    external_created_at=self._extract_created_at(fields[2])
                 )
-                items.append(video)
+                videos_array.append(video)
 
-                if len(items) >= batch:
-                    self._insert_batch(items)
-                    items.clear()
+                if len(videos_array) >= videos_batch:
+                    saved_videos = self._insert_batch_videos(videos_array)
+                    self.search_index_service.index_batch(saved_videos)
+                    videos_array.clear()
 
-                if items:
-                    self._insert_batch(items)
-
-                video: VideoItem = VideoItem.objects.create(
-                    title=fields[3],
-                    link='',
-                    duration=fields[7],
-                    thumb_small=fields[2],
-                    thumb_large=fields[12],
-                    embed_code=fields[0],
-                    pub_date=timezone.now(),
-                    tags=fields[4],
-                    categories=categories,
-                    site='pornhub',
-                    external_id=external_id
-                )
-
-                self.search_index_service.index_single(video)
-
-                categories_array = categories.split(";")
-                for category_label in categories_array:
+                # CATEGORIES
+                categories_split = categories.split(";")
+                for category_label in categories_split:
                     slug = slugify(category_label)
-                    category = VideoCategory.objects.filter(slug=slug).first()
-                    if not category:
-                        category = VideoCategory.objects.create(
-                            slug=slug,
-                            title=category_label,
-                            image=f'images/categories/{slug}.jpg',
-                        )
-
-                    VideoCategoryPivot.objects.create(
-                        video=video,
-                        category=category,
+                    video_category = VideoCategory(
+                        slug=slug,
+                        title=category_label,
+                        image=f'images/categories/{slug}.jpg',
                     )
+                    categories_array.append(video_category)
 
-    def _insert_batch(self):
+                    if len(categories_array) >= categories_batch:
+                        self._insert_batch_categories(categories_array)
+                        categories_array.clear()
+
+                # VIDEO CATEGORY
+                if saved_videos:
+                    pivots_to_create = self._insert_video_category_pivot(pivots_to_create, saved_videos)
+                    if len(pivots_to_create) >= videos_batch:
+                        self._insert_batch_video_category(pivots_to_create)
+                        pivots_to_create.clear()
+
+            if videos_array:
+                saved_videos = self._insert_batch_videos(videos_array)
+                self.search_index_service.index_batch(saved_videos)
+
+                pivots_to_create = self._insert_video_category_pivot(pivots_to_create, saved_videos)
+                self._insert_batch_video_category(pivots_to_create)
+
+                pivots_to_create.clear()
+                videos_array.clear()
+
+            if categories_array:
+                self._insert_batch_categories(categories_array)
+                categories_array.clear()
+
+            if pivots_to_create:
+                self._insert_batch_video_category(pivots_to_create)
+                pivots_to_create.clear()
+
+    def _insert_video_category_pivot(self, pivots_to_create: list, saved_videos: QuerySet[VideoItem]) -> list:
+        categories_queryset = VideoCategory.objects.all()
+        categories_map = {category.slug: category for category in categories_queryset}
+
+        for saved_video in saved_videos:
+            tmp_categories_array = saved_video.categories.split(";")
+            for tmp_category_label in tmp_categories_array:
+                slug = slugify(tmp_category_label)
+                tmp_category = categories_map.get(slug)
+                if tmp_category is None:
+                    continue
+
+                pivot = VideoCategoryPivot(
+                    video_id=saved_video.id,
+                    category_id=tmp_category.id
+                )
+
+                pivots_to_create.append(pivot)
+
+        return pivots_to_create
+
+    def _insert_batch_video_category(self, items: list[VideoCategoryPivot]) -> QuerySet[VideoCategoryPivot]:
+        return VideoCategoryPivot.objects.bulk_create(items, ignore_conflicts=True, batch_size=100)
+
+    def _insert_batch_categories(self, items: list[VideoCategory]) -> QuerySet[VideoCategory]:
+        return VideoCategory.objects.bulk_create(items, ignore_conflicts=True, batch_size=100)
+
+    def _insert_batch_videos(self, items: list[VideoItem]) -> QuerySet[VideoItem]:
+        return VideoItem.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
+
     def _get_external_id(self, embed_code: str) -> str:
         match = re.search(r'/embed/([a-zA-Z0-9]+)', embed_code)
         if match:
@@ -150,3 +194,10 @@ class PhImportFromDumpService:
             return video_id
 
         return ''
+
+    def _extract_created_at(self, urls: str) -> datetime:
+        url = urls.split(';')[0]
+        match = re.search(r'/videos/(\d{6})/', url)
+
+        yyyymm = match.group(1)
+        return datetime.strptime(yyyymm, "%Y%m")

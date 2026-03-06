@@ -1,4 +1,5 @@
 from django.db import connections
+from django.db.models import QuerySet
 
 from src.media.models import VideoItem
 
@@ -8,7 +9,7 @@ class ManticoreService:
         with connections['manticore'].cursor() as cursor:
             cursor.execute(f"""
                INSERT INTO videos_index
-               (id, title, thumbnail, duration)
+               (id, title, thumbnail, duration, categories)
                VALUES %s, %s, %s, %s
             """, [video.id, video.title, video.thumb_large, video.duration])
 
@@ -19,7 +20,8 @@ class ManticoreService:
                    id BIGINT,
                    title TEXT,
                    thumbnail STRING,
-                   duration INT
+                   duration INT,
+                   categories TEXT
                )
                """)
 
@@ -33,25 +35,25 @@ class ManticoreService:
             items.append(item)
 
             if len(items) >= batch:
-                self.insert_batch(items)
+                self.index_batch(items)
                 items.clear()
 
             if items:
-                self.insert_batch(items)
+                self.index_batch(items)
 
-    def insert_batch(self, rows: list[VideoItem]):
+    def index_batch(self, rows: list[VideoItem] | QuerySet[VideoItem]):
         with connections['manticore'].cursor() as cursor:
             values = ",".join(
                 cursor.mogrify(
-                    "(%s,%s,%s,%s)",
-                    (v.id, v.title, v.thumb_large, v.duration)
+                    "(%s,%s,%s,%s,%s)",
+                    (v.id, v.title, v.thumb_large, v.duration, ', '.join(v.category_slugs()))
                 ).decode()
                 for v in rows
             )
 
             sql = f"""
                    INSERT INTO videos_index
-                   (id, title, thumbnail, duration)
+                   (id, title, thumbnail, duration, categories)
                    VALUES {values}
                """
 

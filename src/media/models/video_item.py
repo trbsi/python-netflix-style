@@ -4,19 +4,7 @@ import random
 from django.db import models
 from django.utils.text import slugify
 
-
-class VideoCategory(models.Model):
-    id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=50)
-    slug = models.SlugField()
-    image = models.CharField(max_length=20)
-
-    objects = models.Manager()
-
-    class Meta:
-        indexes = [
-            models.Index(fields=['slug']),
-        ]
+from src.media.models import VideoCategory
 
 
 class VideoItem(models.Model):
@@ -30,6 +18,7 @@ class VideoItem(models.Model):
     pub_date = models.DateTimeField()
     site = models.CharField(max_length=20)
     external_id = models.CharField(max_length=50)
+    external_created_at = models.DateField()
     tags = models.TextField()
     categories = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -42,10 +31,18 @@ class VideoItem(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['external_id']),
+            models.UniqueConstraint(fields=['external_id'], name='unique_external_id'),
         ]
 
     objects = models.Manager()
+
+    def category_slugs(self):
+        array = self.categories.split(";")
+        result = []
+        for category in array:
+            result.append(slugify(category))
+
+        return result
 
     @property
     def duration_formatted(self) -> str:
@@ -88,23 +85,3 @@ class VideoItem(models.Model):
     @property
     def thumbnail_small(self):
         return random.choice(self.thumb_small.split(';'))
-
-
-class VideoCategoryPivot(models.Model):
-    video = models.ForeignKey(
-        VideoItem,
-        on_delete=models.CASCADE,
-        related_name="video_category_links"
-    )
-    category = models.ForeignKey(
-        VideoCategory,
-        on_delete=models.CASCADE,
-        related_name="video_category_links"
-    )
-
-    class Meta:
-        unique_together = ("video", "category")
-        indexes = [
-            models.Index(fields=["category", "video"]),
-            models.Index(fields=["video"]),
-        ]
