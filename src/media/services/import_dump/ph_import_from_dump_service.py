@@ -30,7 +30,13 @@ class PhImportFromDumpService:
     def import_from_dump(self, import_all: bool = False):
         # 1. Download zip file
         print("Downloading ZIP...")
-        response = requests.get(self.ZIP_URL, stream=True)
+        proxies = {}
+        if settings.HTTP_PROXY:
+            proxies = {
+                "http": settings.HTTP_PROXY,
+                "https": settings.HTTP_PROXY,
+            }
+        response = requests.get(self.ZIP_URL, stream=True, proxies=proxies)
         response.raise_for_status()
 
         with open(self.ZIP_FILE, "wb") as f:
@@ -74,7 +80,7 @@ class PhImportFromDumpService:
             csv_file_path = output_file
 
         self._save_to_database(csv_file_path)
-        
+
         shutil.rmtree(self.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
@@ -181,7 +187,7 @@ class PhImportFromDumpService:
         return pivots_to_create
 
     def _insert_batch_video_category(self, items: list[VideoCategoryPivot]) -> QuerySet[VideoCategoryPivot]:
-        return VideoCategoryPivot.objects.bulk_create(items, ignore_conflicts=True, batch_size=100)
+        return VideoCategoryPivot.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
 
     def _insert_batch_categories(self, items: list[VideoCategory]) -> QuerySet[VideoCategory]:
         return VideoCategory.objects.bulk_create(items, ignore_conflicts=True, batch_size=100)

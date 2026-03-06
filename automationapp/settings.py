@@ -241,3 +241,6 @@ bugsnag.configure(
 # Slack
 SLACK_BOT_TOKEN = env('SLACK_BOT_TOKEN')
 SLACK_CHANNEL_ID = env('SLACK_CHANNEL_ID')
+
+# Proxy
+HTTP_PROXY = env('HTTP_PROXY')
