@@ -127,7 +127,7 @@ services:
         max-file: "3"
 
   manticore:
-    image: manticoresearch/manticore:15
+    image: manticoresearch/manticore:17.5.1
     container_name: automationapp-manticore
     ports:
       - "9312:9312"   # searchd TCP port

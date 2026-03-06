@@ -74,7 +74,9 @@ class PhImportFromDumpService:
             csv_file_path = output_file
 
         self._save_to_database(csv_file_path)
+        
         shutil.rmtree(self.EXTRACT_DIR)
+        os.remove(self.ZIP_FILE)
 
     def _save_to_database(self, csv_file_path: str):
         print("Reading CSV...")

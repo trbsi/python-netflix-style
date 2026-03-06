@@ -17,7 +17,9 @@ class VideoCategoryPivot(models.Model):
     )
 
     class Meta:
-        unique_together = ("video", "category")
         indexes = [
             models.Index(fields=["category", "video"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(fields=['video', 'category'], name='unique_video_category'),
         ]

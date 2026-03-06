@@ -17,8 +17,8 @@ class VideoItem(models.Model):
     embed_code = models.TextField(help_text="Raw iframe HTML")
     pub_date = models.DateTimeField()
     site = models.CharField(max_length=20)
-    external_id = models.CharField(max_length=50)
-    external_created_at = models.DateField()
+    external_id = models.CharField(max_length=50, unique=True)
+    external_created_at = models.DateField(null=True, blank=True)
     tags = models.TextField()
     categories = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,11 +28,6 @@ class VideoItem(models.Model):
         through="VideoCategoryPivot",
         related_name="videos"
     )
-
-    class Meta:
-        indexes = [
-            models.UniqueConstraint(fields=['external_id'], name='unique_external_id'),
-        ]
 
     objects = models.Manager()
 
