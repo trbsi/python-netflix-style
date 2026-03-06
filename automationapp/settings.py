@@ -109,6 +109,17 @@ if env('DB_ENGINE') == 'mysql':
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             }
+        },
+        'manticore': {
+            'ENGINE': 'django.db.backends.mysql',  # Use MySQL backend
+            'NAME': '',  # Not required for Manticore
+            'USER': '',  # No user by default
+            'PASSWORD': '',  # No password by default
+            'HOST': 'localhost',  # Docker host or service name
+            'PORT': '9306',  # Manticore MySQL protocol port
+            'OPTIONS': {
+                'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            }
         }
     }
 else:

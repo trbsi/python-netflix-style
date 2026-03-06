@@ -10,12 +10,16 @@ from django.utils.text import slugify
 
 from automationapp import settings
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
+from src.media.services.manticore.manticore_service import ManticoreService
 
 
 class PhImportFromDumpService:
     ZIP_URL = "https://www.pornhub.com/files/pornhub.com-db.zip"
     ZIP_FILE = "pornhub_db.zip"
     EXTRACT_DIR = "pornhub_data"
+
+    def __init__(self):
+        self.search_index_service = ManticoreService()
 
     def import_from_dump_locally(self):
         csv_file_path = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
@@ -72,6 +76,8 @@ class PhImportFromDumpService:
 
     def _save_to_database(self, csv_file_path: str):
         print("Reading CSV...")
+        batch = 10_000
+        items=[]
         with open(csv_file_path, "r", encoding="utf-8", errors="ignore") as f:
             for index, line in enumerate(f):
                 line = line.strip()
@@ -81,6 +87,28 @@ class PhImportFromDumpService:
                 external_id = self._get_external_id(fields[0])
                 if VideoItem.objects.filter(external_id=external_id).exists():
                     continue
+
+                video  = VideoItem(
+                    title=fields[3],
+                    link='',
+                    duration=fields[7],
+                    thumb_small=fields[2],
+                    thumb_large=fields[12],
+                    embed_code=fields[0],
+                    pub_date=timezone.now(),
+                    tags=fields[4],
+                    categories=categories,
+                    site='pornhub',
+                    external_id=external_id
+                )
+                items.append(video)
+
+                if len(items) >= batch:
+                    self._insert_batch(items)
+                    items.clear()
+
+                if items:
+                    self._insert_batch(items)
 
                 video: VideoItem = VideoItem.objects.create(
                     title=fields[3],
@@ -95,6 +123,8 @@ class PhImportFromDumpService:
                     site='pornhub',
                     external_id=external_id
                 )
+
+                self.search_index_service.index_single(video)
 
                 categories_array = categories.split(";")
                 for category_label in categories_array:
@@ -112,6 +142,7 @@ class PhImportFromDumpService:
                         category=category,
                     )
 
+    def _insert_batch(self):
     def _get_external_id(self, embed_code: str) -> str:
         match = re.search(r'/embed/([a-zA-Z0-9]+)', embed_code)
         if match:
