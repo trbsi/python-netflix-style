@@ -104,7 +104,7 @@ class PhImportFromDumpService:
                         category = VideoCategory.objects.create(
                             slug=slug,
                             title=category_label,
-                            image='',
+                            image=f'images/categories/{slug}.jpg',
                         )
 
                     VideoCategoryPivot.objects.create(
