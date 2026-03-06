@@ -63,7 +63,7 @@ services:
     networks: [ automationapp-net ]
 
   mysql:
-    image: mysql:8
+    image: mysql:9
     container_name: automationapp-mysql
     restart: unless-stopped
     environment:
@@ -76,7 +76,7 @@ services:
     networks: [ automationapp-net ]
 
   redis:
-    image: redis:7-alpine
+    image: redis:8
     container_name: automationapp-redis
     restart: unless-stopped
     volumes:
@@ -126,11 +126,23 @@ services:
         max-size: "10m"
         max-file: "3"
 
+  manticore:
+    image: manticoresearch/manticore:15
+    container_name: automationapp-manticore
+    ports:
+      - "9312:9312"   # searchd TCP port
+      - "9308:9308"   # HTTP API (SphinxQL) port
+    volumes:
+      - automationapp_manticore_data:/var/lib/manticore
+    command: [ "searchd", "--nodetach", "--config", "/etc/manticoresearch/manticore.conf" ]
+
+
 networks:
   automationapp-net:
     driver: bridge
 
 volumes:
+  automationapp_manticore_data:
   automationapp_mysql_data:
   automationapp_redis_data:
   automationapp_media:

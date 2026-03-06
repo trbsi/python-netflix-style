@@ -115,7 +115,7 @@ if env('DB_ENGINE') == 'mysql':
             'NAME': '',  # Not required for Manticore
             'USER': '',  # No user by default
             'PASSWORD': '',  # No password by default
-            'HOST': 'localhost',  # Docker host or service name
+            'HOST': 'manticore',  # Docker host or service name
             'PORT': '9306',  # Manticore MySQL protocol port
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
