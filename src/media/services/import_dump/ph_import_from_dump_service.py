@@ -25,7 +25,7 @@ class PhImportFromDumpService:
 
     def import_from_dump_locally(self):
         csv_file_path = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
-        self.search_index_service.create_table()
+        self.search_index_service.create_index()
         self._save_to_database(csv_file_path)
 
     def import_from_dump(self, import_all: bool = False):
@@ -80,7 +80,7 @@ class PhImportFromDumpService:
 
             csv_file_path = output_file
 
-        self.search_index_service.create_table()
+        self.search_index_service.create_index()
         self._save_to_database(csv_file_path)
 
         shutil.rmtree(self.EXTRACT_DIR)

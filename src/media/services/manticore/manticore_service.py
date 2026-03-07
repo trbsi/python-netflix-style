@@ -29,7 +29,7 @@ class ManticoreService:
 
         self.indexApi.replace(doc)
 
-    def reindex(self):
+    def reindex_all(self):
         self.utils.sql("TRUNCATE TABLE videos_index")
 
         items = []
@@ -41,15 +41,16 @@ class ManticoreService:
                 self.index_batch(items)
                 items.clear()
 
-            if items:
-                self.index_batch(items)
+        if items:
+            self.index_batch(items)
+            items.clear()
 
-    def create_table(self):
+    def create_index(self):
         self.utils.sql("""
             CREATE TABLE IF NOT EXISTS videos_index (
             id BIGINT, 
             title TEXT, 
-            thumbnail TEXT, 
+            thumbnail STRING, 
             duration INT, 
             categories TEXT
         )
@@ -67,7 +68,7 @@ class ManticoreService:
                         "title": v.title,
                         "thumbnail": v.thumb_large,
                         "duration": v.duration,
-                        "categories": v.categories,
+                        "categories": ', '.join(v.category_slugs()),
                     }
                 }
             }

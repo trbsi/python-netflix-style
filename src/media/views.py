@@ -38,8 +38,7 @@ def categories(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
-    context = {'slug': slug}
-    return render(request, 'categories/search.html', context)
+    return render(request, 'categories/search.html', {'slug': slug})
 
 
 @require_GET
