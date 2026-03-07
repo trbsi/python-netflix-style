@@ -188,7 +188,12 @@ class PhImportFromDumpService:
         VideoCategoryPivot.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
 
     def _insert_batch_categories(self, items: list[VideoCategory]) -> None:
-        VideoCategory.objects.bulk_create(items, ignore_conflicts=True, batch_size=100)
+        VideoCategory.objects.bulk_create(
+            items,
+            update_conflicts=True,
+            batch_size=100,
+            update_fields=['title', 'image']
+        )
 
     def _insert_batch_videos(self, items: list[VideoItem]) -> QuerySet[VideoItem]:
         VideoItem.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
