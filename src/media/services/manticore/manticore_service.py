@@ -1,33 +1,36 @@
-from django.db import connections
+import json
+
+import manticoresearch
 from django.db.models import QuerySet
 
 from src.media.models import VideoItem
 
 
 class ManticoreService:
-    def index_single(self, video: VideoItem):
-        with connections['manticore'].cursor() as cursor:
-            cursor.execute(f"""
-               INSERT INTO videos_index
-               (id, title, thumbnail, duration, categories)
-               VALUES %s, %s, %s, %s
-            """, [video.id, video.title, video.thumb_large, video.duration])
+    def __init__(self):
+        # https://manual.manticoresearch.com/Quick_start_guide?client=Python
+        config = manticoresearch.Configuration(host="http://manticore:9308")  # docker container name
+        client = manticoresearch.ApiClient(config)
+        self.utils = manticoresearch.UtilsApi(client)
+        self.indexApi = manticoresearch.IndexApi(client)
 
-    def create_index(self):
-        with connections['manticore'].cursor() as cursor:
-            cursor.execute("""
-               CREATE TABLE IF NOT EXISTS videos_index (
-                   id BIGINT,
-                   title TEXT,
-                   thumbnail STRING,
-                   duration INT,
-                   categories TEXT
-               )
-               """)
+    # https://manual.manticoresearch.com/Data_creation_and_modification/Updating_documents/REPLACE?client=Python
+    def index_single(self, video: VideoItem):
+        doc = {
+            "table": "videos_index",
+            "id": video.id,
+            "doc": {
+                "title": video.title,
+                "thumbnail": video.thumb_large,
+                "duration": video.duration,
+                "categories": video.categories,
+            }
+        }
+
+        self.indexApi.replace(doc)
 
     def reindex(self):
-        with connections['manticore'].cursor() as cursor:
-            cursor.execute("TRUNCATE TABLE videos_index")
+        self.utils.sql("TRUNCATE TABLE videos_index")
 
         items = []
         batch = 10_000
@@ -41,20 +44,33 @@ class ManticoreService:
             if items:
                 self.index_batch(items)
 
+    def create_table(self):
+        self.utils.sql("""
+            CREATE TABLE IF NOT EXISTS videos_index (
+            id BIGINT, 
+            title TEXT, 
+            thumbnail TEXT, 
+            duration INT, 
+            categories TEXT
+        )
+        """)
+
+    # https://manual.manticoresearch.com/Data_creation_and_modification/Adding_documents_to_a_table/Adding_documents_to_a_real-time_table?client=Python#Bulk-adding-documents
+    # https://manual.manticoresearch.com/Data_creation_and_modification/Updating_documents/REPLACE?client=Python
     def index_batch(self, rows: list[VideoItem] | QuerySet[VideoItem]):
-        with connections['manticore'].cursor() as cursor:
-            values = ",".join(
-                cursor.mogrify(
-                    "(%s,%s,%s,%s,%s)",
-                    (v.id, v.title, v.thumb_large, v.duration, ', '.join(v.category_slugs()))
-                ).decode()
-                for v in rows
-            )
-
-            sql = f"""
-                   INSERT INTO videos_index
-                   (id, title, thumbnail, duration, categories)
-                   VALUES {values}
-               """
-
-            cursor.execute(sql)
+        docs = [
+            {
+                "replace": {
+                    "table": "videos_index",
+                    "id": v.id,
+                    "doc": {
+                        "title": v.title,
+                        "thumbnail": v.thumb_large,
+                        "duration": v.duration,
+                        "categories": v.categories,
+                    }
+                }
+            }
+            for v in rows
+        ]
+        self.indexApi.bulk('\n'.join(map(json.dumps, docs)))

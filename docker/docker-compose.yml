@@ -40,7 +40,7 @@ services:
       - ../:/app
       - automationapp_media:/app/media
     working_dir: /app
-    depends_on: [ mysql, redis ]
+    depends_on: [ mysql, redis, manticore ]
     command: poetry run gunicorn automationapp.wsgi:application -b 0.0.0.0:8000 --workers 5 --reload
     expose: [ "8000" ]
     networks: [ automationapp-net ]
@@ -129,11 +129,13 @@ services:
   manticore:
     image: manticoresearch/manticore:17.5.1
     container_name: automationapp-manticore
+    networks: [ automationapp-net ]
     ports:
+      - "9306:9306"   # MySQL protocol
       - "9312:9312"   # searchd TCP port
-      - "9308:9308"   # HTTP API (SphinxQL) port
     volumes:
       - automationapp_manticore_data:/var/lib/manticore
+      - ./manticore/manticore.conf:/etc/manticoresearch/manticore.conf
     command: [ "searchd", "--nodetach", "--config", "/etc/manticoresearch/manticore.conf" ]
 
 

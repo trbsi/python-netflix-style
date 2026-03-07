@@ -25,6 +25,7 @@ class PhImportFromDumpService:
 
     def import_from_dump_locally(self):
         csv_file_path = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
+        self.search_index_service.create_table()
         self._save_to_database(csv_file_path)
 
     def import_from_dump(self, import_all: bool = False):
@@ -79,6 +80,7 @@ class PhImportFromDumpService:
 
             csv_file_path = output_file
 
+        self.search_index_service.create_table()
         self._save_to_database(csv_file_path)
 
         shutil.rmtree(self.EXTRACT_DIR)
@@ -99,10 +101,6 @@ class PhImportFromDumpService:
                 fields = line.split("|")
                 categories = fields[5]
 
-                external_id = self._get_external_id(fields[0])
-                if VideoItem.objects.filter(external_id=external_id).exists():
-                    continue
-
                 # VIDEOS
                 video = VideoItem(
                     title=fields[3],
@@ -115,7 +113,7 @@ class PhImportFromDumpService:
                     tags=fields[4],
                     categories=categories,
                     site='pornhub',
-                    external_id=external_id,
+                    external_id=self._get_external_id(fields[0]),
                     external_created_at=self._extract_created_at(fields[2])
                 )
                 videos_array.append(video)
@@ -186,14 +184,16 @@ class PhImportFromDumpService:
 
         return pivots_to_create
 
-    def _insert_batch_video_category(self, items: list[VideoCategoryPivot]) -> QuerySet[VideoCategoryPivot]:
-        return VideoCategoryPivot.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
+    def _insert_batch_video_category(self, items: list[VideoCategoryPivot]) -> None:
+        VideoCategoryPivot.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
 
-    def _insert_batch_categories(self, items: list[VideoCategory]) -> QuerySet[VideoCategory]:
-        return VideoCategory.objects.bulk_create(items, ignore_conflicts=True, batch_size=100)
+    def _insert_batch_categories(self, items: list[VideoCategory]) -> None:
+        VideoCategory.objects.bulk_create(items, ignore_conflicts=True, batch_size=100)
 
     def _insert_batch_videos(self, items: list[VideoItem]) -> QuerySet[VideoItem]:
-        return VideoItem.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
+        VideoItem.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
+        external_ids = [v.external_id for v in items]
+        return VideoItem.objects.filter(external_id__in=external_ids)
 
     def _get_external_id(self, embed_code: str) -> str:
         match = re.search(r'/embed/([a-zA-Z0-9]+)', embed_code)
