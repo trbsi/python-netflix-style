@@ -196,7 +196,13 @@ class PhImportFromDumpService:
         )
 
     def _insert_batch_videos(self, items: list[VideoItem]) -> QuerySet[VideoItem]:
-        VideoItem.objects.bulk_create(items, ignore_conflicts=True, batch_size=1000)
+        VideoItem.objects.bulk_create(
+            items,
+            update_conflicts=True,
+            batch_size=1000,
+            update_fields=['title', 'duration', 'thumb_small', 'thumb_large', 'embed_code', 'pub_date', 'site',
+                           'external_id', 'external_created_at', 'tags', 'categories']
+        )
         external_ids = [v.external_id for v in items]
         return VideoItem.objects.filter(external_id__in=external_ids)
 
