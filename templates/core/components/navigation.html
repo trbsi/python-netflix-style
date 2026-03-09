@@ -69,7 +69,7 @@
                             <li class="nav-item">
                                 <a class="nav-link"  href="/">
                                     <div class="d-flex justify-content-between">
-                                        <span class="item-name">Home</span>
+                                        <span class="item-name">Movies</span>
                                     </div>
                                 </a>
                             </li>
@@ -184,6 +184,7 @@
                 <div class="css_prefix-header-right d-flex align-items-center gap-2">
                     <ul
                             class="list-inline d-flex align-items-center gap-3 gap-md-4 mb-0 ps-0 justify-content-md-end justify-content-between">
+                        {% comment %}
                         <li class="nav-item dropdown iq-responsive-menu d-xl-block" id="mobile-search-box">
                             <div class="search-box">
                                 <a href="#" class="nav-link p-0 text-white" id="search-drop"
@@ -208,6 +209,7 @@
                                 </ul>
                             </div>
                         </li>
+                        {% endcomment %}
                         {% comment %}
                         {% include "core/components/user_menu.html" %}
                         {% endcomment %}
