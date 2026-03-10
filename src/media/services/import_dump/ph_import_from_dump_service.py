@@ -1,3 +1,4 @@
+import csv
 import os
 import re
 import shutil
@@ -9,6 +10,7 @@ import requests
 from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.text import slugify
+from tqdm import tqdm
 
 from automationapp import settings
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
@@ -70,24 +72,26 @@ class PhImportFromDumpService:
         # Create new file with last 100k rows
         if not import_all:
             with open(csv_file_path, "r", encoding="utf-8") as f:
-                header = f.readline()
                 last_lines = deque(f, maxlen=50_000)
 
             output_file = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
             with open(output_file, "w", encoding="utf-8") as f:
-                f.write(header)
                 f.writelines(last_lines)
 
             csv_file_path = output_file
 
+        with open(csv_file_path, "r", newline="") as f:
+            reader = csv.reader(f)
+            row_count = sum(1 for row in reader)
+
         self.search_index_service.create_index()
-        self._save_to_database(csv_file_path)
+        self._save_to_database(csv_file_path, row_count)
 
         shutil.rmtree(self.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
-    def _save_to_database(self, csv_file_path: str):
-        print("Reading CSV...")
+    def _save_to_database(self, csv_file_path: str, total_rows: int):
+        print("Reading CSV for database insert...")
         videos_batch = 10_000
         categories_batch = 1000
         videos_array = []
@@ -96,6 +100,8 @@ class PhImportFromDumpService:
         pivots_to_create = []
 
         with open(csv_file_path, "r", encoding="utf-8", errors="ignore") as f:
+            pbar = tqdm(total=total_rows)
+
             for index, line in enumerate(f):
                 line = line.strip()
                 fields = line.split("|")
@@ -144,6 +150,10 @@ class PhImportFromDumpService:
                     if len(pivots_to_create) >= videos_batch:
                         self._insert_batch_video_category(pivots_to_create)
                         pivots_to_create.clear()
+
+                pbar.update(1)
+
+            pbar.close()
 
             if videos_array:
                 saved_videos = self._insert_batch_videos(videos_array)
