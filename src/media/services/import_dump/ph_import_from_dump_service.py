@@ -153,6 +153,7 @@ class PhImportFromDumpService:
                     if len(pivots_to_create) >= videos_batch:
                         self._insert_batch_video_category(pivots_to_create)
                         pivots_to_create.clear()
+                        saved_videos = None
 
                 pbar.update(1)
 
