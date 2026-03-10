@@ -21,7 +21,7 @@ class Command(BaseCommand):
         self.info('Importing dump from PH')
 
         ph_dump_service = PhImportFromDumpService()
-        if settings.env == 'production':
+        if settings.APP_ENV == 'production':
             self.info('Importing dump from production')
             ph_dump_service.import_from_dump(options["import_all"])
         else:

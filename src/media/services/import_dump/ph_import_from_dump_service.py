@@ -80,17 +80,13 @@ class PhImportFromDumpService:
 
             csv_file_path = output_file
 
-        with open(csv_file_path, "r", newline="") as f:
-            reader = csv.reader(f)
-            row_count = sum(1 for row in reader)
-
         self.search_index_service.create_index()
-        self._save_to_database(csv_file_path, row_count)
+        self._save_to_database(csv_file_path)
 
         shutil.rmtree(self.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
-    def _save_to_database(self, csv_file_path: str, total_rows: int):
+    def _save_to_database(self, csv_file_path: str):
         print("Reading CSV for database insert...")
         videos_batch = 10_000
         categories_batch = 1000
@@ -100,6 +96,8 @@ class PhImportFromDumpService:
         pivots_to_create = []
 
         with open(csv_file_path, "r", encoding="utf-8", errors="ignore") as f:
+            reader = csv.reader(f)
+            total_rows = sum(1 for row in reader)
             pbar = tqdm(total=total_rows)
 
             for index, line in enumerate(f):
