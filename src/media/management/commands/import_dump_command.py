@@ -21,12 +21,16 @@ class Command(BaseCommand):
         self.info('Importing dump from PH')
 
         ph_dump_service = PhImportFromDumpService()
-        if settings.APP_ENV == 'production':
-            self.info('Importing dump from production')
-            ph_dump_service.import_from_dump(options["import_all"])
-        else:
-            self.info('Importing dump from staging')
-            ph_dump_service.import_from_dump_locally()
+        try:
+            if settings.APP_ENV == 'production':
+                self.info('Importing dump from production')
+                ph_dump_service.import_from_dump(options["import_all"])
+            else:
+                self.info('Importing dump from staging')
+                ph_dump_service.import_from_dump_locally()
+        except Exception as e:
+            self.error('Failed to import dump: {}'.format(e))
+            bugsnag.notify(e)
 
         end = time.time()
         message = (f"ImportDumpCommand. Execution time: {end - start:.2f} seconds")
