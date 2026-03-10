@@ -24,13 +24,17 @@ class PhImportFromDumpService:
 
     def __init__(self):
         self.search_index_service = ManticoreService()
+        self.total_imported = 0
 
-    def import_from_dump_locally(self):
+    def import_from_dump_locally(self) -> int:
         csv_file_path = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
+
         self.search_index_service.create_index()
         self._save_to_database(csv_file_path)
 
-    def import_from_dump(self, import_all: bool = False):
+        return self.total_imported
+
+    def import_from_dump(self, import_all: bool = False) -> int:
         # 1. Download zip file
         if self._should_download_zip():
             print("Downloading ZIP...")
@@ -88,6 +92,8 @@ class PhImportFromDumpService:
 
         shutil.rmtree(self.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
+
+        return self.total_imported
 
     def _save_to_database(self, csv_file_path: str):
         print("Reading CSV for database insert...")
@@ -168,6 +174,7 @@ class PhImportFromDumpService:
 
                 pivots_to_create.clear()
                 videos_array.clear()
+                saved_videos = None
 
             if categories_array:
                 self._insert_batch_categories(categories_array)
@@ -218,7 +225,11 @@ class PhImportFromDumpService:
                            'external_id', 'external_created_at', 'tags', 'categories']
         )
         external_ids = [v.external_id for v in items]
-        return VideoItem.objects.filter(external_id__in=external_ids)
+        items = VideoItem.objects.filter(external_id__in=external_ids)
+
+        self.total_imported += items.count()
+
+        return items
 
     def _get_external_id(self, embed_code: str) -> str:
         match = re.search(r'/embed/([a-zA-Z0-9]+)', embed_code)
