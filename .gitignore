@@ -19,8 +19,9 @@ docker/nginx/certs
 docker/nginx/html
 static/lora_models/*
 *Zone.Identifier
-pornhub_data/
-pornhub_db.zip
+/pornhub_data/
+/pornhub_db.zip
+/assets/
 
 # Backup files #
 *.bak
