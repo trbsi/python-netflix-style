@@ -33,6 +33,8 @@ class Command(BaseCommand):
             bugsnag.notify(e)
 
         end = time.time()
-        message = (f"ImportDumpCommand. Execution time: {end - start:.2f} seconds")
+
+        minutes = (end - start) / 60
+        message = (f"ImportDumpCommand. Execution time: {minutes:.2f} minutes")
         print(message)
         bugsnag.notify(Exception(message))
