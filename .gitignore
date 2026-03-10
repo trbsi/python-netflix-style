@@ -20,6 +20,7 @@ docker/nginx/html
 static/lora_models/*
 *Zone.Identifier
 pornhub_data/
+pornhub_db.zip
 
 # Backup files #
 *.bak

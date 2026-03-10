@@ -98,6 +98,7 @@ class PhImportFromDumpService:
         with open(csv_file_path, "r", encoding="utf-8", errors="ignore") as f:
             reader = csv.reader(f)
             total_rows = sum(1 for row in reader)
+            print("Total rows:", total_rows)
             pbar = tqdm(total=total_rows)
 
             for index, line in enumerate(f):
