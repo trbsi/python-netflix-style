@@ -32,21 +32,24 @@ class PhImportFromDumpService:
 
     def import_from_dump(self, import_all: bool = False):
         # 1. Download zip file
-        print("Downloading ZIP...")
-        proxies = {}
-        if settings.HTTP_PROXY:
-            proxies = {
-                "http": settings.HTTP_PROXY,
-                "https": settings.HTTP_PROXY,
-            }
-        response = requests.get(self.ZIP_URL, stream=True, proxies=proxies)
-        response.raise_for_status()
+        if self._should_download_zip():
+            print("Downloading ZIP...")
+            proxies = {}
+            if settings.HTTP_PROXY:
+                proxies = {
+                    "http": settings.HTTP_PROXY,
+                    "https": settings.HTTP_PROXY,
+                }
+            response = requests.get(self.ZIP_URL, stream=True, proxies=proxies)
+            response.raise_for_status()
 
-        with open(self.ZIP_FILE, "wb") as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                f.write(chunk)
+            with open(self.ZIP_FILE, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
+                    f.write(chunk)
 
-        print("Download complete.")
+            print("Download complete.")
+        else:
+            print('ZIP file exists for today')
 
         # 2. Extract zip locally
         print("Extracting ZIP...")
@@ -68,7 +71,6 @@ class PhImportFromDumpService:
         if not csv_file_path:
             raise Exception("CSV file not found after extraction.")
 
-        print("CSV found at:", csv_file_path)
         # Create new file with last 100k rows
         if not import_all:
             with open(csv_file_path, "r", encoding="utf-8") as f:
@@ -80,6 +82,7 @@ class PhImportFromDumpService:
 
             csv_file_path = output_file
 
+        print("CSV found at:", csv_file_path)
         self.search_index_service.create_index()
         self._save_to_database(csv_file_path)
 
@@ -230,3 +233,16 @@ class PhImportFromDumpService:
 
         yyyymm = match.group(1)
         return datetime.strptime(yyyymm, "%Y%m")
+
+    def _should_download_zip(self):
+        if not os.path.exists(self.ZIP_FILE):
+            return True
+
+        creation_time = os.path.getctime(self.ZIP_FILE)
+        creation_date = datetime.fromtimestamp(creation_time).date()
+        today = datetime.today().date()
+
+        if creation_date == today:
+            return False
+
+        return True
