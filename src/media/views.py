@@ -5,6 +5,7 @@ from django.views.decorators.http import require_GET
 from src.media.models import VideoItem, VideoCategory
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
 from src.media.services.home.list_media_service import ListMediaService
+from src.media.services.search.search_fulltext_service import SearchFullTextService
 
 
 @require_GET
@@ -45,9 +46,27 @@ def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
 def categories_search_api(request: HttpRequest) -> HttpResponse:
     get = request.GET
     service = SearchByCategoryService()
-    videos, has_next = service.search_videos(get.get('slug'), int(get.get('page')))
+    videos, has_next = service.search_videos(get.get('query'), int(get.get('page')))
 
     return JsonResponse({
         "videos": videos,
         "has_next": has_next
+    })
+
+
+@require_GET
+def search_videos(request: HttpRequest) -> HttpResponse:
+    query = request.GET.get('query')
+    return render(request, 'search/search.html', {'query': query})
+
+
+@require_GET
+def search_videos_api(request: HttpRequest) -> HttpResponse:
+    query = request.GET.get('query')
+    service = SearchFullTextService()
+    result = service.search_media(query)
+
+    return JsonResponse({
+        "videos": result.to_array(),
+        "has_next": False
     })

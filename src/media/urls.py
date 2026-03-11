@@ -8,4 +8,6 @@ urlpatterns = [
     path('api/categories/search', views.categories_search_api, name='media.api.categories_search'),
     path('<int:id>', views.single_video, name='media.single_video'),
     path('play/<int:id>', views.play_video, name='media.play_video'),
+    path('search', views.search_videos, name='media.search'),
+    path('api/search', views.search_videos_api, name='media.api.search'),
 ]

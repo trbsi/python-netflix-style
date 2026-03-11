@@ -184,7 +184,6 @@
                 <div class="css_prefix-header-right d-flex align-items-center gap-2">
                     <ul
                             class="list-inline d-flex align-items-center gap-3 gap-md-4 mb-0 ps-0 justify-content-md-end justify-content-between">
-                        {% comment %}
                         <li class="nav-item dropdown iq-responsive-menu d-xl-block" id="mobile-search-box">
                             <div class="search-box">
                                 <a href="#" class="nav-link p-0 text-white" id="search-drop"
@@ -199,17 +198,18 @@
                                     style="width: 20rem;" id="search-box">
                                     <li class="p-0">
                                         <div class="form-group input-group mb-0">
-                                            <input type="text" class="form-control border-1 border-white"
-                                                   placeholder="Search...">
-                                            <button type="submit" class="search-submit">
-                                                <i class="ph ph-magnifying-glass"></i>
-                                            </button>
+                                            <form method="GET" action="{% url 'media.search' %}">
+                                                <input type="text" name="query" class="form-control border-1 border-white"
+                                                       placeholder="Search...">
+                                                <button type="submit" class="search-submit">
+                                                    <i class="ph ph-magnifying-glass"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </li>
                                 </ul>
                             </div>
                         </li>
-                        {% endcomment %}
                         {% comment %}
                         {% include "core/components/user_menu.html" %}
                         {% endcomment %}

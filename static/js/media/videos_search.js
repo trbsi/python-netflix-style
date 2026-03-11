@@ -5,7 +5,7 @@ function loadVideos(){
     loading = true;
     $(".load-more-btn .button-text").text("Loading...");
 
-    $.get(`/media/api/categories/search?slug=${slug}&page=${page}`, function(data){
+    $.get(`${api_url}?query=${query}&page=${page}`, function(data) {
 
         data.videos.forEach(function(video){
 
