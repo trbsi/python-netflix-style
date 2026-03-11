@@ -2,6 +2,7 @@ import json
 
 import manticoresearch
 from django.db.models import QuerySet
+from manticoresearch import SearchResponse
 
 from src.media.models import VideoItem
 from src.media.value_objects.search.search_item import SearchItem
@@ -96,17 +97,17 @@ class ManticoreService:
             "track_scores": True,
             "limit": 50
         }
-        result = self.searchApi.search(query)
-        hits = result['hits']['hits']
+        result: SearchResponse = self.searchApi.search(query)
+        hits = result.hits.hits
 
         items = []
         for hit in hits:
             items.append(SearchItem(
-                id=hit['_id'],
-                title=hit['_source']['title'],
-                duration=hit['_source']['duration'],
-                thumbnail=hit['_source']['thumbnail'],
-                categories=hit['_source']['categories']
+                id=hit.id,
+                title=hit.source['title'],
+                duration=hit.source['duration'],
+                thumbnail=hit.source['thumbnail'],
+                categories=hit.source['categories']
             ))
 
-        return SearchResult(result['score'], items)
+        return SearchResult(result.scroll, items)

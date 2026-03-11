@@ -1,7 +1,6 @@
 import datetime
 from gettext import ngettext
 
-from django.core.cache import cache
 from django.db.models import Model
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
@@ -91,14 +90,5 @@ def format_datetime(date: datetime):
         return date.strftime(settings.DATE_TIME_FORMAT)
 
 
-def get_access_token(suffix: str):
-    return cache.get(f'access_token_{suffix}')
-
-
-def get_refresh_token(suffix: str):
-    return cache.get(f'refresh_token_{suffix}')
-
-
-def save_to_cache(result: dict, suffix: str):
-    cache.set(f'access_token_{suffix}', result['access_token'], result['expires_in'])
-    cache.set(f'refresh_token_{suffix}', result['refresh_token'], result['refresh_expires_in'])
+def unslugify(slug):
+    return slug.replace("-", " ").title()

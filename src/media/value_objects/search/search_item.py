@@ -1,5 +1,6 @@
 from django.urls import reverse_lazy
-from django.utils.text import slugify
+
+from src.core.utils import unslugify
 
 
 class SearchItem:
@@ -20,7 +21,7 @@ class SearchItem:
             "categories": [
                 {
                     "title": category.strip(),
-                    "slug": slugify(category.strip()),
+                    "slug": unslugify(category.strip()),
                 } for category in self.categories.split(', ')
             ]
         }
