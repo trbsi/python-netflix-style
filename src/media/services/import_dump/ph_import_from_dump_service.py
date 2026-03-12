@@ -249,14 +249,19 @@ class PhImportFromDumpService:
 
     def _extract_created_at(self, urls: str) -> datetime:
         url = urls.split(';')[0]
-        match = re.search(r'/videos/(\d{6})/', url)
+
+        # Match year+month and day
+        match = re.search(r'/videos/(\d{6})/(\d{1,2})/', url)
         if not match:
             return datetime(1970, 1, 1)
 
         try:
-            yyyymm = match.group(1)
-            return datetime.strptime(yyyymm, "%Y%m")
-        except Exception as e:
+            yyyymm, day = match.groups()
+            year = int(yyyymm[:4])
+            month = int(yyyymm[4:6])
+            day = int(day)
+            return datetime(year, month, day)
+        except Exception:
             return datetime(1970, 1, 1)
 
     def _should_download_zip(self):
