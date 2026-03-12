@@ -123,7 +123,7 @@ class ImportFromDumpService:
             self.fields_map = {
                 'fields_split_by': '|',
                 'categories_split_by': ',',
-                'categories': 5,
+                'categories': 4,
                 'title': 3,
                 'duration': 2,
                 'thumb_small': 6,
