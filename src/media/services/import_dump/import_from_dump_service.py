@@ -134,3 +134,20 @@ class ImportFromDumpService:
                 'external_created_at': 999,
                 'url': 1,
             }
+        elif site == 'xvideos':
+            self.ZIP_URL = 'https://public-assets.xvideos-cdn.com/webmaster-tools/xvideos.com-export-week.csv.zip'
+            self.ZIP_FILE = 'xvideos.com-export-week.csv.zip'
+            self.fields_map = {
+                'fields_split_by': ';',
+                'categories_split_by': ',',
+                'categories': 8,
+                'title': 1,
+                'duration': 2,
+                'thumb_small': 3,
+                'thumb_large': 3,
+                'embed_code': 4,
+                'tags': 5,
+                'external_id': 7,
+                'external_created_at': 12,
+                'url': 0,
+            }
