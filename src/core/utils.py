@@ -92,3 +92,10 @@ def format_datetime(date: datetime):
 
 def unslugify(slug):
     return slug.replace("-", " ").title()
+
+
+def safe_get(lst: list, index: int | str, default=None):
+    try:
+        return lst[index]
+    except IndexError:
+        return default

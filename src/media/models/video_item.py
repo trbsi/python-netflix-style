@@ -32,7 +32,7 @@ class VideoItem(models.Model):
     objects = models.Manager()
 
     def category_slugs(self):
-        array = self.categories.split(";")
+        array = self.categories.split(",")
         result = []
         for category in array:
             if category:
@@ -62,12 +62,12 @@ class VideoItem(models.Model):
 
     @property
     def categories_formatted(self):
-        array = self.categories.split(";")
+        array = self.categories.split(",")
         return ' | '.join(array)
 
     @property
     def categories_array(self):
-        array = self.categories.split(";")
+        array = self.categories.split(",")
         result = []
         for category in array:
             if category:
@@ -77,8 +77,8 @@ class VideoItem(models.Model):
 
     @property
     def thumbnail_large(self):
-        return random.choice(self.thumb_large.split(';'))
+        return random.choice(self.thumb_large.split(','))
 
     @property
     def thumbnail_small(self):
-        return random.choice(self.thumb_small.split(';'))
+        return random.choice(self.thumb_small.split(','))

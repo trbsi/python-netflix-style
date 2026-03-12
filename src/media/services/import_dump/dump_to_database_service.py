@@ -1,101 +1,23 @@
 import csv
-import os
 import re
-import shutil
-import zipfile
-from collections import deque
 from datetime import datetime
 
-import requests
 from django.db.models import QuerySet
 from django.utils import timezone
 from django.utils.text import slugify
 from tqdm import tqdm
 
-from automationapp import settings
+from src.core.utils import safe_get
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 from src.media.services.manticore.manticore_service import ManticoreService
 
 
-class PhImportFromDumpService:
-    ZIP_URL = "https://www.pornhub.com/files/pornhub.com-db.zip"
-    ZIP_FILE = "pornhub_db.zip"
-    EXTRACT_DIR = "pornhub_data"
-
+class DumpToDatabaseService:
     def __init__(self):
         self.search_index_service = ManticoreService()
         self.total_imported = 0
 
-    def import_from_dump_locally(self) -> int:
-        csv_file_path = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
-
-        self.search_index_service.create_index()
-        self._save_to_database(csv_file_path)
-
-        return self.total_imported
-
-    def import_from_dump(self, import_all: bool = False) -> int:
-        # 1. Download zip file
-        if self._should_download_zip():
-            print("Downloading ZIP...")
-            proxies = {}
-            if settings.HTTP_PROXY:
-                proxies = {
-                    "http": settings.HTTP_PROXY,
-                    "https": settings.HTTP_PROXY,
-                }
-            response = requests.get(self.ZIP_URL, stream=True, proxies=proxies)
-            response.raise_for_status()
-
-            with open(self.ZIP_FILE, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
-
-            print("Download complete.")
-        else:
-            print('ZIP file exists for today')
-
-        # 2. Extract zip locally
-        print("Extracting ZIP...")
-        os.makedirs(self.EXTRACT_DIR, exist_ok=True)
-
-        with zipfile.ZipFile(self.ZIP_FILE, "r") as zip_ref:
-            zip_ref.extractall(self.EXTRACT_DIR)
-
-        print("Extraction complete.")
-
-        # 3. Find CSV file
-        csv_file_path = None
-        for root, dirs, files in os.walk(self.EXTRACT_DIR):
-            for file in files:
-                if file.endswith(".csv"):
-                    csv_file_path = os.path.join(root, file)
-                    break
-
-        if not csv_file_path:
-            raise Exception("CSV file not found after extraction.")
-
-        # Create new file with last 100k rows
-        if not import_all:
-            with open(csv_file_path, "r", encoding="utf-8") as f:
-                last_lines = deque(f, maxlen=50_000)
-
-            output_file = os.path.join(settings.BASE_DIR, self.EXTRACT_DIR, 'output.csv')
-            with open(output_file, "w", encoding="utf-8") as f:
-                f.writelines(last_lines)
-
-            csv_file_path = output_file
-
-        print("CSV found at:", csv_file_path)
-        self.search_index_service.create_index()
-        self._save_to_database(csv_file_path)
-
-        shutil.rmtree(self.EXTRACT_DIR)
-        os.remove(self.ZIP_FILE)
-
-        return self.total_imported
-
-    def _save_to_database(self, csv_file_path: str):
+    def save_to_database(self, site: str, fields_map: dict, csv_file_path: str) -> int:
         print("Reading CSV for database insert...")
         videos_batch = 10_000
         categories_batch = 1000
@@ -113,23 +35,32 @@ class PhImportFromDumpService:
             f.seek(0)  # reset to first line
             for index, line in enumerate(f):
                 line = line.strip()
-                fields = line.split("|")
-                categories = fields[5]
+                fields = line.split(fields_map['fields_split_by'])
+
+                categories = fields[fields_map['categories']]
+                categories = categories.split(fields_map['categories_split_by'])
+                categories = ','.join(categories)
+
+                external_created_at = self._extract_created_at(
+                    site,
+                    safe_get(fields, fields_map['external_created_at'])
+                )
+                embed_code = self._embed_code(site, fields, fields_map).strip()
 
                 # VIDEOS
                 video = VideoItem(
-                    title=fields[3],
-                    link='',
-                    duration=fields[7],
-                    thumb_small=fields[2],
-                    thumb_large=fields[12],
-                    embed_code=fields[0],
+                    title=fields[fields_map['title']],
+                    link=safe_get(fields, fields_map['url'], ''),
+                    duration=fields[fields_map['duration']],
+                    thumb_small=fields[fields_map['thumb_small']],
+                    thumb_large=fields[fields_map['thumb_large']],
+                    embed_code=embed_code,
                     pub_date=timezone.now(),
-                    tags=fields[4],
+                    tags=fields[fields_map['tags']],
                     categories=categories,
-                    site='pornhub',
-                    external_id=self._get_external_id(fields[0]),
-                    external_created_at=self._extract_created_at(fields[2])
+                    site=site,
+                    external_id=self._get_external_id(site, fields[fields_map['external_id']]),
+                    external_created_at=external_created_at,
                 )
                 videos_array.append(video)
 
@@ -139,8 +70,10 @@ class PhImportFromDumpService:
                     videos_array.clear()
 
                 # CATEGORIES
-                categories_split = categories.split(";")
+                categories_split = categories.split(',')
                 for category_label in categories_split:
+                    category_label = category_label.strip()
+
                     # can be empty string categories
                     if not category_label or 'DO NOT USE' in category_label:
                         continue
@@ -188,12 +121,14 @@ class PhImportFromDumpService:
                 self._insert_batch_video_category(pivots_to_create)
                 pivots_to_create.clear()
 
+        return self.total_imported
+
     def _insert_video_category_pivot(self, pivots_to_create: list, saved_videos: QuerySet[VideoItem]) -> list:
         categories_queryset = VideoCategory.objects.all()
         categories_map = {category.slug: category for category in categories_queryset}
 
         for saved_video in saved_videos:
-            tmp_categories_array = saved_video.categories.split(";")
+            tmp_categories_array = saved_video.categories.split(',')
             for tmp_category_label in tmp_categories_array:
                 # can be empty string categories
                 if not tmp_category_label or 'DO NOT USE' in tmp_category_label:
@@ -239,40 +174,53 @@ class PhImportFromDumpService:
 
         return items
 
-    def _get_external_id(self, embed_code: str) -> str:
-        match = re.search(r'/embed/([a-zA-Z0-9]+)', embed_code)
-        if match:
-            video_id = match.group(1)
-            return video_id
+    def _get_external_id(self, site: str, external_id: str) -> str:
+        if site == 'eporner':
+            return external_id
+
+        if site == 'pornhub':
+            match = re.search(r'/embed/([a-zA-Z0-9]+)', external_id)
+            if match:
+                video_id = match.group(1)
+                return video_id
 
         return ''
 
-    def _extract_created_at(self, urls: str) -> datetime:
-        url = urls.split(';')[0]
+    def _extract_created_at(self, site: str, data: str | None) -> datetime | None:
+        if site == 'eporner':
+            return data
 
-        # Match year+month and day
-        match = re.search(r'/videos/(\d{6})/(\d{1,2})/', url)
-        if not match:
-            return datetime(1970, 1, 1)
+        if site == 'pornhub':
+            url = data.split(';')[0]
 
-        try:
-            yyyymm, day = match.groups()
-            year = int(yyyymm[:4])
-            month = int(yyyymm[4:6])
-            day = int(day)
-            return datetime(year, month, day)
-        except Exception:
-            return datetime(1970, 1, 1)
+            # Match year+month and day
+            match = re.search(r'/videos/(\d{6})/(\d{1,2})/', url)
+            if not match:
+                return datetime(1970, 1, 1)
 
-    def _should_download_zip(self):
-        if not os.path.exists(self.ZIP_FILE):
-            return True
+            try:
+                yyyymm, day = match.groups()
+                year = int(yyyymm[:4])
+                month = int(yyyymm[4:6])
+                day = int(day)
+                return datetime(year, month, day)
+            except Exception:
+                return datetime(1970, 1, 1)
 
-        creation_time = os.path.getctime(self.ZIP_FILE)
-        creation_date = datetime.fromtimestamp(creation_time).date()
-        today = datetime.today().date()
+    def _embed_code(self, site: str, fields: list, fields_map: dict) -> str:
+        embed_code = safe_get(fields, fields_map['embed_code'])
+        id = safe_get(fields, fields_map['external_id'])
 
-        if creation_date == today:
-            return False
+        if site == 'eporner':
+            return f"""
+            <iframe
+                src="https://www.eporner.com/embed/{id}"
+                width="640"
+                height="360"
+                frameborder="0"
+                allowfullscreen>
+            </iframe>
+            """
 
-        return True
+        if site == 'pornhub':
+            return embed_code

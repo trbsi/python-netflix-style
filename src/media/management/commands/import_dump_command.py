@@ -2,13 +2,13 @@ import time
 
 import bugsnag
 
-from automationapp import settings
 from src.core.management.commands.base_command import BaseCommand
-from src.media.services.import_dump.ph_import_from_dump_service import PhImportFromDumpService
+from src.media.services.import_dump.import_from_dump_service import ImportFromDumpService
 
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
+        parser.add_argument("site", type=str, help="Site like: eporner, pornhub...")
         parser.add_argument(
             "--import-all",
             action="store_true",
@@ -19,19 +19,15 @@ class Command(BaseCommand):
         start = time.time()
 
         import_all = options["import_all"]
-        ph_dump_service = PhImportFromDumpService()
+        site = options["site"]
+        ph_dump_service = ImportFromDumpService()
         message = ''
         total_imported = 0
 
         try:
-            if settings.APP_ENV == 'production':
-                message = f'Importing dump from production. Import all: {'yes' if import_all else 'no'}'
-                self.info(message)
-                total_imported = ph_dump_service.import_from_dump()
-            else:
-                message = 'Importing dump from staging'
-                self.info(message)
-                total_imported = ph_dump_service.import_from_dump_locally()
+            message = f'Importing dump from production. Import all: {"yes" if import_all else "no"}'
+            self.info(message)
+            total_imported = ph_dump_service.import_from_dump(site, import_all)
         except Exception as e:
             self.error('Failed to import dump: {}'.format(e))
             bugsnag.notify(e)

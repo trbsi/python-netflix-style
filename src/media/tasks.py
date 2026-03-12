@@ -9,4 +9,4 @@ def import_from_rss_task():
 
 @shared_task
 def import_from_dump_task():
-    call_command('import_dump_command')
+    call_command('import_dump_command eporner')
