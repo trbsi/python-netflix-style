@@ -15,6 +15,9 @@ class Command(BaseCommand):
             help="Import full csv"
         )
 
+    # https://www.eporner.com/api/v2/feeds/
+    # https://info.xvideos.net/db
+    # https://www.pornhub.com/webmasters
     def handle(self, *args, **options):
         start = time.time()
 
