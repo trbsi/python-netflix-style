@@ -20,14 +20,14 @@ class Command(BaseCommand):
 
         import_all = options["import_all"]
         site = options["site"]
-        ph_dump_service = ImportFromDumpService()
+        dump_service = ImportFromDumpService()
         message = ''
         total_imported = 0
 
         try:
             message = f'Importing dump from production. Import all: {"yes" if import_all else "no"}'
             self.info(message)
-            total_imported = ph_dump_service.import_from_dump(site, import_all)
+            total_imported = dump_service.import_from_dump(site, import_all)
         except Exception as e:
             self.error('Failed to import dump: {}'.format(e))
             bugsnag.notify(e)

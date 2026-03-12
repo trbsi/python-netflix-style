@@ -19,6 +19,7 @@ class ImportFromDumpService:
         self.dump_to_database_service = DumpToDatabaseService()
 
     def import_from_dump(self, site: str, import_all: bool = False) -> int:
+        shutil.rmtree(self.EXTRACT_DIR)
         self._init(site)
 
         # 1. Download zip file
