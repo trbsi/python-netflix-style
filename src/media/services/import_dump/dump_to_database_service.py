@@ -39,10 +39,7 @@ class DumpToDatabaseService:
                 line = line.strip()
                 fields = line.split(fields_map['fields_split_by'])
 
-                categories = fields[fields_map['categories']]
-                categories = categories.split(fields_map['categories_split_by'])
-                categories = ','.join(categories)
-
+                categories = self._get_categories(fields, fields_map)
                 external_created_at = self._extract_created_at(
                     site,
                     safe_get(fields, fields_map['external_created_at'])
@@ -218,3 +215,11 @@ class DumpToDatabaseService:
 
         if site == 'pornhub':
             return embed_code
+
+    def _get_categories(self, fields: list, fields_map: dict) -> str:
+        categories = safe_get(fields, fields_map['categories'])
+        categories = categories.split(fields_map['categories_split_by'])
+        categories = categories[:4]
+        categories = [cat.title() for cat in categories]
+        categories = ','.join(categories)
+        return categories
