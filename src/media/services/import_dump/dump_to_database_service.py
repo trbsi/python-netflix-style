@@ -214,15 +214,7 @@ class DumpToDatabaseService:
         id = safe_get(fields, fields_map['external_id'])
 
         if site == 'eporner':
-            return f"""
-            <iframe
-                src="https://www.eporner.com/embed/{id}"
-                width="640"
-                height="360"
-                frameborder="0"
-                allowfullscreen>
-            </iframe>
-            """
+            return f"""<iframe src="https://www.eporner.com/embed/{id}" width="640" height="360" frameborder="0" allowfullscreen></iframe>"""
 
         if site == 'pornhub':
             return embed_code

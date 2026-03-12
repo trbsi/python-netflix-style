@@ -22,11 +22,17 @@ Run `./scripts/production_deployment.sh`
 
 # Various
 
+## Mysql
+
 ```
-SET FOREIGN_KEY_CHECKS=0;
-TRUNCATE TABLE media_videocategorypivot;
-TRUNCATE TABLE media_videoitem;
+DELETE FROM media_videocategorypivot;
+DELETE FROM media_videoitem;
+DELETE FROM media_videocategory;
 ALTER TABLE media_videoitem AUTO_INCREMENT = 1;
 ALTER TABLE media_videocategorypivot AUTO_INCREMENT = 1;
-SET FOREIGN_KEY_CHECKS=1;
+ALTER TABLE media_videocategory AUTO_INCREMENT = 1;
 ```
+
+## Manticore
+
+`drop table videos_index;`
