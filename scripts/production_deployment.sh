@@ -4,6 +4,7 @@ set -e
 DOCKER_CONTAINER="automationapp-django"
 WORKER="automationapp-celery-worker"
 BEAT="automationapp-celery-beat"
+NGINX="automationapp-nginx-proxy"
 
 BUILD_DOCKER=false
 
@@ -34,6 +35,6 @@ echo "📜 --------------------------- Running migrations ----------------------
 docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py migrate
 
 echo "🔄 --------------------------- Restarting containers ---------------------------"
-docker restart "$DOCKER_CONTAINER" "$WORKER" "$BEAT"
+docker restart "$DOCKER_CONTAINER" "$WORKER" "$BEAT" "$NGINX"
 
 echo "✅ --------------------------- Done ---------------------------"

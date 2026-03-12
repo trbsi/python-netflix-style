@@ -8,8 +8,8 @@ location /static/ {
     try_files $uri $uri/ =404;
 }
 
-location /media/ {
-    alias /app/media/;
+location /media-asset/ {
+    alias /app/media-asset/;
     expires 30d;
     add_header Cache-Control "public, immutable";
 

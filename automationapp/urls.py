@@ -14,21 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import_dump include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.conf import settings
-from automationapp import settings as local_settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from automationapp import settings as local_settings
+
 urlpatterns = (
-        [
-            path('', include('src.core.urls')),
-            path('notification/', include('src.notification.urls')),
-            path('accounts/', include('allauth.urls')),
-            path('user/', include('src.user.urls')),
-            path('media/', include('src.media.urls')),
-            path('.privatnomjesto/', admin.site.urls),
-        ]
+    [
+        path('', include('src.core.urls')),
+        path('notification/', include('src.notification.urls')),
+        path('accounts/', include('allauth.urls')),
+        path('user/', include('src.user.urls')),
+        path('movies/', include('src.media.urls')),
+        path('.privatnomjesto/', admin.site.urls),
+    ]
 )
 
 if local_settings.DEBUG:
