@@ -68,17 +68,7 @@
                                                             <span class="font-size-16 fw-500">{{ video.duration_formatted }}</span>
                                                         </div>
                                                     </div>
-                                                    <p class="line-count-3 my-3 RightAnimate-two">Game of Heros is an
-                                                        action-packed
-                                                        fantasy epic where the fate of the world is decided in a battle
-                                                        of legendary
-                                                        warriors. When an ancient prophecy foretells an all-out war
-                                                        between the greatest
-                                                        heroes of all realms, champions from different eras and
-                                                        dimensions are summoned
-                                                        to fight for ultimate supremacy. Each warrior possesses unique
-                                                        abilities,
-                                                        weapons, and a past that drives them to victory—or doom.</p>
+                                                    <p class="line-count-3 my-3 RightAnimate-two">{{ video.categories_formatted }}</p>
 
                                                     <div class="RightAnimate-four mt-4 pt-2">
                                                         <a href="{% url 'media.single_video' id=video.id %}"

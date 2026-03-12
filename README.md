@@ -25,12 +25,14 @@ Run `./scripts/production_deployment.sh`
 ## Mysql
 
 ```
+SET FOREIGN_KEY_CHECKS=0;
 DELETE FROM media_videocategorypivot;
 DELETE FROM media_videoitem;
 DELETE FROM media_videocategory;
 ALTER TABLE media_videoitem AUTO_INCREMENT = 1;
 ALTER TABLE media_videocategorypivot AUTO_INCREMENT = 1;
 ALTER TABLE media_videocategory AUTO_INCREMENT = 1;
+SET FOREIGN_KEY_CHECKS=1;
 ```
 
 ## Manticore
