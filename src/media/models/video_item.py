@@ -35,7 +35,8 @@ class VideoItem(models.Model):
         array = self.categories.split(";")
         result = []
         for category in array:
-            result.append(slugify(category))
+            if category:
+                result.append(slugify(category))
 
         return result
 
@@ -69,7 +70,8 @@ class VideoItem(models.Model):
         array = self.categories.split(";")
         result = []
         for category in array:
-            result.append({'title': category, 'slug': slugify(category)})
+            if category:
+                result.append({'title': category, 'slug': slugify(category)})
 
         return result
 

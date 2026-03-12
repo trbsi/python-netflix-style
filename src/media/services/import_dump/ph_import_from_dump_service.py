@@ -141,6 +141,10 @@ class PhImportFromDumpService:
                 # CATEGORIES
                 categories_split = categories.split(";")
                 for category_label in categories_split:
+                    # can be empty string categories
+                    if not category_label or 'DO NOT USE' in category_label:
+                        continue
+
                     slug = slugify(category_label)
                     video_category = VideoCategory(
                         slug=slug,
@@ -191,6 +195,10 @@ class PhImportFromDumpService:
         for saved_video in saved_videos:
             tmp_categories_array = saved_video.categories.split(";")
             for tmp_category_label in tmp_categories_array:
+                # can be empty string categories
+                if not tmp_category_label or 'DO NOT USE' in tmp_category_label:
+                    continue
+
                 slug = slugify(tmp_category_label)
                 tmp_category = categories_map.get(slug)
                 if tmp_category is None:
