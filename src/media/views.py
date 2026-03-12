@@ -1,5 +1,5 @@
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_GET
 
 from src.media.models import VideoItem, VideoCategory
@@ -17,7 +17,7 @@ def media_home(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def single_video(request: HttpRequest, id: int) -> HttpResponse:
-    video = VideoItem.objects.get(id=id)
+    video = get_object_or_404(VideoItem, pk=id)
     service = ListMediaService()
     videos = service.single_video_list()
     context = {'video': video} | videos
