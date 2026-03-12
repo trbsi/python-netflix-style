@@ -19,3 +19,14 @@ SSH into manticore container and enter mysql:
 # Deployment
 
 Run `./scripts/production_deployment.sh`
+
+# Various
+
+```
+SET FOREIGN_KEY_CHECKS=0;
+TRUNCATE TABLE media_videocategorypivot;
+TRUNCATE TABLE media_videoitem;
+ALTER TABLE media_videoitem AUTO_INCREMENT = 1;
+ALTER TABLE media_videocategorypivot AUTO_INCREMENT = 1;
+SET FOREIGN_KEY_CHECKS=1;
+```

@@ -188,7 +188,7 @@ class DumpToDatabaseService:
 
     def _extract_created_at(self, site: str, data: str | None) -> datetime | None:
         if site == 'eporner':
-            return data
+            return datetime.now()
 
         if site == 'pornhub':
             url = data.split(';')[0]
