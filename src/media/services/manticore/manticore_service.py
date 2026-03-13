@@ -115,9 +115,10 @@ class ManticoreService:
         return SearchResult(result.scroll, items)
 
     def delete_by_id(self, id: int) -> None:
-        document = DeleteDocumentRequest()
-        document.table = self.VIDEOS_INDEX
-        document.id = id
+        document = DeleteDocumentRequest(
+            table=self.VIDEOS_INDEX,
+            id=id
+        )
         self.indexApi.delete(document)
 
     def delete_by_ids(self, ids: list) -> None:
