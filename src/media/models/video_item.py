@@ -10,7 +10,7 @@ from src.media.models import VideoCategory
 class VideoItem(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.TextField()
-    link = models.TextField(max_length=300)
+    link = models.CharField(max_length=300)
     duration = models.PositiveIntegerField(help_text="Duration in seconds")
     thumb_small = models.TextField()
     thumb_large = models.TextField()
