@@ -10,3 +10,8 @@ def import_from_rss_task():
 @shared_task
 def import_from_dump_partial_task(site):
     call_command('import_dump_command', site)
+
+
+@shared_task
+def delete_videos_task(site):
+    call_command('delete_videos_command', site)

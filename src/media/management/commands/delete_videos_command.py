@@ -18,12 +18,10 @@ class Command(BaseCommand):
 
         site = options["site"]
         delete_service = DeleteVideosService()
-        message = ''
         total_deleted = 0
 
         try:
-            message = f'Deleting videos.'
-            self.info(message)
+            self.info('Deleting videos.')
             total_deleted = delete_service.remove_deleted_videos_from_database(site)
         except Exception as e:
             self.error('Failed to delete videos: {}'.format(e))
@@ -32,6 +30,6 @@ class Command(BaseCommand):
         end = time.time()
 
         minutes = (end - start) / 60
-        message = f"DeleteVideosCommand. Execution time: {minutes:.2f} minutes. Total deleted: {total_deleted}." + message
+        message = f"DeleteVideosCommand. Execution time: {minutes:.2f} minutes. Total deleted: {total_deleted}."
         print(message)
         bugsnag.notify(Exception(message))

@@ -2,7 +2,7 @@ import json
 
 import manticoresearch
 from django.db.models import QuerySet
-from manticoresearch import SearchResponse
+from manticoresearch import SearchResponse, DeleteDocumentRequest
 
 from src.media.models import VideoItem
 from src.media.value_objects.search.search_item import SearchItem
@@ -10,6 +10,8 @@ from src.media.value_objects.search.search_result import SearchResult
 
 
 class ManticoreService:
+    VIDEOS_INDEX = 'videos_index'
+
     def __init__(self):
         # https://manual.manticoresearch.com/Quick_start_guide?client=Python
         config = manticoresearch.Configuration(host="http://manticore:9308")  # manticore is docker container name
@@ -21,7 +23,7 @@ class ManticoreService:
     # https://manual.manticoresearch.com/Data_creation_and_modification/Updating_documents/REPLACE?client=Python
     def index_single(self, video: VideoItem):
         doc = {
-            "table": "videos_index",
+            "table": self.VIDEOS_INDEX,
             "id": video.id,
             "doc": {
                 "title": video.title,
@@ -34,7 +36,7 @@ class ManticoreService:
         self.indexApi.replace(doc)
 
     def reindex_all(self):
-        self.utils.sql("TRUNCATE TABLE videos_index")
+        self.utils.sql(f"TRUNCATE TABLE {self.VIDEOS_INDEX}")
 
         items = []
         batch = 10_000
@@ -50,8 +52,8 @@ class ManticoreService:
             items.clear()
 
     def create_index(self):
-        self.utils.sql("""
-            CREATE TABLE IF NOT EXISTS videos_index (
+        self.utils.sql(f"""
+            CREATE TABLE IF NOT EXISTS {self.VIDEOS_INDEX} (
             id BIGINT, 
             title TEXT, 
             thumbnail STRING, 
@@ -66,7 +68,7 @@ class ManticoreService:
         docs = [
             {
                 "replace": {
-                    "table": "videos_index",
+                    "table": self.VIDEOS_INDEX,
                     "id": v.id,
                     "doc": {
                         "title": v.title,
@@ -83,7 +85,7 @@ class ManticoreService:
     # https://manual.manticoresearch.com/Searching/Pagination#Scrolling-via-JSON
     def search_index(self, to_search: str) -> SearchResult:
         query = {
-            "table": "videos_index",
+            "table": self.VIDEOS_INDEX,
             "options": {
                 "scroll": True
             },
@@ -111,3 +113,13 @@ class ManticoreService:
             ))
 
         return SearchResult(result.scroll, items)
+
+    def delete_by_id(self, id: int) -> None:
+        document = DeleteDocumentRequest()
+        document.table = self.VIDEOS_INDEX
+        document.id = id
+        self.indexApi.delete(document)
+
+    def delete_by_ids(self, ids: list) -> None:
+        for id in ids:
+            self.delete_by_id(id)
