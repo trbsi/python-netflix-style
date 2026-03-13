@@ -45,12 +45,13 @@ class DumpToDatabaseService:
                     safe_get(fields, fields_map['external_created_at'])
                 )
                 embed_code = self._embed_code(site, fields, fields_map).strip()
+                duration = self._duration(site, fields, fields_map)
 
                 # VIDEOS
                 video = VideoItem(
                     title=fields[fields_map['title']],
                     link=safe_get(fields, fields_map['url'], ''),
-                    duration=fields[fields_map['duration']],
+                    duration=duration,
                     thumb_small=fields[fields_map['thumb_small']],
                     thumb_large=fields[fields_map['thumb_large']],
                     embed_code=embed_code,
@@ -221,6 +222,12 @@ class DumpToDatabaseService:
         categories = categories.split(fields_map['categories_split_by'])
         categories = [cat for cat in categories if len(cat) < 20]
         categories = categories[:4]
-        categories = [cat.title() for cat in categories]
+        categories = [cat.replace('_', ' ').replace('-', ' ').title() for cat in categories]
         categories = ','.join(categories)
         return categories
+
+    def _duration(self, site, fields: list, fields_map: dict) -> str:
+        duration = safe_get(fields, fields_map['duration'])
+        if site == 'xvideos':
+            duration = duration.strip(' sec')
+        return duration

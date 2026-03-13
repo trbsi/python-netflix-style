@@ -136,7 +136,7 @@ class ImportFromDumpService:
             }
         elif site == 'xvideos':
             self.ZIP_URL = 'https://public-assets.xvideos-cdn.com/webmaster-tools/xvideos.com-export-week.csv.zip'
-            self.ZIP_FILE = 'xvideos.com-export-week.csv.zip'
+            self.ZIP_FILE = 'xvideos.com-export.csv.zip'
             self.fields_map = {
                 'fields_split_by': ';',
                 'categories_split_by': ',',
