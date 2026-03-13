@@ -15,7 +15,7 @@
                                                  alt="img"
                                                  loading="lazy">
                                             <div class="block-description">
-                                                <h6 class="iq-title fw-500 line-count-1">{{ video.title }}</h6>
+                                                <h6 class="iq-title fw-500 line-count-3">{{ video.title|safe }}</h6>
                                                 <div class="d-flex align-items-center gap-1">
                                                     <i class="ph ph-clock"></i>
                                                     <span class="fs-12">{{ video.duration_formatted }}</span>
@@ -46,9 +46,9 @@
                                         <div class="row align-items-center h-100 slider-content-full-height">
                                             <div class="col-lg-5 col-md-12">
                                                 <div class="slider-content">
-                                                    <h2
-                                                            class="texture-text big-font letter-spacing-1 line-count-1 RightAnimate-two mb-1 mb-md-3">
-                                                        {{ video.title }} </h2>
+                                                    <h3
+                                                            class="texture-text  line-count-3 RightAnimate-two mb-1 mb-md-3">
+                                                        {{ video.title|safe }} </h3>
                                                     <div class="d-flex flex-wrap align-items-center gap-3 py-2 RightAnimate-three">
                                                         <div class="d-flex align-items-center gap-3">
                                                             <ul class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left gap-1">

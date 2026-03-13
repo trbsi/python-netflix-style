@@ -20,7 +20,7 @@
                                         <a href="{% url 'media.single_video' id=video.id %}">
                                             <img src="{{ video.thumbnail_large }}" alt="geners-img"
                                                  class="img-fluid">
-                                            <h6 class="blog-description">{{ video.title }}</h6>
+                                            <h6 class="blog-description">{{ video.title|safe|truncatechars:50 }}</h6>
                                         </a>
                                     </div>
                                 </div>
@@ -73,7 +73,7 @@
                                             <div class="cart-content">
                                                 <div class="content-left">
                                                     <h5 class="iq-title text-capitalize">
-                                                        <a href="{% url 'media.single_video' id=video.id %}">{{ video.title }}</a>
+                                                        <a href="{% url 'media.single_video' id=video.id %}">{{ video.title|safe }}</a>
                                                     </h5>
                                                 </div>
                                             </div>
@@ -138,7 +138,7 @@
                                             <div class="cart-content">
                                                 <div class="content-left">
                                                     <h5 class="iq-title text-capitalize">
-                                                        <a href="{% url 'media.single_video' id=video.id %}">{{ video.title }}</a>
+                                                        <a href="{% url 'media.single_video' id=video.id %}">{{ video.title|safe }}</a>
                                                     </h5>
                                                 </div>
                                             </div>

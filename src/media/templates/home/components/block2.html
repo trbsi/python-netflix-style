@@ -16,7 +16,7 @@
                                                  loading="lazy">
                                         </div>
                                         <div class="block-description">
-                                            <h6 class="iq-title">{{ video.title }}</h6>
+                                            <h6 class="iq-title">{{ video.title|safe }}</h6>
                                             <div class="movie-time d-flex align-items-center my-2">
                                                 <div class="d-flex align-items-center gap-1 font-size-12">
                                                     <i class="ph ph-clock "></i>
@@ -63,9 +63,9 @@
                                         </li>
                                     </ul>
                                     {% endcomment %}
-                                        <h2 class="iq-title m-0 line-count-2"><a
-                                                href="{% url 'media.single_video' id=video.id %}">{{ video.title }}</a>
-                                        </h2>
+                                        <h3 class="iq-title m-0 line-count-3"><a
+                                                href="{% url 'media.single_video' id=video.id %}">{{ video.title|safe }}</a>
+                                        </h3>
                                         <div
                                                 class="d-flex align-items-center gap-3 py-2 justify-content-center justify-content-lg-start flex-wrap">
                                             <div class="slider-ratting d-flex align-items-center gap-1">
