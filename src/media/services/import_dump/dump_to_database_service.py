@@ -46,6 +46,7 @@ class DumpToDatabaseService:
                 )
                 embed_code = self._embed_code(site, fields, fields_map).strip()
                 duration = self._duration(site, fields, fields_map)
+                external_id = self._get_external_id(site, fields, fields_map)
 
                 # VIDEOS
                 video = VideoItem(
@@ -59,7 +60,7 @@ class DumpToDatabaseService:
                     tags=fields[fields_map['tags']],
                     categories=categories,
                     site=site,
-                    external_id=self._get_external_id(site, fields[fields_map['external_id']]),
+                    external_id=external_id,
                     external_created_at=external_created_at,
                 )
                 videos_array.append(video)
@@ -174,9 +175,8 @@ class DumpToDatabaseService:
 
         return items
 
-    def _get_external_id(self, site: str, external_id: str) -> str:
-        if site == 'eporner':
-            return external_id
+    def _get_external_id(self, site: str, fields: list, fields_map: dict) -> str:
+        external_id = fields[fields_map['external_id']]
 
         if site == 'pornhub':
             match = re.search(r'/embed/([a-zA-Z0-9]+)', external_id)
@@ -184,11 +184,14 @@ class DumpToDatabaseService:
                 video_id = match.group(1)
                 return video_id
 
-        return ''
+        return external_id
 
     def _extract_created_at(self, site: str, data: str | None) -> datetime | None:
         if site == 'eporner':
             return datetime.now()
+
+        if site == 'xvideos':
+            return datetime.strptime(data, '%Y-%m-%d')
 
         if site == 'pornhub':
             url = data.split(';')[0]
@@ -214,8 +217,7 @@ class DumpToDatabaseService:
         if site == 'eporner':
             return f"""<iframe src="https://www.eporner.com/embed/{id}" width="640" height="360" frameborder="0" allowfullscreen></iframe>"""
 
-        if site == 'pornhub':
-            return embed_code
+        return embed_code
 
     def _get_categories(self, fields: list, fields_map: dict) -> str:
         categories = safe_get(fields, fields_map['categories'])
@@ -230,4 +232,5 @@ class DumpToDatabaseService:
         duration = safe_get(fields, fields_map['duration'])
         if site == 'xvideos':
             duration = duration.strip(' sec')
+
         return duration
