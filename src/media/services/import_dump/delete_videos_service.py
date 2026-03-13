@@ -17,10 +17,11 @@ class DeleteVideosService:
         total_deleted = 0
         csv_file_path = self.download_zip_service.download_zip(self.ZIP_URL, self.ZIP_FILE, True)
 
+        print('Deleting videos...')
         with open(csv_file_path, 'r') as csv_file:
             for row in csv_file:
                 row = row.split(self.fields_map['fields_split_by'])
-                url = row[1]
+                url = row[1].strip()
 
                 videos = VideoItem.objects.filter(link=url)
                 ids = list(videos.values_list('id', flat=True))
