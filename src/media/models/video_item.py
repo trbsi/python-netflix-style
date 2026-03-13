@@ -31,6 +31,11 @@ class VideoItem(models.Model):
 
     objects = models.Manager()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["link"]),
+        ]
+
     def category_slugs(self):
         array = self.categories.split(",")
         result = []
