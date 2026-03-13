@@ -3,25 +3,27 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<section class="section-padding">
-    <div class="container-fluid">
-        <div class="d-flex align-items-center justify-content-between mb-4">
-            <h4 class="main-title text-capitalize mb-0">Genres</h4>
-        </div>
-        <div class="genres-grid gy-4 row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
-            {% for category in categories %}
-            <div class="col">
-                <div class="iq-card-geners position-relative card-hover-style-two">
-                    <div class="img-box position-relative">
-                        <a href="{% url 'media.categories_search' slug=category.slug %}">
-                            <img src="{% static category.image %}" alt="geners-img" class="img-fluid">
-                            <h6 class="blog-description">{{category.title}}</h6>
-                        </a>
-                    </div>
-                </div>
+    <section class="section-padding">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h4 class="main-title text-capitalize mb-0">Genres</h4>
             </div>
-            {% endfor %}
+            <div class="genres-grid gy-4 row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
+                {% for category in categories %}
+                    <div class="col">
+                        <div class="iq-card-geners position-relative card-hover-style-two">
+                            <div class="img-box position-relative">
+                                <a href="{% url 'media.categories_search' slug=category.slug %}">
+                                    {% comment %}
+                            <img src="{% static category.image %}" alt="geners-img" class="img-fluid">
+                            {% endcomment %}
+                                    <h6 class="blog-description">{{ category.title }}</h6>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 {% endblock %}
