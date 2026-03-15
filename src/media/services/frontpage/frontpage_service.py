@@ -11,7 +11,7 @@ class FrontpageService:
     def generate_frontpage(self) -> int:
         week = timezone.now() - timedelta(days=7)
         max_id = VideoItem.objects.order_by('-id').first().id
-        min_id = VideoItem.objects.order_by('id').filter(external_created_at=week).id
+        min_id = VideoItem.objects.order_by('id').filter(external_created_at=week).first().id
 
         ids = set()
         total_videos = 200  # sum of src.media.services.home.list_media_service.ListMediaService.home_video_list
