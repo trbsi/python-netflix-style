@@ -1,6 +1,9 @@
 import os
 import shutil
 
+from django.utils import timezone
+
+from src.media.models import VideoItem
 from src.media.services.import_dump.download_zip_service import DownloadZipService
 from src.media.services.import_dump.dump_to_database_service import DumpToDatabaseService
 from src.media.services.manticore.manticore_service import ManticoreService
@@ -12,7 +15,7 @@ class ImportFromDumpService:
         self.dump_to_database_service = DumpToDatabaseService()
         self.download_zip_service = DownloadZipService()
 
-    def import_from_dump(self, site: str, import_all: bool = False) -> int:
+    def import_from_dump(self, site: str, import_all: bool = False) -> list:
         self._init(site)
 
         csv_file_path = self.download_zip_service.download_zip(
@@ -31,7 +34,10 @@ class ImportFromDumpService:
         shutil.rmtree(DownloadZipService.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
-        return total_imported
+        today = timezone.now().date()
+        count_today = VideoItem.objects.filter(external_created_at=today).count()
+
+        return [total_imported, count_today]
 
     def _init(self, site: str):
         if site == 'pornhub':

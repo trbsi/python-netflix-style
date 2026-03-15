@@ -25,12 +25,12 @@ class Command(BaseCommand):
         site = options["site"]
         dump_service = ImportFromDumpService()
         message = ''
-        total_imported = 0
+        total_imported = count_today = 0
 
         try:
             message = f'Importing dump from production. Import all: {"yes" if import_all else "no"}'
             self.info(message)
-            total_imported = dump_service.import_from_dump(site, import_all)
+            [total_imported, count_today] = dump_service.import_from_dump(site, import_all)
         except Exception as e:
             self.error('Failed to import dump: {}'.format(e))
             bugsnag.notify(e)
@@ -38,6 +38,6 @@ class Command(BaseCommand):
         end = time.time()
 
         minutes = (end - start) / 60
-        message = f"ImportDumpCommand. Execution time: {minutes:.2f} minutes. Total imported: {total_imported}." + message
+        message = f"ImportDumpCommand. Execution time: {minutes:.2f} minutes. Total imported: {total_imported}. Imported today: {count_today}" + message
         print(message)
         bugsnag.notify(Exception(message))
