@@ -55,6 +55,8 @@ INSTALLED_APPS = [
     'src.media.apps.MediaConfig',
     'src.myadmin.apps.AdminConfig',
 
+    'django.contrib.sitemaps',
+
     'django_celery_beat',
 
     'allauth',

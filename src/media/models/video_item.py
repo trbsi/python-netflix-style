@@ -2,6 +2,7 @@ import hashlib
 import random
 
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils.text import slugify
 
 from src.media.models import VideoCategory
@@ -36,6 +37,10 @@ class VideoItem(models.Model):
             models.Index(fields=["link"]),
             models.Index(fields=['external_created_at'])
         ]
+
+    # for sitemap
+    def get_absolute_url(self):
+        return reverse_lazy('media.single_video', kwargs={'id': self.id})
 
     def category_slugs(self):
         array = self.categories.split(",")
