@@ -1,3 +1,5 @@
+from django.core.cache import cache
+
 from src.media.models import VideoItem
 
 
@@ -15,7 +17,8 @@ class ListMediaService:
 
     def home_video_list(self) -> dict:
         used_ids = set()
-        base_qs = VideoItem.objects.order_by("-id").all()
+        cache_ids = cache.get('frontpage_ids')
+        base_qs = VideoItem.objects.filter(id__in=cache_ids).all()
 
         context = {
             "main_header": self._get_videos(

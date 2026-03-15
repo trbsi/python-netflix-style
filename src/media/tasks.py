@@ -15,3 +15,8 @@ def import_from_dump_partial_task(site):
 @shared_task
 def delete_videos_task(site):
     call_command('delete_videos_command', site)
+
+
+@shared_task
+def generate_frontpage_task():
+    call_command('generate_frontpage_command')

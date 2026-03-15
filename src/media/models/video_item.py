@@ -34,6 +34,7 @@ class VideoItem(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=["link"]),
+            models.Index(fields=['external_created_at'])
         ]
 
     def category_slugs(self):
