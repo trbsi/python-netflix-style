@@ -10,11 +10,13 @@ class DeleteVideosService:
     def __init__(self):
         self.download_zip_service = DownloadZipService()
         self.search_index_service = ManticoreService()
+        self.total_deleted = 0
 
     def remove_deleted_videos_from_database(self, site: str) -> int:
         self._init(site)
 
-        total_deleted = 0
+        batch_size = 1000
+        urls = []
         csv_file_path = self.download_zip_service.download_zip(self.ZIP_URL, self.ZIP_FILE, True)
 
         print('Deleting videos...')
@@ -22,19 +24,27 @@ class DeleteVideosService:
             for row in csv_file:
                 row = row.split(self.fields_map['fields_split_by'])
                 url = row[1].strip()
+                urls.append(url)
 
-                videos = VideoItem.objects.filter(link=url)
-                ids = list(videos.values_list('id', flat=True))
-                self.search_index_service.delete_by_ids(ids)
+                if len(urls) >= batch_size:
+                    self._delete_from_database(urls)
 
-                [num_deleted, num_deleted_per_model] = videos.delete()
-
-                total_deleted += num_deleted
+        if urls:
+            self._delete_from_database(urls)
 
         shutil.rmtree(DownloadZipService.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
-        return total_deleted
+        return self.total_deleted
+
+    def _delete_from_database(self, urls: list) -> None:
+        videos = VideoItem.objects.filter(link__in=urls)
+        ids = list(videos.values_list('id', flat=True))
+
+        self.search_index_service.delete_by_ids(ids)
+        [num_deleted, num_deleted_per_model] = videos.delete()
+
+        self.total_deleted += num_deleted
 
     def _init(self, site: str):
         if site == 'xvideos':
