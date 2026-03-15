@@ -9077,3 +9077,44 @@ pre[class*=language-] {
 .token.entity {
     cursor: help;
 }
+
+/* ---------------- 18+ popup --------------- */
+/* Blur page when modal active */
+body.modal-open .main-content {
+    filter: blur(3px);
+}
+
+/* Modal styling */
+.modal-content {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+}
+
+/* Peachka logo */
+.peachka-logo {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--bs-primary);
+    letter-spacing: 1px;
+}
+
+/* Buttons */
+.btn-peach {
+    background: var(--bs-primary);
+    border: none;
+    font-weight: 600;
+    color: white;
+}
+
+.btn-peach:hover {
+    background: var(--bs-primary);
+}
+
+.btn-outline-light {
+    border-color: #444;
+}
+
+.age-text {
+    color: #bdbdbd;
+}
