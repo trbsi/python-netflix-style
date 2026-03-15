@@ -28,9 +28,11 @@ class DeleteVideosService:
 
                 if len(urls) >= batch_size:
                     self._delete_from_database(urls)
+                    urls.clear()
 
         if urls:
             self._delete_from_database(urls)
+            urls.clear()
 
         shutil.rmtree(DownloadZipService.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
