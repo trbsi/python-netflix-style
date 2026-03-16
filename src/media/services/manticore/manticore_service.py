@@ -27,6 +27,7 @@ class ManticoreService:
             "id": video.id,
             "doc": {
                 "title": video.title,
+                "slug": video.slug,
                 "thumbnail": video.thumb_large,
                 "duration": video.duration,
                 "categories": video.categories,
@@ -73,6 +74,7 @@ class ManticoreService:
                     "id": v.id,
                     "doc": {
                         "title": v.title,
+                        "slug": v.slug,
                         "thumbnail": v.thumb_large,
                         "duration": v.duration,
                         "categories": ', '.join(v.category_slugs()),
