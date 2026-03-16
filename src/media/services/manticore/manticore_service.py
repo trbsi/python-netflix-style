@@ -108,6 +108,7 @@ class ManticoreService:
             items.append(SearchItem(
                 id=hit.id,
                 title=hit.source['title'],
+                slug=hit.source['slug'],
                 duration=hit.source['duration'],
                 thumbnail=hit.source['thumbnail'],
                 categories=hit.source['categories']

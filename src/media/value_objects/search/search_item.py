@@ -4,9 +4,10 @@ from src.core.utils import unslugify
 
 
 class SearchItem:
-    def __init__(self, id: int, title: str, duration: int, thumbnail: str, categories: str):
+    def __init__(self, id: int, title: str, slug: str, duration: int, thumbnail: str, categories: str):
         self.id = id
         self.title = title
+        self.slug = slug
         self.duration = duration
         self.thumbnail = thumbnail
         self.categories = categories
@@ -17,7 +18,7 @@ class SearchItem:
             "title": self.title,
             "duration": self.duration,
             "thumbnail": self.thumbnail,
-            "url": reverse_lazy("media.single_video", kwargs={"id": self.id}),
+            "url": reverse_lazy("media.single_video", kwargs={"id": self.id, "slug": self.slug}),
             "categories": [
                 {
                     "title": category.strip(),

@@ -1,5 +1,4 @@
 from django.core.paginator import Paginator
-from django.urls import reverse_lazy
 
 from src.media.models import VideoItem
 
@@ -25,7 +24,7 @@ class SearchByCategoryService:
                 "title": video.title,
                 "thumbnail": video.thumbnail_small,
                 "duration": video.duration_formatted,
-                "url": reverse_lazy("media.single_video", kwargs={"id": video.id}, ),
+                "url": video.video_url,
                 "categories": [
                     {
                         "title": c['title'],
