@@ -35,18 +35,8 @@ urlpatterns = (
         path('movies/', include('src.media.urls')),
         path('.privatniadmin/', include('src.myadmin.urls')),
         path('.privatnomjesto/', admin.site.urls),
-        path(
-            "sitemap.xml",
-            sitemaps_views.index,
-            {"sitemaps": sitemaps},
-            name="django.contrib.sitemaps.views.index",
-        ),
-        path(
-            "sitemap-<section>.xml",
-            sitemaps_views.sitemap,
-            {"sitemaps": sitemaps},
-            name="django.contrib.sitemaps.views.sitemap",
-        ),
+        path("sitemap.xml", sitemaps_views.index, {"sitemaps": sitemaps}, ),
+        path("sitemap-<section>.xml", sitemaps_views.sitemap, {"sitemaps": sitemaps}, ),
     ]
 )
 
