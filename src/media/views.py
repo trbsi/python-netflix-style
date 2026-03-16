@@ -17,13 +17,13 @@ def media_home(request: HttpRequest) -> HttpResponse:
         videos = service.home_video_list()
         return render(request, 'home/home.html', videos)
 
-    html = cache.get('frontpage_html_v3')
+    html = cache.get('frontpage_html_v4')
 
     if not html:
         service = ListMediaService()
         videos = service.home_video_list()
         html = render(request, 'home/home.html', videos).content
-        cache.set('frontpage_html_v3', html, 60 * 60)
+        cache.set('frontpage_html_v4', html, 60 * 60)
 
     return HttpResponse(html)
 
