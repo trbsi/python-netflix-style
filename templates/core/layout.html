@@ -56,6 +56,13 @@
 
     <link rel="stylesheet" href="{% static 'assets/vendor/streamit-font/iconly.css' %}">
     {% endcompress %}
+
+    <!-- Preload the compressed CSS -->
+    <link rel="preload" href="{% compress 'css' %}{% static 'CACHE/css/compressed.css' %}" as="style" onload="this.rel='stylesheet'">
+
+    <noscript>
+      <link rel="stylesheet" href="{% static 'CACHE/css/compressed.css' %}">
+    </noscript>
 </head>
 
 <body class="">

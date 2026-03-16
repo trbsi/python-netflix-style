@@ -19,7 +19,7 @@
                                     <div class="img-box position-relative">
                                         <a href="{{ video.video_url }}">
                                             <img src="{{ video.thumbnail_large }}" alt="geners-img"
-                                                 class="img-fluid">
+                                                 class="img-fluid" loading="lazy">
                                             <h6 class="blog-description">{{ video.title|safe|truncatechars:50 }}</h6>
                                         </a>
                                     </div>
@@ -57,7 +57,8 @@
                                                class="position-relative top-0 bottom-0 start-0 end-0">
                                                 <img src="{{ video.thumbnail_large }}"
                                                      alt="movie-card"
-                                                     class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                                     class="img-fluid object-cover w-100 d-block border-0 rounded-3"
+                                                     loading="lazy">
                                             </a>
                                         </div>
                                         <div class="card-description with-transition">
@@ -122,7 +123,8 @@
                                                class="position-relative top-0 bottom-0 start-0 end-0">
                                                 <img src="{{ video.thumbnail_large }}"
                                                      alt="movie-card"
-                                                     class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                                     class="img-fluid object-cover w-100 d-block border-0 rounded-3"
+                                                     loading="lazy">
                                             </a>
                                         </div>
                                         <div class="card-description with-transition">
