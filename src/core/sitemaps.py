@@ -10,7 +10,7 @@ class VideoSitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return VideoItem.objects.all()
+        return VideoItem.objects.order_by('id')
 
     def lastmod(self, obj):
         return obj.created_at
@@ -21,4 +21,4 @@ class CategorySitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return VideoCategory.objects.all()
+        return VideoCategory.objects.order_by('id')

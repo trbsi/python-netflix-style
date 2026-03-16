@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps import views as sitemaps_views
 from django.urls import path, include
 
 from automationapp import settings as local_settings
@@ -35,10 +35,15 @@ urlpatterns = (
         path('movies/', include('src.media.urls')),
         path('.privatniadmin/', include('src.myadmin.urls')),
         path('.privatnomjesto/', admin.site.urls),
-        path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
+        path(
+            "sitemap.xml",
+            sitemaps_views.index,
+            {"sitemaps": sitemaps},
+            name="django.contrib.sitemaps.views.index",
+        ),
         path(
             "sitemap-<section>.xml",
-            sitemap,
+            sitemaps_views.sitemap,
             {"sitemaps": sitemaps},
             name="django.contrib.sitemaps.views.sitemap",
         ),
