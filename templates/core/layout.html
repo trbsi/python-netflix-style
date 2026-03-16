@@ -22,40 +22,47 @@
 
     {% compress css %}
     <!-- Library / Plugin Css Build -->
-    <link rel="preload" as="style" onload="this.rel='stylesheet'" href="{% static 'assets/css/core/libs.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/core/libs.min.css' %}"/>
 
     <!-- font-awesome css -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}"/>
 
     <!-- Iconly css -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/iconly/css/style.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/vendor/iconly/css/style.css' %}"/>
 
     <!-- Animate css -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/animate.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/vendor/animate.min.css' %}"/>
 
     <!-- SwiperSlider css -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/swiperSlider/swiper.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/swiperSlider/swiper.min.css' %}">
 
     <!-- Sweetlaert2 css -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/sweetalert2/sweetalert2.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/vendor/sweetalert2/sweetalert2.min.css' %}"/>
 
     <!-- Streamit Design System Css -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/css/streamit.min.css?v=5.4.0' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/streamit.min.css?v=5.4.0' %}"/>
 
     <!-- Custom Css -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/css/custom.min.css?v=5.4.0' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/custom.min.css?v=5.4.0' %}"/>
 
     <!-- Rtl Css -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/css/rtl.min.css?v=5.4.0' %}"/>
+    <link rel="stylesheet" href="{% static 'assets/css/rtl.min.css?v=5.4.0' %}"/>
 
     <!-- Phosphor icons  -->
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/phosphor-icons/Fonts/regular/style.css' %}">
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/phosphor-icons/Fonts/duotone/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/regular/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/duotone/style.css' %}">
 
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/phosphor-icons/Fonts/fill/style.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/fill/style.css' %}">
 
-    <link rel="preload" onload="this.rel='stylesheet'" href="{% static 'assets/vendor/streamit-font/iconly.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendor/streamit-font/iconly.css' %}">
     {% endcompress %}
+
+    <!-- Preload the compressed CSS -->
+    <link rel="preload" href="{% compress 'css' %}{% static 'CACHE/css/compressed.css' %}" as="style" onload="this.rel='stylesheet'">
+
+    <noscript>
+      <link rel="stylesheet" href="{% static 'CACHE/css/compressed.css' %}">
+    </noscript>
 </head>
 
 <body class="">
