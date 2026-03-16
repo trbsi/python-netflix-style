@@ -60,6 +60,8 @@ INSTALLED_APPS = [
 
     'django_celery_beat',
 
+    'compressor',  # css file compressor django-compressor
+
     'allauth',
     'allauth.account',
     # Optional -- requires install using `django-allauth[socialaccount]`.
@@ -166,6 +168,12 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
     },
 }
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "compressor.finders.CompressorFinder",
+]
+aCOMPRESS_ENABLED = True
 
 MEDIA_URL = '/media-asset/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media-asset')
