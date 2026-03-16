@@ -174,8 +174,8 @@ STATICFILES_FINDERS = [
     "compressor.finders.CompressorFinder",
 ]
 STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
-COMPRESS_ENABLED = True
-COMPRESS_OFFLINE = True
+COMPRESS_ENABLED = True if APP_ENV == 'production' else False
+COMPRESS_OFFLINE = True if APP_ENV == 'production' else False
 
 MEDIA_URL = '/media-asset/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media-asset')

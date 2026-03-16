@@ -21,44 +21,57 @@
           rel="stylesheet">
 
     {% compress css %}
-    <!-- Library / Plugin Css Build -->
-    <link rel="stylesheet" href="{% static 'assets/css/core/libs.min.css' %}"/>
+        <!-- Library / Plugin Css Build -->
+        <link rel="stylesheet" href="{% static 'assets/css/core/libs.min.css' %}"/>
 
-    <!-- font-awesome css -->
-    <link rel="stylesheet" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}"/>
+        <!-- font-awesome css -->
+        <link rel="stylesheet" href="{% static 'assets/vendor/font-awesome/css/all.min.css' %}"/>
 
-    <!-- Iconly css -->
-    <link rel="stylesheet" href="{% static 'assets/vendor/iconly/css/style.css' %}"/>
+        <!-- Iconly css -->
+        <link rel="stylesheet" href="{% static 'assets/vendor/iconly/css/style.css' %}"/>
 
-    <!-- Animate css -->
-    <link rel="stylesheet" href="{% static 'assets/vendor/animate.min.css' %}"/>
+        <!-- Animate css -->
+        <link rel="stylesheet" href="{% static 'assets/vendor/animate.min.css' %}"/>
 
-    <!-- SwiperSlider css -->
-    <link rel="stylesheet" href="{% static 'assets/vendor/swiperSlider/swiper.min.css' %}">
+        <!-- SwiperSlider css -->
+        <link rel="stylesheet" href="{% static 'assets/vendor/swiperSlider/swiper.min.css' %}">
 
-    <!-- Sweetlaert2 css -->
-    <link rel="stylesheet" href="{% static 'assets/vendor/sweetalert2/sweetalert2.min.css' %}"/>
+        <!-- Sweetlaert2 css -->
+        <link rel="stylesheet" href="{% static 'assets/vendor/sweetalert2/sweetalert2.min.css' %}"/>
 
-    <!-- Streamit Design System Css -->
-    <link rel="stylesheet" href="{% static 'assets/css/streamit.min.css?v=5.4.0' %}"/>
+        <!-- Streamit Design System Css -->
+        <link rel="stylesheet" href="{% static 'assets/css/streamit.min.css?v=5.4.0' %}"/>
 
-    <!-- Custom Css -->
-    <link rel="stylesheet" href="{% static 'assets/css/custom.min.css?v=5.4.0' %}"/>
+        <!-- Custom Css -->
+        <link rel="stylesheet" href="{% static 'assets/css/custom.min.css?v=5.4.0' %}"/>
 
-    <!-- Rtl Css -->
-    <link rel="stylesheet" href="{% static 'assets/css/rtl.min.css?v=5.4.0' %}"/>
+        <!-- Rtl Css -->
+        <link rel="stylesheet" href="{% static 'assets/css/rtl.min.css?v=5.4.0' %}"/>
 
-    <!-- Phosphor icons  -->
-    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/regular/style.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/duotone/style.css' %}">
+        <!-- Phosphor icons  -->
+        <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/regular/style.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/duotone/style.css' %}">
 
-    <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/fill/style.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/vendor/phosphor-icons/Fonts/fill/style.css' %}">
 
-    <link rel="stylesheet" href="{% static 'assets/vendor/streamit-font/iconly.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/vendor/streamit-font/iconly.css' %}">
     {% endcompress %}
 </head>
 
 <body class="">
+<span class="screen-darken"></span>
+<div class="loader simple-loader">
+    <div class="loader-body">
+        <div class="brand-reveal-wrapper">
+            <span class="brand-text">{{ TEMPLATE_APP_NAME }}</span>
+        </div>
+
+        <div class="horizontal-track">
+            <div class="red-line-fill"></div>
+        </div>
+    </div>
+</div>
+
 <main class="main-content">
     {% include "core/components/navigation.html" %}
 

@@ -3,6 +3,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_GET
 
+from automationapp import settings
 from src.media.models import VideoItem, VideoCategory
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
 from src.media.services.home.list_media_service import ListMediaService
@@ -11,13 +12,18 @@ from src.media.services.search.search_fulltext_service import SearchFullTextServ
 
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
-    html = cache.get('frontpage_html_v2')
+    if settings.APP_ENV != 'production':
+        service = ListMediaService()
+        videos = service.home_video_list()
+        return render(request, 'home/home.html', videos)
+
+    html = cache.get('frontpage_html_v3')
 
     if not html:
         service = ListMediaService()
         videos = service.home_video_list()
         html = render(request, 'home/home.html', videos).content
-        cache.set('frontpage_html_v2', html, 60 * 60)
+        cache.set('frontpage_html_v3', html, 60 * 60)
 
     return HttpResponse(html)
 
