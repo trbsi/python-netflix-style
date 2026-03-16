@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_GET
@@ -10,9 +11,15 @@ from src.media.services.search.search_fulltext_service import SearchFullTextServ
 
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
-    service = ListMediaService()
-    videos = service.home_video_list()
-    return render(request, 'home/home.html', videos)
+    html = cache.get('frontpage_html')
+
+    if not html:
+        service = ListMediaService()
+        videos = service.home_video_list()
+        html = render(request, 'home/home.html', videos).content
+        cache.set('frontpage_html', html)
+
+    return HttpResponse(html)
 
 
 @require_GET
