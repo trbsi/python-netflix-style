@@ -166,7 +166,7 @@ class DumpToDatabaseService:
             items,
             update_conflicts=True,
             batch_size=1000,
-            update_fields=['title', 'duration', 'thumb_small', 'thumb_large', 'embed_code', 'pub_date', 'site',
+            update_fields=['title', 'slug', 'duration', 'thumb_small', 'thumb_large', 'embed_code', 'pub_date', 'site',
                            'external_id', 'external_created_at', 'tags', 'categories']
         )
         external_ids = [v.external_id for v in items]
