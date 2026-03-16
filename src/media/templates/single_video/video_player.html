@@ -4,7 +4,7 @@
 
 {% block content %}
     <div class="back-btn">
-        <a class="btn btn-link text-white text-decoration-none p-0" href="{% url 'media.single_video' id=video.id %}"> <i
+        <a class="btn btn-link text-white text-decoration-none p-0" href="{{ video.video_url }}"> <i
                 class="ph ph-x"></i></a>
     </div>
 

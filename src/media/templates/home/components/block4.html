@@ -43,7 +43,7 @@
                                                 <ul class="d-flex align-items-center list-inline gap-2 movie-tag p-0 mt-3 mb-40">
                                                     <li class="font-size-18 trending-list">{{ video.pub_date_formatted }}</li>
                                                 </ul>
-                                                <a href="{% url 'media.single_video' id=video.id %}"
+                                                <a href="{{ video.video_url }}"
                                                    class="btn btn-primary text-capitalize position-relative rounded-3">
                                                  <span class="d-flex align-items-center gap-2">
                                                      <span class="button-text">play now</span>

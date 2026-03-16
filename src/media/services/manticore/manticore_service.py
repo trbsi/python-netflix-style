@@ -57,6 +57,7 @@ class ManticoreService:
             id BIGINT, 
             title TEXT, 
             thumbnail STRING, 
+            slug STRING, 
             duration INT, 
             categories TEXT
         )

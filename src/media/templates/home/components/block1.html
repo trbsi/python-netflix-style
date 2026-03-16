@@ -15,7 +15,7 @@
                             <div class="iq-watching-block">
                                 <div class="block-images position-relative">
                                     <div class="iq-image-box overly-images">
-                                        <a href="{% url 'media.single_video' id=video.id %}" class="d-block">
+                                        <a href="{{ video.video_url }}" class="d-block">
                                             <img src="{{ video.thumbnail_large }}" alt="movie-card"
                                                  class="w-100 d-block border-0 rounded-3 continue-image">
                                         </a>
@@ -77,7 +77,7 @@
                                 <div class="iq-top-ten-block position-relative">
                                     <div class="block-image position-relative">
                                         <div class="img-box">
-                                            <a class="overly-images" href="{% url 'media.single_video' id=video.id %}">
+                                            <a class="overly-images" href="{{ video.video_url }}">
                                                 <img src="{{ video.thumbnail_large }}"
                                                      alt="movie-card"
                                                      class="object-cover rounded-3">
@@ -112,7 +112,7 @@
                                 <div class="iq-card card-hover">
                                     <div class="block-images position-relative w-100">
                                         <div class="img-box w-100">
-                                            <a href="{% url 'media.single_video' id=video.id %}"
+                                            <a href="{{ video.video_url }}"
                                                class="position-relative top-0 bottom-0 start-0 end-0">
                                                 <img src="{{ video.thumbnail_large }}"
                                                      alt="movie-card"
@@ -132,7 +132,7 @@
                                             <div class="cart-content">
                                                 <div class="content-left">
                                                     <h5 class="iq-title text-capitalize">
-                                                        <a href="{% url 'media.single_video' id=video.id %}">{{ video.title|safe }}</a>
+                                                        <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
                                                     </h5>
                                                     {% comment %}
                                                 <div class="d-flex align-items-center gap-3">
@@ -146,7 +146,7 @@
                                             </div>
                                             <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
                                                 <div class="iq-play-button iq-button">
-                                                    <a href="{% url 'media.single_video' id=video.id %}"
+                                                    <a href="{{ video.video_url }}"
                                                        class="btn btn-primary w-100">Play Now
                                                     </a>
                                                 </div>
@@ -191,7 +191,7 @@
                                 <div class="iq-card card-hover landscape-card-hover">
                                     <div class="block-images position-relative w-100">
                                         <div class="img-box w-100">
-                                            <a href="{% url 'media.single_video' id=video.id %}"
+                                            <a href="{{ video.video_url }}"
                                                class="position-relative top-0 bottom-0 start-0 end-0">
                                                 <img src="{{ video.thumbnail_large }}"
                                                      alt="movie-card"
@@ -211,13 +211,13 @@
                                             <div class="cart-content">
                                                 <div class="content-left">
                                                     <h5 class="iq-title text-capitalize mb-0">
-                                                        <a href="{% url 'media.single_video' id=video.id %}">{{ video.title|safe }}</a>
+                                                        <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
                                                     </h5>
                                                 </div>
                                             </div>
                                             <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
                                                 <div class="iq-play-button iq-button">
-                                                    <a href="{% url 'media.single_video' id=video.id %}"
+                                                    <a href="{{ video.video_url }}"
                                                        class="btn btn-primary w-100">Play
                                                         Now</a>
                                                 </div>
@@ -259,7 +259,7 @@
                                 <div class="iq-card card-hover">
                                     <div class="block-images position-relative w-100">
                                         <div class="img-box w-100">
-                                            <a href="{% url 'media.single_video' id=video.id %}"
+                                            <a href="{{ video.video_url }}"
                                                class="position-relative top-0 bottom-0 start-0 end-0">
                                                 <img src="{{ video.thumbnail_large }}"
                                                      alt="movie-card"
@@ -279,7 +279,7 @@
                                             <div class="cart-content">
                                                 <div class="content-left">
                                                     <h5 class="iq-title text-capitalize">
-                                                        <a href="{% url 'media.single_video' id=video.id %}">{{ video.title|safe }}</a>
+                                                        <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
                                                     </h5>
                                                     {% comment %}
                                                 <div class="d-flex align-items-center gap-3">
@@ -293,7 +293,7 @@
                                             </div>
                                             <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
                                                 <div class="iq-play-button iq-button">
-                                                    <a href="{% url 'media.single_video' id=video.id %}"
+                                                    <a href="{{ video.video_url }}"
                                                        class="btn btn-primary w-100">Play Now
                                                     </a>
                                                 </div>

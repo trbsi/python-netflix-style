@@ -11,6 +11,7 @@ from src.media.models import VideoCategory
 class VideoItem(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.TextField()
+    slug = models.SlugField(default='')
     link = models.CharField(max_length=300)
     duration = models.PositiveIntegerField(help_text="Duration in seconds")
     thumb_small = models.TextField()
@@ -40,7 +41,7 @@ class VideoItem(models.Model):
 
     # for sitemap
     def get_absolute_url(self):
-        return reverse_lazy('media.single_video', kwargs={'id': self.id})
+        return reverse_lazy('media.single_video', kwargs={'id': self.id, 'slug': self.slug})
 
     def category_slugs(self):
         array = self.categories.split(",")
@@ -50,6 +51,10 @@ class VideoItem(models.Model):
                 result.append(slugify(category))
 
         return result
+
+    @property
+    def video_url(self):
+        return reverse_lazy('media.single_video', kwargs={'id': self.id, 'slug': self.slug})
 
     @property
     def duration_formatted(self) -> str:

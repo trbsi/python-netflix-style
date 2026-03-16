@@ -51,6 +51,7 @@ class DumpToDatabaseService:
                 # VIDEOS
                 video = VideoItem(
                     title=fields[fields_map['title']],
+                    slug=self._slug(fields, fields_map),
                     link=safe_get(fields, fields_map['url'], ''),
                     duration=duration,
                     thumb_small=fields[fields_map['thumb_small']],
@@ -185,6 +186,17 @@ class DumpToDatabaseService:
                 return video_id
 
         return external_id
+
+    def _slug(self, fields: list, fields_map: dict):
+        field = VideoItem._meta.get_field('slug')
+        max_length = field.max_length
+
+        slug = slugify(fields[fields_map['title']])
+
+        if len(slug) > max_length:
+            slug = slug[:max_length].rstrip("-")
+
+        return slug
 
     def _extract_created_at(self, site: str, data: str | None) -> datetime | None:
         if site == 'eporner':
