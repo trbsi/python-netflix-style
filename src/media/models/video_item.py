@@ -5,6 +5,7 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils.text import slugify
 
+from src.core.utils import full_url_for_route
 from src.media.models import VideoCategory
 
 
@@ -55,6 +56,10 @@ class VideoItem(models.Model):
     @property
     def video_url(self):
         return reverse_lazy('media.single_video', kwargs={'id': self.id, 'slug': self.slug})
+
+    @property
+    def video_full_url(self):
+        return full_url_for_route('media.single_video', kwargs={'id': self.id, 'slug': self.slug})
 
     @property
     def duration_formatted(self) -> str:

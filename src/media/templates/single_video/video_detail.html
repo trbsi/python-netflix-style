@@ -100,20 +100,19 @@
                             <button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal"
                                     data-bs-target="#likeModal"
                                     id="like-toggle">
-                          <span id="like-movies">
-                            <span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top"
-                                  data-bs-title="Like">
-                              <i class="ph ph-heart heart-icon"></i>
-                            </span>
-                          </span>
+                                <span id="like-movies">
+                                    <span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top"
+                                          data-bs-title="Like">
+                                        <i class="ph ph-heart heart-icon"></i>
+                                    </span>
+                                </span>
                             </button>
-
                             <button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal"
                                     data-bs-target="#shareModal">
-                          <span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top"
-                                data-bs-title="Share">
-                            <i class="ph ph-share-network"></i>
-                          </span>
+                                <span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top"
+                                      data-bs-title="Share">
+                                    <i class="ph ph-share-network"></i>
+                                </span>
                             </button>
                         </div>
                     </div>
@@ -169,7 +168,7 @@
                                         <div class="input-group mb-0">
                                             <input type="text" id="copyInput" class="form-control copy-post-url"
                                                    placeholder="Username"
-                                                   value="https://templates.iqonic.design/streamit-dist/frontend/html/index.html"
+                                                   value="{{ video.video_full_url }}"
                                                    aria-label="Username" readonly="">
                                             <button class="input-group-text copy-url-btn" id="copyButton"><i
                                                     class="ph ph-copy-simple"
