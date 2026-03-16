@@ -11,13 +11,13 @@ from src.media.services.search.search_fulltext_service import SearchFullTextServ
 
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
-    html = cache.get('frontpage_html')
+    html = cache.get('frontpage_html_v2')
 
     if not html:
         service = ListMediaService()
         videos = service.home_video_list()
         html = render(request, 'home/home.html', videos).content
-        cache.set('frontpage_html', html)
+        cache.set('frontpage_html_v2', html, 60 * 60)
 
     return HttpResponse(html)
 
