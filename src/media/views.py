@@ -16,7 +16,7 @@ def media_home(request: HttpRequest) -> HttpResponse:
 
 
 @require_GET
-def single_video(request: HttpRequest, id: int) -> HttpResponse:
+def single_video(request: HttpRequest, id: int, slug: str) -> HttpResponse:
     video = get_object_or_404(VideoItem, pk=id)
     service = ListMediaService()
     videos = service.single_video_list()
