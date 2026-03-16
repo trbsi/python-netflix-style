@@ -31,6 +31,9 @@ fi
 echo "🖼️ --------------------------- Collecting static files ---------------------------"
 docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py collectstatic --noinput --clear
 
+echo "🖼️ --------------------------- Compressing  ---------------------------"
+docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py compress
+
 echo "📜 --------------------------- Running migrations ---------------------------"
 docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py migrate
 
