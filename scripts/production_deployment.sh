@@ -37,6 +37,9 @@ docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py compress
 echo "📜 --------------------------- Running migrations ---------------------------"
 docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py migrate
 
+echo "📜 --------------------------- Clearing cache ---------------------------"
+docker exec -it $DOCKER_CONTAINER python manage.py shell -c "from django.core.cache import cache; cache.delete('frontpage_html')"
+
 echo "🔄 --------------------------- Restarting containers ---------------------------"
 docker restart "$DOCKER_CONTAINER" "$WORKER" "$BEAT" "$NGINX"
 
