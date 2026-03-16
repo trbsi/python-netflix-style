@@ -9079,42 +9079,40 @@ pre[class*=language-] {
 }
 
 /* ---------------- 18+ popup --------------- */
-/* Blur page when modal active */
-body.modal-open .main-content {
+/* Blur only when #ageModal modal is open */
+body.modal-open #ageModal ~ .main-content {
     filter: blur(3px);
 }
 
 /* Modal styling */
-.modal-content {
+#ageModal .modal-content {
     background: #141414;
     border: 1px solid #2a2a2a;
     border-radius: 12px;
 }
 
 /* Peachka logo */
-.peachka-logo {
+#ageModal .peachka-logo {
     font-size: 34px;
     font-weight: 700;
     color: var(--bs-primary);
     letter-spacing: 1px;
 }
 
-/* Buttons */
-.btn-peach {
-    background: var(--bs-primary);
+/* Enter button */
+#ageModal .btn-peach {
+    background-color: var(--bs-primary);
     border: none;
     font-weight: 600;
     color: white;
 }
 
-.btn-peach:hover {
-    background: var(--bs-primary);
+#ageModal .btn-peach:hover {
+    background-color: var(--bs-primary);
+    color: white;
 }
 
-.btn-outline-light {
+/* Under 18 button */
+#ageModal .btn-outline-light {
     border-color: #444;
-}
-
-.age-text {
-    color: #bdbdbd;
 }
