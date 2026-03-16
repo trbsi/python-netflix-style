@@ -8,29 +8,10 @@
                     <div class="d-flex align-items-center gap-2 gap-md-3">
                         <div class="logo-default">
                             <a class="navbar-brand text-primary me-0" href="/">
-                                {{TEMPLATE_APP_NAME}}
-                            </a>
-                        </div>
-                        <div class="logo-hotstar">
-                            <a class="navbar-brand text-primary me-0" href="./index.html">
-                                <img class="img-fluid logo" src="{% static 'assets/images/logo-hotstar.webp' %}" loading="lazy"
-                                     alt="streamit"/>
-                            </a>
-                        </div>
-                        <div class="logo-prime">
-                            <a class="navbar-brand text-primary me-0" href="./index.html">
-                                <img class="img-fluid logo" src="{% static 'assets/images/logo-prime.webp' %}" loading="lazy"
-                                     alt="streamit"/>
-                            </a>
-                        </div>
-                        <div class="logo-hulu">
-                            <a class="navbar-brand text-primary me-0" href="./index.html">
-                                <img class="img-fluid logo" src="{% static 'assets/images/logo-hulu.webp' %}" loading="lazy"
-                                     alt="streamit"/>
+                                {{ TEMPLATE_APP_NAME }}
                             </a>
                         </div>
                     </div>
-
                 </div>
                 <nav id="navbar_main"
                      class="offcanvas mobile-offcanvas nav navbar navbar-expand-xl hover-nav horizontal-nav mega-menu-content py-xl-0 w-100">
@@ -39,25 +20,7 @@
                             <div class="navbar-brand ms-3">
                                 <div class="logo-default">
                                     <a class="navbar-brand text-primary me-0" href="/">
-                                        {{TEMPLATE_APP_NAME}}
-                                    </a>
-                                </div>
-                                <div class="logo-hotstar">
-                                    <a class="navbar-brand text-primary me-0" href="/">
-                                        <img class="img-fluid logo" src="{% static 'assets/images/logo-hotstar.webp' %}"
-                                             loading="lazy" alt="streamit"/>
-                                    </a>
-                                </div>
-                                <div class="logo-prime">
-                                    <a class="navbar-brand text-primary me-0" href="/">
-                                        <img class="img-fluid logo" src="{% static 'assets/images/logo-prime.webp' %}"
-                                             loading="lazy" alt="streamit"/>
-                                    </a>
-                                </div>
-                                <div class="logo-hulu">
-                                    <a class="navbar-brand text-primary me-0" href="/">
-                                        <img class="img-fluid logo" src="{% static 'assets/images/logo-hulu.webp' %}"
-                                             loading="lazy" alt="streamit"/>
+                                        {{ TEMPLATE_APP_NAME }}
                                     </a>
                                 </div>
                             </div>
@@ -67,14 +30,14 @@
 
                         <ul class="navbar-nav iq-nav-menu  list-unstyled" id="header-menu">
                             <li class="nav-item">
-                                <a class="nav-link"  href="/">
+                                <a class="nav-link" href="/">
                                     <div class="d-flex justify-content-between">
                                         <span class="item-name">Movies</span>
                                     </div>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link"  href="{% url 'media.categories' %}">
+                                <a class="nav-link" href="{% url 'media.categories' %}">
                                     <div class="d-flex justify-content-between">
                                         <span class="item-name">Categories</span>
                                     </div>
@@ -199,7 +162,8 @@
                                     <li class="p-0">
                                         <div class="form-group input-group mb-0">
                                             <form method="GET" action="{% url 'media.search' %}">
-                                                <input type="text" name="query" class="form-control border-1 border-white"
+                                                <input type="text" name="query"
+                                                       class="form-control border-1 border-white"
                                                        placeholder="Search...">
                                                 <button type="submit" class="search-submit">
                                                     <i class="ph ph-magnifying-glass"></i>
