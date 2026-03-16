@@ -1,4 +1,5 @@
 import csv
+import random
 import re
 import sys
 from datetime import datetime
@@ -187,7 +188,7 @@ class DumpToDatabaseService:
 
         return external_id
 
-    def _slug(self, fields: list, fields_map: dict):
+    def _slug(self, fields: list, fields_map: dict) -> str:
         field = VideoItem._meta.get_field('slug')
         max_length = field.max_length
 
@@ -196,7 +197,7 @@ class DumpToDatabaseService:
         if len(slug) > max_length:
             slug = slug[:max_length].rstrip("-")
 
-        return slug
+        return slug if slug != '' else str(random.randint(1, 100000))
 
     def _extract_created_at(self, site: str, data: str | None) -> datetime | None:
         if site == 'eporner':
