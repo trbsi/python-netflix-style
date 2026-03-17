@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_GET
 
 from automationapp import settings
+from src.core.utils import unslugify
 from src.media.models import VideoItem, VideoCategory
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
 from src.media.services.home.list_media_service import ListMediaService
@@ -52,7 +53,9 @@ def categories(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
-    return render(request, 'categories/search.html', {'slug': slug})
+    category = unslugify(slug)
+    context = {'category': category, 'slug': slug}
+    return render(request, 'categories/search.html', context)
 
 
 @require_GET
