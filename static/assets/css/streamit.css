@@ -13,16 +13,6 @@
  * Copyright 2011-2025 The Bootstrap Authors
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
-
-@font-face {
-    font-family: 'Water Fuel Rocket';
-    src: url('WaterFuelRocket-Regular.woff2') format('woff2');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-
 .general-zindex {
     z-index: 900;
 }
@@ -19386,7 +19376,6 @@ table.table-border tfoot tr td {
 .navbar-brand {
     font-size: unset;
     padding: 0;
-    font-family: "Water Fuel Rocket";
     font-size: 1rem;
     display: inline-block;
     line-height: 2;
@@ -19832,7 +19821,7 @@ Slide Down Animation
 
 @media (max-width: 476px) {
     .navbar-brand img.logo {
-        width: 100px;
+        width: 150px;
     }
 }
 

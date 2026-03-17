@@ -9,13 +9,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{{ TEMPLATE_APP_NAME }} | {% block title %}{% endblock %}</title>
     <!-- Google Font Api KEY-->
-    <meta name="description" content="Watch premium adult videos online with unlimited streaming, fast performance, and high-quality porn. Enjoy a smooth and private viewing experience anytime.">
+    <meta name="description"
+          content="Watch premium adult videos online with unlimited streaming, fast performance, and high-quality porn. Enjoy a smooth and private viewing experience anytime.">
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}"/>
 
     <!-- Google Font -->
-    <link rel="preload" href="{% static 'assets/css/WaterFuelRocket-Regular.woff2' %}" as="font" type="font/woff2" crossorigin>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300&display=swap"
@@ -64,7 +64,7 @@
 <div class="loader simple-loader">
     <div class="loader-body">
         <div class="brand-reveal-wrapper">
-            <span class="brand-text">{{ TEMPLATE_APP_NAME }}</span>
+            <img src="{% static 'assets/images/logo.png' %}" class=" brand-text">
         </div>
 
         <div class="horizontal-track">
