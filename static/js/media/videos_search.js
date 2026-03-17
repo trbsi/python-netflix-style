@@ -3,9 +3,9 @@ function loadVideos(){
     if(loading) return;
 
     loading = true;
-    jQuery(".load-more-btn .button-text").text("Loading...");
+    $(".load-more-btn .button-text").text("Loading...");
 
-    jQuery.get(`${api_url}?query=${query}&page=${page}`, function(data) {
+    $.get(`${api_url}?query=${query}&page=${page}`, function(data) {
 
         data.videos.forEach(function(video){
 
@@ -58,12 +58,12 @@ function loadVideos(){
             </div>
             `;
 
-            jQuery("#videos-container").append(html);
+            $("#videos-container").append(html);
 
         });
 
         if(!data.has_next){
-            jQuery(".load-more-btn").hide();
+            $(".load-more-btn").hide();
         }
 
         page++;
@@ -71,13 +71,13 @@ function loadVideos(){
     });
 }
 
-jQuery(document).ready(function(){
+$(document).ready(function(){
 
     // load first page
     loadVideos();
 
     // load next page on click
-    jQuery(".load-more-btn").click(function(){
+    $(".load-more-btn").click(function(){
         loadVideos();
     });
 
