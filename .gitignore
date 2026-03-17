@@ -23,6 +23,7 @@ static/lora_models/*
 /pornhub_db.zip
 /assets/
 /sitemaps/
+/geoip/
 
 # Backup files #
 *.bak

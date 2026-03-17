@@ -247,3 +247,7 @@ SLACK_CHANNEL_ID = env('SLACK_CHANNEL_ID')
 
 # Proxy
 HTTP_PROXY = env('HTTP_PROXY')
+
+# GeoIp
+IP_DATABASE_BASE_PATH = os.path.join(BASE_DIR, 'geoip')
+IP_DATABASE_PATH = os.path.join(IP_DATABASE_BASE_PATH, 'geoip-db.mmdb')

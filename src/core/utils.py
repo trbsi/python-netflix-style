@@ -2,10 +2,12 @@ import datetime
 from gettext import ngettext
 
 from django.db.models import Model
+from django.http import HttpRequest
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 
 from automationapp import settings
+from src.core.value_object.ip_data import IpData
 
 
 def get_client_ip(request) -> str:
@@ -16,6 +18,30 @@ def get_client_ip(request) -> str:
     else:
         ip = request.META.get("REMOTE_ADDR")
     return ip
+
+
+def get_ip_data(ip: str | None, request: HttpRequest | None) -> IpData:
+    """
+    Detects timezone based on IP address using ipinfo.io API.
+    If no IP is provided, it will auto-detect your current public IP.
+    Usage:
+    """
+    if request:
+        ip = get_client_ip(request)
+
+    try:
+        reader = geoip2.database.Reader(settings.IP_DATABASE_PATH)
+        response = reader.city(ip)
+        data = IpData(
+            timezone=response.location.time_zone,
+            country_code=response.country.iso_code,
+            state_code=response.subdivisions.most_specific.iso_code
+        )
+        reader.close()
+
+        return data
+    except Exception as e:
+        return IpData()
 
 
 def full_url_for_route(route_name, kwargs=None, query_params=None):
