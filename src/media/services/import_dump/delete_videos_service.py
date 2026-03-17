@@ -16,31 +16,34 @@ class DeleteVideosService:
         self._init(site)
 
         batch_size = 1000
-        urls = []
+        rows_to_delete = []
         csv_file_path = self.download_zip_service.download_zip(self.ZIP_URL, self.ZIP_FILE, True)
 
         print('Deleting videos...')
         with open(csv_file_path, 'r') as csv_file:
             for row in csv_file:
                 row = row.split(self.fields_map['fields_split_by'])
-                url = row[1].strip()
-                urls.append(url)
+                index = self.fields_map['search_by_index']
+                row_value = row[index].strip()
+                rows_to_delete.append(row_value)
 
-                if len(urls) >= batch_size:
-                    self._delete_from_database(urls)
-                    urls.clear()
+                if len(rows_to_delete) >= batch_size:
+                    self._delete_from_database(rows_to_delete)
+                    rows_to_delete.clear()
 
-        if urls:
-            self._delete_from_database(urls)
-            urls.clear()
+        if rows_to_delete:
+            self._delete_from_database(rows_to_delete)
+            rows_to_delete.clear()
 
         shutil.rmtree(DownloadZipService.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
         return self.total_deleted
 
-    def _delete_from_database(self, urls: list) -> None:
-        videos = VideoItem.objects.filter(link__in=urls)
+    def _delete_from_database(self, rows_to_delete: list) -> None:
+        if self.fields_map['search_by_field'] == 'url':
+            videos = VideoItem.objects.filter(link__in=rows_to_delete)
+
         ids = list(videos.values_list('id', flat=True))
 
         self.search_index_service.delete_by_ids(ids)
@@ -53,5 +56,7 @@ class DeleteVideosService:
             self.ZIP_URL = 'https://public-assets.xvideos-cdn.com/webmaster-tools/xvideos.com-deleted-week.csv.zip'
             self.ZIP_FILE = 'xvideos.com-deleted.csv.zip'
             self.fields_map = {
-                'fields_split_by': '|'
+                'fields_split_by': '|',
+                'search_by_field': 'url',
+                'search_by_index': 1
             }
