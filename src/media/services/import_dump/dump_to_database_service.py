@@ -5,7 +5,6 @@ import sys
 from datetime import datetime
 
 from django.db.models import QuerySet
-from django.utils import timezone
 from django.utils.text import slugify
 from tqdm import tqdm
 
@@ -58,7 +57,6 @@ class DumpToDatabaseService:
                     thumb_small=fields[fields_map['thumb_small']],
                     thumb_large=fields[fields_map['thumb_large']],
                     embed_code=embed_code,
-                    pub_date=timezone.now(),
                     tags=fields[fields_map['tags']],
                     categories=categories,
                     site=site,
@@ -167,8 +165,8 @@ class DumpToDatabaseService:
             items,
             update_conflicts=True,
             batch_size=1000,
-            update_fields=['title', 'slug', 'duration', 'thumb_small', 'thumb_large', 'embed_code', 'pub_date', 'site',
-                           'external_id', 'external_created_at', 'tags', 'categories']
+            update_fields=['title', 'duration', 'thumb_small', 'thumb_large', 'embed_code',
+                           'external_created_at', 'tags', 'categories']
         )
         external_ids = [v.external_id for v in items]
         items = VideoItem.objects.filter(external_id__in=external_ids)

@@ -18,7 +18,6 @@ class VideoItem(models.Model):
     thumb_small = models.TextField()
     thumb_large = models.TextField()
     embed_code = models.TextField(help_text="Raw iframe HTML")
-    pub_date = models.DateTimeField()
     site = models.CharField(max_length=20)
     external_id = models.CharField(max_length=50, unique=True)
     external_created_at = models.DateField(null=True, blank=True)
@@ -79,7 +78,7 @@ class VideoItem(models.Model):
 
     @property
     def pub_date_formatted(self):
-        return self.pub_date.strftime("%b %d, %Y")
+        return self.external_created_at.strftime("%b %d, %Y")
 
     @property
     def categories_formatted(self):

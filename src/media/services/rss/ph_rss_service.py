@@ -30,7 +30,6 @@ class PhRssService:
                 thumb_small=item.findtext("thumb"),
                 thumb_large=item.findtext("thumb_large"),
                 embed_code=item.findtext("embed"),
-                pub_date=dt,
                 external_id=external_id,
                 site='pornhub',
             )
