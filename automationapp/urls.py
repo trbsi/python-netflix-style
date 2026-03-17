@@ -31,7 +31,7 @@ urlpatterns = (
         path('', include('src.core.urls')),
         path('notification/', include('src.notification.urls')),
         path('accounts/', include('allauth.urls')),
-        path('user/', include('src.user.urls')),
+        # path('user/', include('src.user.urls')), not used for now
         path('movies/', include('src.media.urls')),
         path('.privatniadmin/', include('src.myadmin.urls')),
         path('.privatnomjesto/', admin.site.urls),
