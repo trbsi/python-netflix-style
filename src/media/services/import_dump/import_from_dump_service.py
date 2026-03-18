@@ -15,8 +15,8 @@ class ImportFromDumpService:
         self.dump_to_database_service = DumpToDatabaseService()
         self.download_zip_service = DownloadZipService()
 
-    def import_from_dump(self, site: str, import_all: bool = False) -> list:
-        self._init(site)
+    def import_from_dump(self, site: str, import_all: bool = False, zip_url: str | None = None) -> list:
+        self._init(site, zip_url)
 
         csv_file_path = self.download_zip_service.download_zip(
             self.ZIP_URL,
@@ -39,10 +39,10 @@ class ImportFromDumpService:
 
         return [total_imported, count_today]
 
-    def _init(self, site: str):
+    def _init(self, site: str, zip_url: str | None = None):
         if site == 'pornhub':
             self.ZIP_URL = "https://www.pornhub.com/files/pornhub.com-db.zip"
-            self.ZIP_FILE = "pornhub.com-db.zippornhub_db.zip"
+            self.ZIP_FILE = "pornhub_com_db.zip"
             self.fields_map = {
                 'fields_split_by': '|',
                 'categories_split_by': ';',
@@ -59,7 +59,7 @@ class ImportFromDumpService:
             }
         elif site == 'eporner':
             self.ZIP_URL = 'https://www.eporner.com/sitemap/feeds/eporner_hq_640x360.txt.zip'
-            self.ZIP_FILE = 'eporner_hq_640x360.txt.zip'
+            self.ZIP_FILE = 'eporner_hq_640x360_txt.zip'
             self.fields_map = {
                 'fields_split_by': '|',
                 'categories_split_by': ',',
@@ -76,7 +76,7 @@ class ImportFromDumpService:
             }
         elif site == 'xvideos':
             self.ZIP_URL = 'https://public-assets.xvideos-cdn.com/webmaster-tools/xvideos.com-export-week.csv.zip'
-            self.ZIP_FILE = 'xvideos.com-export.csv.zip'
+            self.ZIP_FILE = 'xvideos_com_export_csv.zip'
             self.fields_map = {
                 'fields_split_by': ';',
                 'categories_split_by': ',',
@@ -91,3 +91,6 @@ class ImportFromDumpService:
                 'external_created_at': 12,
                 'url': 0,
             }
+
+        if zip_url:
+            self.ZIP_URL = zip_url

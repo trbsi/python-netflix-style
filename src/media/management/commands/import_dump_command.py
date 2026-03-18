@@ -9,6 +9,7 @@ from src.media.services.import_dump.import_from_dump_service import ImportFromDu
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("site", type=str, help="Site like: eporner, pornhub...")
+        parser.add_argument("--zip-url", type=str, help="Url to a zip file")
         parser.add_argument(
             "--import-all",
             action="store_true",
@@ -23,14 +24,16 @@ class Command(BaseCommand):
 
         import_all = options["import_all"]
         site = options["site"]
-        dump_service = ImportFromDumpService()
+        zip_url = options["zip_url"]
         message = ''
         total_imported = count_today = 0
 
         try:
             message = f'Importing dump from production. Import all: {"yes" if import_all else "no"}'
             self.info(message)
-            [total_imported, count_today] = dump_service.import_from_dump(site, import_all)
+
+            dump_service = ImportFromDumpService()
+            [total_imported, count_today] = dump_service.import_from_dump(site, import_all, zip_url)
         except Exception as e:
             self.error('Failed to import dump: {}'.format(e))
             bugsnag.notify(e)
