@@ -39,10 +39,10 @@ class DumpToDatabaseService:
             for index, line in enumerate(f):
 
                 line = line.strip()
-                fields = line.split(fields_map['fields_split_by'])
-
-                if '<iframe' not in line:
+                if not line or '<iframe' not in line:
                     continue
+
+                fields = line.split(fields_map['fields_split_by'])
 
                 try:
                     embed_code = self._embed_code(site, fields, fields_map).strip()
