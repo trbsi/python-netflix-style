@@ -120,7 +120,7 @@ def unslugify(slug):
     return slug.replace("-", " ").title()
 
 
-def safe_get(lst: list, index: int | str, default=None):
+def safe_get(lst: list, index: int | str, default=None) -> any:
     try:
         return lst[index]
     except IndexError:

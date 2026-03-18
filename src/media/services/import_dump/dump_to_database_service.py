@@ -50,12 +50,15 @@ class DumpToDatabaseService:
                     external_created_at = self._extract_created_at(site, fields, fields_map)
                     duration = self._duration(site, fields, fields_map)
                     external_id = self._get_external_id(site, fields, fields_map)
+                    title = self._get_safe_by_size(fields, fields_map['title'], 'title')
+                    slug = self._slug(fields, fields_map)
+                    link = self._get_safe_by_size(fields, fields_map['url'], 'link')
 
                     # VIDEOS
                     video = VideoItem(
-                        title=fields[fields_map['title']],
-                        slug=self._slug(fields, fields_map),
-                        link=safe_get(fields, fields_map['url'], ''),
+                        title=title,
+                        slug=slug,
+                        link=link,
                         duration=duration,
                         thumb_small=fields[fields_map['thumb_small']],
                         thumb_large=fields[fields_map['thumb_large']],
@@ -203,6 +206,16 @@ class DumpToDatabaseService:
             slug = slug[:max_length].rstrip("-")
 
         return slug if slug != '' else str(random.randint(1, 100000))
+
+    def _get_safe_by_size(self, fields: list, index: int, database_field: str) -> str:
+        value = safe_get(fields, index, ''),
+        field = VideoItem._meta.get_field(database_field)
+        max_length = field.max_length
+
+        if len(value) > max_length:
+            return value[:max_length]
+
+        return value
 
     def _extract_created_at(self, site: str, fields: list, fields_map: dict) -> datetime | None:
         data = safe_get(fields, fields_map['external_created_at'])
