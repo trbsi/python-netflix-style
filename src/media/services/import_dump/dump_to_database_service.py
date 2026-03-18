@@ -4,6 +4,7 @@ import re
 import sys
 from datetime import datetime
 
+import bugsnag
 from django.db.models import QuerySet
 from django.utils.text import slugify
 from tqdm import tqdm
@@ -36,34 +37,37 @@ class DumpToDatabaseService:
 
             f.seek(0)  # reset to first line
             for index, line in enumerate(f):
+
                 line = line.strip()
                 fields = line.split(fields_map['fields_split_by'])
 
-                categories = self._get_categories(fields, fields_map)
-                external_created_at = self._extract_created_at(
-                    site,
-                    safe_get(fields, fields_map['external_created_at'])
-                )
-                embed_code = self._embed_code(site, fields, fields_map).strip()
-                duration = self._duration(site, fields, fields_map)
-                external_id = self._get_external_id(site, fields, fields_map)
+                try:
+                    categories = self._get_categories(fields, fields_map)
+                    external_created_at = self._extract_created_at(site, fields, fields_map)
+                    embed_code = self._embed_code(site, fields, fields_map).strip()
+                    duration = self._duration(site, fields, fields_map)
+                    external_id = self._get_external_id(site, fields, fields_map)
 
-                # VIDEOS
-                video = VideoItem(
-                    title=fields[fields_map['title']],
-                    slug=self._slug(fields, fields_map),
-                    link=safe_get(fields, fields_map['url'], ''),
-                    duration=duration,
-                    thumb_small=fields[fields_map['thumb_small']],
-                    thumb_large=fields[fields_map['thumb_large']],
-                    embed_code=embed_code,
-                    tags=fields[fields_map['tags']],
-                    categories=categories,
-                    site=site,
-                    external_id=external_id,
-                    external_created_at=external_created_at,
-                )
-                videos_array.append(video)
+                    # VIDEOS
+                    video = VideoItem(
+                        title=fields[fields_map['title']],
+                        slug=self._slug(fields, fields_map),
+                        link=safe_get(fields, fields_map['url'], ''),
+                        duration=duration,
+                        thumb_small=fields[fields_map['thumb_small']],
+                        thumb_large=fields[fields_map['thumb_large']],
+                        embed_code=embed_code,
+                        tags=fields[fields_map['tags']],
+                        categories=categories,
+                        site=site,
+                        external_id=external_id,
+                        external_created_at=external_created_at,
+                    )
+                    videos_array.append(video)
+                except Exception as e:
+                    exception = Exception(f'Exception: {str(e)}. Line: {line}')
+                    bugsnag.notify(exception)
+                    continue
 
                 if len(videos_array) >= videos_batch:
                     saved_videos = self._insert_batch_videos(videos_array)
@@ -197,7 +201,9 @@ class DumpToDatabaseService:
 
         return slug if slug != '' else str(random.randint(1, 100000))
 
-    def _extract_created_at(self, site: str, data: str | None) -> datetime | None:
+    def _extract_created_at(self, site: str, fields: list, fields_map: dict) -> datetime | None:
+        data = safe_get(fields, fields_map['external_created_at'])
+
         if site == 'eporner':
             return datetime.now()
 
