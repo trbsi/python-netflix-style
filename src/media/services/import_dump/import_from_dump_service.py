@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from django.utils import timezone
+from django.db.models import Max
 
 from src.media.models import VideoItem
 from src.media.services.import_dump.download_zip_service import DownloadZipService
@@ -17,6 +17,7 @@ class ImportFromDumpService:
 
     def import_from_dump(self, site: str, import_all: bool = False, zip_url: str | None = None) -> list:
         self._init(site, zip_url)
+        max_id = VideoItem.objects.aggregate(Max('id'))['id__max']
 
         csv_file_path = self.download_zip_service.download_zip(
             self.ZIP_URL,
@@ -34,8 +35,7 @@ class ImportFromDumpService:
         shutil.rmtree(DownloadZipService.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
-        today = timezone.now().date()
-        count_today = VideoItem.objects.filter(external_created_at=today).count()
+        count_today = VideoItem.objects.filter(id__gt=max_id).count()
 
         return [total_imported, count_today]
 
