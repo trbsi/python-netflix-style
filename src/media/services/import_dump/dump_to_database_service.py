@@ -41,10 +41,13 @@ class DumpToDatabaseService:
                 line = line.strip()
                 fields = line.split(fields_map['fields_split_by'])
 
+                if '<iframe' not in line:
+                    continue
+
                 try:
+                    embed_code = self._embed_code(site, fields, fields_map).strip()
                     categories = self._get_categories(fields, fields_map)
                     external_created_at = self._extract_created_at(site, fields, fields_map)
-                    embed_code = self._embed_code(site, fields, fields_map).strip()
                     duration = self._duration(site, fields, fields_map)
                     external_id = self._get_external_id(site, fields, fields_map)
 
