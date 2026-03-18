@@ -29,7 +29,9 @@ class Command(BaseCommand):
         total_imported = count_today = 0
 
         try:
-            message = f'Importing dump from production. Import all: {"yes" if import_all else "no"}'
+            message = f'Importing dump from production. Import all: {"yes" if import_all else "no"}. '
+            if zip_url:
+                message += f'Zip URL: {zip_url}. '
             self.info(message)
 
             dump_service = ImportFromDumpService()
