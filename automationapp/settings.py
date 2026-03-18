@@ -56,8 +56,6 @@ INSTALLED_APPS = [
     'src.media.apps.MediaConfig',
     'src.myadmin.apps.AdminConfig',
 
-    'django.contrib.sitemaps',
-
     'django_celery_beat',
 
     'compressor',  # css file compressor django-compressor
@@ -251,3 +249,6 @@ HTTP_PROXY = env('HTTP_PROXY')
 # GeoIp
 IP_DATABASE_BASE_PATH = os.path.join(BASE_DIR, 'geoip')
 IP_DATABASE_PATH = os.path.join(IP_DATABASE_BASE_PATH, 'geoip-db.mmdb')
+
+# Sitemap
+SITEMAPS_DIR = os.path.join(BASE_DIR, 'sitemaps')

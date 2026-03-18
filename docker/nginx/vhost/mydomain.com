@@ -16,3 +16,7 @@ location /media-asset/ {
     # Try to serve the file directly, if not found continue to app
     try_files $uri $uri/ =404;
 }
+
+location /sitemaps/ {
+    alias /usr/share/nginx/sitemaps/;
+}
