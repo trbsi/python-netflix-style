@@ -1,6 +1,7 @@
 import random
 from datetime import timedelta
 
+import bugsnag
 from django.core.cache import cache
 from django.utils import timezone
 
@@ -10,18 +11,36 @@ from src.media.models import VideoItem
 class FrontpageService:
     def generate_frontpage(self) -> int:
         week = timezone.now() - timedelta(days=7)
-        max_id = VideoItem.objects.order_by('-id').first().id
-        record = VideoItem.objects.order_by('id').filter(external_created_at=week).first()
-        min_id = record.id if record else max_id - 1000
+        total_videos = 200
 
-        ids = set()
-        total_videos = 200  # sum of src.media.services.home.list_media_service.ListMediaService.home_video_list
+        # 1. Try getting all videos from last week
+        candidates = list(
+            VideoItem.objects.filter(external_created_at__gte=week)
+            .values_list('id', flat=True)
+        )
 
-        while len(ids) < total_videos:
-            rand = random.randint(min_id, max_id)
-            if VideoItem.objects.filter(id=rand).exists():
-                ids.add(rand)
+        # 2. If there aren’t enough, take additional videos from older entries
+        if len(candidates) < total_videos:
+            # Get the remaining number needed
+            remaining = total_videos - len(candidates)
 
-        cache.set('frontpage_ids', list(ids), 60 * 60 * 24)
+            # Exclude the already included IDs
+            extra_candidates = list(
+                VideoItem.objects.exclude(id__in=candidates)
+                .order_by('-id')
+                .values_list('id', flat=True)[:remaining]
+            )
 
-        return len(ids)
+            candidates.extend(extra_candidates)
+
+        # 3. Shuffle and take exactly total_videos
+        if len(candidates) < total_videos:
+            e = ValueError(f"Not enough videos to generate frontpage. Found {len(candidates)}")
+            bugsnag.notify(e)
+            raise e
+
+        selected_ids = random.sample(candidates, total_videos)
+
+        # 4. Cache and return
+        cache.set('frontpage_ids', selected_ids, 60 * 60 * 24)
+        return len(selected_ids)
