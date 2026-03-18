@@ -208,9 +208,9 @@ class DumpToDatabaseService:
         return slug if slug != '' else str(random.randint(1, 100000))
 
     def _get_safe_by_size(self, fields: list, index: int, database_field: str) -> str:
-        value = safe_get(fields, index, ''),
+        value = safe_get(fields, index, '')
         field = VideoItem._meta.get_field(database_field)
-        max_length = field.max_length
+        max_length = field.max_length if (field.max_length is not None) else 10_000
 
         if len(value) > max_length:
             return value[:max_length]
