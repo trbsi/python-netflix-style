@@ -9,6 +9,7 @@ from src.media.services.import_dump.delete_videos_service import DeleteVideosSer
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("site", type=str, help="Site like: eporner, pornhub...")
+        parser.add_argument("--zip-url", type=str, help="Url to a zip file")
 
     # https://www.eporner.com/api/v2/feeds/
     # https://info.xvideos.net/db
@@ -17,12 +18,16 @@ class Command(BaseCommand):
         start = time.time()
 
         site = options["site"]
-        delete_service = DeleteVideosService()
+        zip_url = options["zip_url"]
         total_deleted = 0
 
         try:
             self.info('Deleting videos.')
-            total_deleted = delete_service.remove_deleted_videos_from_database(site)
+            if zip_url:
+                self.info(f'Zip URL: {zip_url}.')
+
+            delete_service = DeleteVideosService()
+            total_deleted = delete_service.remove_deleted_videos_from_database(site, zip_url)
         except Exception as e:
             self.error('Failed to delete videos: {}'.format(e))
             bugsnag.notify(e)

@@ -12,8 +12,8 @@ class DeleteVideosService:
         self.search_index_service = ManticoreService()
         self.total_deleted = 0
 
-    def remove_deleted_videos_from_database(self, site: str) -> int:
-        self._init(site)
+    def remove_deleted_videos_from_database(self, site: str, zip_url: str | None = None) -> int:
+        self._init(site, zip_url)
 
         batch_size = 1000
         rows_to_delete = []
@@ -51,7 +51,7 @@ class DeleteVideosService:
 
         self.total_deleted += num_deleted
 
-    def _init(self, site: str):
+    def _init(self, site: str, zip_url: str | None = None):
         if site == 'xvideos':
             self.ZIP_URL = 'https://public-assets.xvideos-cdn.com/webmaster-tools/xvideos.com-deleted-week.csv.zip'
             self.ZIP_FILE = 'xvideos.com-deleted.csv.zip'
@@ -60,3 +60,6 @@ class DeleteVideosService:
                 'search_by_field': 'url',
                 'search_by_index': 1
             }
+
+        if zip_url:
+            self.ZIP_URL = zip_url
