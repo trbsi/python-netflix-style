@@ -39,10 +39,6 @@ class VideoItem(models.Model):
             models.Index(fields=['external_created_at'])
         ]
 
-    # for sitemap
-    def get_absolute_url(self):
-        return reverse_lazy('media.single_video', kwargs={'id': self.id, 'slug': self.slug})
-
     def category_slugs(self):
         array = self.categories.split(",")
         result = []
