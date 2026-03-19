@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'src.myadmin.apps.AdminConfig',
     'src.sitemap.apps.SitemapConfig',
 
+    'django.contrib.sitemaps',
     'django_celery_beat',
 
     'compressor',  # css file compressor django-compressor
