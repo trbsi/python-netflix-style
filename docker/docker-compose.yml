@@ -13,7 +13,6 @@ services:
       - ./nginx/html:/usr/share/nginx/html
       - ./nginx/my_custom_proxy_settings.conf:/etc/nginx/conf.d/my_custom_proxy_settings.conf
       - ./nginx/gzip.conf:/etc/nginx/conf.d/gzip.conf:ro
-      - ../assets:/usr/share/nginx/assets # to be able to access assets via /static url (see ./vhost/mydomain.con)
       - ./media-asset:/app/media-asset  # to be able to access media via /static url (see ./vhost/mydomain.con)
       - automationapp_sitemaps:/usr/share/nginx/sitemaps # to be able to access media via /sitemap url (see ./vhost/mydomain.con)
     networks: [ automationapp-net ]
