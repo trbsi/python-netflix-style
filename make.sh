@@ -41,6 +41,10 @@ createsuperuser() {
     docker exec -it "$DJANGO_CONTAINER" poetry run python manage.py createsuperuser
 }
 
+copy_category_images() {
+    docker cp ./static/images/ automationapp-django:/app/media-asset
+}
+
 # Parse command-line argument
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 {builddocker|migrate|makemigrations}"

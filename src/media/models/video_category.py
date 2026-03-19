@@ -13,3 +13,7 @@ class VideoCategory(models.Model):
     # for sitemap
     def get_absolute_url(self):
         return reverse_lazy('media.categories_search', kwargs={'slug': self.slug})
+
+    @property
+    def category_url(self):
+        return reverse_lazy('media.categories_search', kwargs={'slug': self.slug})

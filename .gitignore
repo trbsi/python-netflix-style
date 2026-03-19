@@ -24,6 +24,7 @@ static/lora_models/*
 /assets/
 /sitemaps/
 /geoip/
+/media-asset/
 
 # Backup files #
 *.bak
