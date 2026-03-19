@@ -36,19 +36,18 @@ class GenerateSitemapService():
                 next_start_id = last_sitemap.end_id + 1 if last_sitemap else 0
                 next_index = SitemapFile.objects.count()
 
-        queryset = VideoItem.objects.filter(id__gte=next_start_id).order_by('id')
+        last_id = next_start_id
 
-        batch = []
-        for video in queryset.iterator(chunk_size=1000):
-            batch.append(video)
-            if len(batch) >= self.BATCH_SIZE:
-                self.write_sitemap(batch, next_index)
-                batch = []
-                next_index += 1
+        while True:
+            videos = VideoItem.objects.filter(id__gt=last_id).order_by('id')[:self.BATCH_SIZE]
 
-        # Write remaining videos (partial batch)
-        if batch:
-            self.write_sitemap(batch, next_index)
+            if not videos:
+                break
+
+            self.write_sitemap(videos, next_index)
+
+            last_id = videos[-1]
+            next_index += 1
 
         # Generate sitemap index
         self.write_index()
