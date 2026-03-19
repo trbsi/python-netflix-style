@@ -1,8 +1,8 @@
 import time
 
-import bugsnag
-
 from src.core.management.commands.base_command import BaseCommand
+from src.notification.services.notification_service import NotificationService
+from src.notification.value_objects.push_notification_value_object import PushNotificationValueObject
 from src.sitemap.services.generate_sitemap.generate_sitemap_service import GenerateSitemapService
 
 
@@ -40,4 +40,5 @@ class Command(BaseCommand):
         message = message + use_gzip + full
 
         print(message)
-        bugsnag.notify(Exception(message))
+        push = PushNotificationValueObject(body=message)
+        NotificationService.send_notification(push)
