@@ -35,10 +35,9 @@ class Command(BaseCommand):
         minutes = (end - start) / 60
 
         message = f"GenerateSitemapCommand. Execution time: {minutes:.2f} minutes. "
-        if is_full:
-            message = message + "Full sitemaps generated."
-        else:
-            message = message + "Incremental sitemaps generated."
+        full = "Full sitemaps generated. " if is_full else "Incremental sitemaps generated. "
+        use_gzip = "Using gzip. " if use_gzip else "Not using gzip. "
+        message = message + use_gzip + full
 
         print(message)
         bugsnag.notify(Exception(message))
