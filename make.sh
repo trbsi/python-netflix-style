@@ -73,6 +73,9 @@ case "$1" in
     createsuperuser)
         createsuperuser
         ;;
+    copy_category_images)
+        copy_category_images
+        ;;
     *)
         echo "Unknown command: $1"
         echo "Usage: $0 {builddocker|migrate|makemigrations}"
