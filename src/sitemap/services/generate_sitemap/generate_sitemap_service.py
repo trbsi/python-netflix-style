@@ -85,7 +85,7 @@ class GenerateSitemapService():
         f = open(index_path, 'w', encoding='utf-8')
         f.write('<?xml version="1.0" encoding="UTF-8"?>\n')
         f.write('<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n')
-        for sitemap in SitemapFile.objects.order_by('filename'):
+        for sitemap in SitemapFile.objects.order_by('id'):
             f.write("  <sitemap>\n")
             f.write(f"    <loc>{settings.APP_URL}/sitemaps/{sitemap.filename}</loc>\n")
             f.write(f"    <lastmod>{timezone.now().date()}</lastmod>\n")
