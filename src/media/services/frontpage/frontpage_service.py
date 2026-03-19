@@ -43,4 +43,6 @@ class FrontpageService:
 
         # 4. Cache and return
         cache.set('frontpage_ids', selected_ids, 60 * 60 * 24)
+        cache.delete('frontpage_html')
+        
         return len(selected_ids)
