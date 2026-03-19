@@ -1,8 +1,8 @@
 import time
 
 import bugsnag
-from django.core.management.base import BaseCommand
 
+from src.core.management.commands.base_command import BaseCommand
 from src.sitemap.services.generate_sitemap.generate_sitemap_service import GenerateSitemapService
 
 
@@ -19,6 +19,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         start = time.time()
 
+        self.info('Starting to generate sitemaps')
+        
         service = GenerateSitemapService()
         service.generate_sitemap(options["full"])
 
