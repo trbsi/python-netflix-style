@@ -93,7 +93,7 @@ class DumpToDatabaseService:
                     video_category = VideoCategory(
                         slug=slug,
                         title=category_label,
-                        image=f'images/categories/{slug}.jpg',
+                        image=f'/media-asset/images/categories/{slug}.jpg',
                     )
                     categories_array.append(video_category)
 
