@@ -39,14 +39,14 @@ class GenerateSitemapService():
         last_id = next_start_id
 
         while True:
-            videos = VideoItem.objects.filter(id__gt=last_id).order_by('id')[:self.BATCH_SIZE]
+            videos = list(VideoItem.objects.filter(id__gt=last_id).order_by('id')[:self.BATCH_SIZE])
 
             if not videos:
                 break
 
             self.write_sitemap(videos, next_index)
 
-            last_id = videos[-1]
+            last_id = videos[-1].id
             next_index += 1
 
         # Generate sitemap index
