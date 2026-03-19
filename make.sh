@@ -42,7 +42,7 @@ createsuperuser() {
 }
 
 copy_category_images() {
-    docker cp ./static/images/ automationapp-django:/app/media-asset
+    cp -R static/images/ media-asset/
 }
 
 # Parse command-line argument
