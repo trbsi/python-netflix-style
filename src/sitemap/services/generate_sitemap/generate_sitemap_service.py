@@ -10,9 +10,8 @@ from src.sitemap.models import SitemapFile
 
 class GenerateSitemapService():
     BATCH_SIZE = 50000  # Max URLs per sitemap
-    USE_GZIP = True  # Set to True to generate .xml.gz
 
-    def generate_sitemap(self, full_regeneration: bool):
+    def generate_sitemap(self, full_regeneration: bool, use_gzip: bool):
         os.makedirs(settings.SITEMAPS_DIR, exist_ok=True)
 
         if full_regeneration:
@@ -44,7 +43,7 @@ class GenerateSitemapService():
             if not videos:
                 break
 
-            self.write_sitemap(videos, next_index)
+            self.write_sitemap(videos, next_index, use_gzip)
 
             last_id = videos[-1].id
             next_index += 1
@@ -53,10 +52,10 @@ class GenerateSitemapService():
         self.write_index()
         print("Sitemap generation complete.")
 
-    def write_sitemap(self, videos: list[VideoItem], index: int):
+    def write_sitemap(self, videos: list[VideoItem], index: int, use_gzip: bool):
         filename = f"sitemap_videos_{index}.xml"
         filepath = os.path.join(settings.SITEMAPS_DIR, filename)
-        if self.USE_GZIP:
+        if use_gzip:
             filepath += ".gz"
             f = gzip.open(filepath, 'wt', encoding='utf-8')
         else:

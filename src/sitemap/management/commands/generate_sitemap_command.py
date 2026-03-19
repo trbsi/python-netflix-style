@@ -15,19 +15,25 @@ class Command(BaseCommand):
             action="store_true",
             help="Regenerate all sitemaps from scratch"
         )
+        parser.add_argument(
+            "--use-gzip",
+            action="store_true",
+            help="Store sitemap as gzip or not"
+        )
 
     def handle(self, *args, **options):
         is_full = options["full"]
+        use_gzip = options["use_gzip"]
         start = time.time()
 
         self.info('Starting to generate sitemaps')
 
         service = GenerateSitemapService()
-        service.generate_sitemap(is_full)
+        service.generate_sitemap(is_full, use_gzip)
 
         end = time.time()
         minutes = (end - start) / 60
-        
+
         message = f"GenerateSitemapCommand. Execution time: {minutes:.2f} minutes. "
         if is_full:
             message = message + "Full sitemaps generated."
