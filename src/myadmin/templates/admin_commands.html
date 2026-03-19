@@ -1,0 +1,13 @@
+<h1>Sites ({{site}})</h1>
+<ul>
+    <li><h1><a href="{% url 'admin.commands' %}?site=xvideos">Xvideos</a></h1></li>
+    <li><h1><a href="{% url 'admin.commands' %}?site=pornhub">Pornhub</a></h1></li>
+    <li><h1><a href="{% url 'admin.commands' %}?site=eporner">Eporner</a></h1></li>
+</ul>
+
+<h1>Actions</h1>
+<ul>
+    <li><h1><a href="{% url 'admin.trigger_import_partial' %}?site={{site}}">Trigger partial import</a></h1></li>
+    <li><h1><a href="{% url 'admin.trigger_generate_frontend' %}?site={{site}}">Trigger generate frontend</a></h1></li>
+    <li><h1><a href="{% url 'admin.trigger_sitemap_partial' %}?site={{site}}">Trigger sitemap partial</a></h1></li>
+</ul>
