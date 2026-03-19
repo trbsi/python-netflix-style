@@ -54,7 +54,7 @@ class GenerateSitemapService():
         print("Sitemap generation complete.")
 
     def write_sitemap(self, videos: list[VideoItem], index: int):
-        filename = f"sitemap_{index}.xml"
+        filename = f"sitemap_videos_{index}.xml"
         filepath = os.path.join(settings.SITEMAPS_DIR, filename)
         if self.USE_GZIP:
             filepath += ".gz"
