@@ -4,6 +4,8 @@ import bugsnag
 
 from src.core.management.commands.base_command import BaseCommand
 from src.media.services.import_dump.delete_videos_service import DeleteVideosService
+from src.notification.services.notification_service import NotificationService
+from src.notification.value_objects.push_notification_value_object import PushNotificationValueObject
 
 
 class Command(BaseCommand):
@@ -37,4 +39,6 @@ class Command(BaseCommand):
         minutes = (end - start) / 60
         message = f"DeleteVideosCommand. Execution time: {minutes:.2f} minutes. Total deleted: {total_deleted}."
         print(message)
-        bugsnag.notify(Exception(message))
+
+        push = PushNotificationValueObject(body=message)
+        NotificationService.send_notification(push)

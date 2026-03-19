@@ -1,11 +1,11 @@
 import random
 
 import bugsnag
-from automationapp import settings
 from django.http import HttpRequest
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 
+from automationapp import settings
 from src.notification.services.notification_service import NotificationService
 from src.notification.value_objects.email_value_object import EmailValueObject
 from src.notification.value_objects.push_notification_value_object import PushNotificationValueObject
@@ -31,7 +31,6 @@ def test_notifications(request: HttpRequest) -> JsonResponse:
 
     if only == 'push' and user is not None:
         notifications.append(PushNotificationValueObject(
-            user_id=user.id,
             body=f'This is test push notification {random.randint(1, 100000)}',
             title='Some cool title'
         ))
@@ -50,12 +49,10 @@ def test_notifications(request: HttpRequest) -> JsonResponse:
             to=['admins']
         ))
 
-        if user is not None:
-            notifications.append(PushNotificationValueObject(
-                user_id=user.id,
-                body=f'This is test push notification {random.randint(1, 100000)}. {url}',
-                title='Some cool title'
-            ))
+        notifications.append(PushNotificationValueObject(
+            body=f'This is test push notification {random.randint(1, 100000)}. {settings.APP_URL}',
+            title='Some cool title'
+        ))
 
     bugsnag.notify(Exception(f'This is test error {random.randint(1, 100000)}'))
     NotificationService.send_notification(*notifications)
