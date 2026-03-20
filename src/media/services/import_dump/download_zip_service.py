@@ -43,18 +43,18 @@ class DownloadZipService:
         if zip_file.endswith(".zip"):
             with zipfile.ZipFile(zip_file, "r") as zip_ref:
                 zip_ref.extractall(self.EXTRACT_DIR)
+                extracted_files = zip_ref.namelist()
         else:
             shutil.copy(zip_file, self.EXTRACT_DIR)
+            extracted_files = [zip_file]
 
         print("Extraction complete.")
 
         # 3. Find CSV file
-        csv_file_path = None
-        for root, dirs, files in os.walk(self.EXTRACT_DIR):
-            for file in files:
-                if file.endswith(".csv") or file.endswith(".txt"):
-                    csv_file_path = os.path.join(root, file)
-                    break
+        csv_files = [
+            file for file in extracted_files if file.endswith(".csv") or file.endswith(".txt")
+        ]
+        csv_file_path = os.path.join(self.EXTRACT_DIR, csv_files[0])
 
         if not csv_file_path:
             raise Exception("CSV file not found after extraction.")
