@@ -36,12 +36,15 @@ class DownloadZipService:
         else:
             print('ZIP file exists for today')
 
-            # 2. Extract zip locally
+        # 2. Extract zip locally
         print("Extracting ZIP...")
         os.makedirs(self.EXTRACT_DIR, exist_ok=True)
 
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(self.EXTRACT_DIR)
+        if zip_file.endswith(".zip"):
+            with zipfile.ZipFile(zip_file, "r") as zip_ref:
+                zip_ref.extractall(self.EXTRACT_DIR)
+        else:
+            shutil.copy(zip_file, self.EXTRACT_DIR)
 
         print("Extraction complete.")
 

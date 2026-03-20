@@ -60,6 +60,14 @@ class DeleteVideosService:
                 'search_by_field': 'url',
                 'search_by_index': 1
             }
+        elif site == 'eporner':
+            self.ZIP_URL = 'https://www.eporner.com/api/v2/video/removed/?format=json'
+            self.ZIP_FILE = 'eporner_deleted_videos.csv'
+            self.fields_map = {
+                'fields_split_by': ',',
+                'search_by_field': 'external_id',
+                'search_by_index': 0
+            }
 
         if zip_url:
             self.ZIP_URL = zip_url
