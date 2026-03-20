@@ -254,6 +254,8 @@ class DumpToDatabaseService:
 
     def _get_categories(self, fields: list, fields_map: dict) -> str:
         categories = safe_get(fields, fields_map['categories'])
+        if not categories:
+            return ''
         categories = categories.split(fields_map['categories_split_by'])
         categories = [cat for cat in categories if len(cat) < 20]
         categories = categories[:4]
