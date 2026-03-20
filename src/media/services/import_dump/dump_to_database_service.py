@@ -37,7 +37,6 @@ class DumpToDatabaseService:
 
             f.seek(0)  # reset to first line
             for index, line in enumerate(f):
-
                 line = line.strip()
                 if not line or '<iframe' not in line:
                     continue
