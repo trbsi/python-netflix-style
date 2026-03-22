@@ -19,7 +19,7 @@ class VideoItem(models.Model):
     thumb_large = models.TextField()
     embed_code = models.TextField(help_text="Raw iframe HTML")
     site = models.CharField(max_length=20)
-    external_id = models.CharField(max_length=50, unique=True)
+    external_id = models.CharField(max_length=50)
     external_created_at = models.DateField(null=True, blank=True)
     tags = models.TextField()
     categories = models.TextField()
@@ -36,7 +36,11 @@ class VideoItem(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=["link"]),
-            models.Index(fields=['external_created_at'])
+            models.Index(fields=['external_created_at']),
+        ]
+
+        constraints = [
+            models.UniqueConstraint(fields=['external_id', 'site'], name='unique_videoitem_external_id_site'),
         ]
 
     def category_slugs(self):

@@ -37,13 +37,13 @@ class DeleteVideosService:
                 rows_to_delete.append(row_value)
 
                 if len(rows_to_delete) >= batch_size:
-                    self._delete_from_database(rows_to_delete)
+                    self._delete_from_database(rows_to_delete, site)
                     rows_to_delete.clear()
 
                 pbar.update(1)
 
         if rows_to_delete:
-            self._delete_from_database(rows_to_delete)
+            self._delete_from_database(rows_to_delete, site)
             rows_to_delete.clear()
 
         pbar.close()
@@ -51,11 +51,11 @@ class DeleteVideosService:
 
         return self.total_deleted
 
-    def _delete_from_database(self, rows_to_delete: list) -> None:
+    def _delete_from_database(self, rows_to_delete: list, site: str) -> None:
         if self.fields_map['search_by_field'] == 'url':
             videos = VideoItem.objects.filter(link__in=rows_to_delete)
         elif self.fields_map['search_by_field'] == 'external_id':
-            videos = VideoItem.objects.filter(external_id__in=rows_to_delete)
+            videos = VideoItem.objects.filter(external_id__in=rows_to_delete).filter(site=site)
 
         ids = list(videos.values_list('id', flat=True))
 
