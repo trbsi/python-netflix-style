@@ -38,7 +38,10 @@ class DumpToDatabaseService:
             f.seek(0)  # reset to first line
             for index, line in enumerate(f):
                 line = line.strip()
-                if not line or '<iframe' not in line:
+
+                # eporner iframe is created manually
+                # xvideos red do not have iframe
+                if not line or (site != 'eporner' and '<iframe' not in line):
                     continue
 
                 fields = line.split(fields_map['fields_split_by'])
@@ -256,7 +259,7 @@ class DumpToDatabaseService:
         if not categories:
             return ''
         categories = categories.split(fields_map['categories_split_by'])
-        categories = [cat for cat in categories if len(cat) < 20]
+        categories = [cat for cat in categories if len(cat) < 20 and len(cat) > 0]
         categories = categories[:4]
         categories = [cat.replace('_', ' ').replace('-', ' ').title() for cat in categories]
         categories = ','.join(categories)
