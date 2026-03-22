@@ -56,7 +56,7 @@ class ImportFromDumpService:
                 'url': 999,
             }
         elif site == 'eporner':
-            self.ZIP_URL = 'https://www.eporner.com/sitemap/feeds/eporner_hq_640x360.txt.zip'
+            self.ZIP_URL = 'https://www.eporner.com/sitemap/feeds/eporner_all_640x360.txt.zip'
             self.ZIP_FILE = 'eporner_hq_640x360_txt.zip'
             self.fields_map = {
                 'fields_split_by': '|',
