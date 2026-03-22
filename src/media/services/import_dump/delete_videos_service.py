@@ -1,6 +1,5 @@
 import csv
 import os
-import shutil
 import sys
 
 from tqdm import tqdm
@@ -48,7 +47,6 @@ class DeleteVideosService:
             rows_to_delete.clear()
 
         pbar.close()
-        shutil.rmtree(DownloadZipService.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
         return self.total_deleted

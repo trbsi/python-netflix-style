@@ -1,5 +1,10 @@
+import os
+import shutil
+
 from celery import shared_task
 from django.core.management import call_command
+
+from src.media.services.import_dump.download_zip_service import DownloadZipService
 
 
 @shared_task
@@ -20,3 +25,9 @@ def delete_videos_task(site):
 @shared_task
 def generate_frontpage_task():
     call_command('generate_frontpage_command')
+
+
+@shared_task
+def clean_extract_directory_task():
+    if os.path.exists(DownloadZipService.EXTRACT_DIR):
+        shutil.rmtree(DownloadZipService.EXTRACT_DIR)

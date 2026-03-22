@@ -1,5 +1,4 @@
 import os
-import shutil
 
 from django.db.models import Max
 
@@ -32,7 +31,6 @@ class ImportFromDumpService:
             csv_file_path
         )
 
-        shutil.rmtree(DownloadZipService.EXTRACT_DIR)
         os.remove(self.ZIP_FILE)
 
         count_today = VideoItem.objects.filter(id__gt=max_id).count()

@@ -13,10 +13,7 @@ class DownloadZipService:
     EXTRACT_DIR = "videos_dump_data"
 
     def download_zip(self, zip_url: str, zip_file: str, import_all: bool) -> str:
-        if os.path.exists(self.EXTRACT_DIR):
-            shutil.rmtree(self.EXTRACT_DIR)
-
-            # 1. Download zip file
+        # 1. Download zip file
         if self._should_download_zip(zip_file):
             print("Downloading ZIP...")
             proxies = {}
