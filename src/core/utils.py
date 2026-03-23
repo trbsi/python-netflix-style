@@ -1,6 +1,7 @@
 import datetime
 from gettext import ngettext
 
+import geoip2.database
 from django.db.models import Model
 from django.http import HttpRequest
 from django.urls import reverse_lazy

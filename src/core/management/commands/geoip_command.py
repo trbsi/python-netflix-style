@@ -15,11 +15,8 @@ from src.core.management.commands.base_command import BaseCommand
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        if not os.path.exists(settings.IP_DATABASE_PATH):
-            os.makedirs(settings.IP_DATABASE_PATH, exist_ok=True)
-
+        os.makedirs(settings.IP_DATABASE_PATH, exist_ok=True)
         self._download_db_ip()
-
         self.success('Done.')
 
     def _download_maxmind(self):

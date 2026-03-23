@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'src.media.apps.MediaConfig',
     'src.myadmin.apps.AdminConfig',
     'src.sitemap.apps.SitemapConfig',
+    'src.age_verification.apps.AgeVerificationConfig',
 
     'django.contrib.sitemaps',
     'django_celery_beat',
@@ -79,6 +80,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
     'bugsnag.django.middleware.BugsnagMiddleware',
+    # 'src.age_verification.middlewares.AgeVerificationMiddleware',
 ]
 
 ROOT_URLCONF = 'automationapp.urls'
