@@ -18,7 +18,10 @@ class ListMediaService:
     def home_video_list(self) -> dict:
         used_ids = set()
         cache_ids = cache.get('frontpage_ids')
-        base_qs = VideoItem.objects.filter(id__in=cache_ids).all()
+        if cache_ids:
+            base_qs = VideoItem.objects.filter(id__in=cache_ids).all()
+        else:
+            base_qs = VideoItem.objects.order_by('-id')
 
         context = {
             "main_header": self._get_videos(

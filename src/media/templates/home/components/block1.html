@@ -76,12 +76,13 @@
                             <li class="swiper-slide">
                                 <div class="iq-top-ten-block position-relative">
                                     <div class="block-image position-relative">
-                                        <div class="img-box">
+                                        <div class="img-box relative">
                                             <a class="overly-images" href="{{ video.video_url }}">
                                                 <img src="{{ video.thumbnail_large }}"
                                                      alt="movie-card"
                                                      class="object-cover rounded-3"
                                                      loading="lazy">
+                                                <span class="thumbnail-title thumbnail-title-middle">{{ video.title }}</span>
                                             </a>
                                             <span class="top-ten-numbers texture-text">{{ forloop.counter }}</span>
                                         </div>
@@ -119,6 +120,7 @@
                                                      alt="movie-card"
                                                      class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                      loading="lazy">
+                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.title }}</span>
                                             </a>
                                         </div>
                                         <div class="card-description with-transition">
@@ -199,6 +201,7 @@
                                                      alt="movie-card"
                                                      class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                      loading="lazy">
+                                                <span class="thumbnail-title thumbnail-title-middle">{{ video.title }}</span>
                                             </a>
                                         </div>
                                         <div class="card-description with-transition">
@@ -268,6 +271,7 @@
                                                      alt="movie-card"
                                                      class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                      loading="lazy">
+                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.title }}</span>
                                             </a>
                                         </div>
                                         <div class="card-description with-transition">

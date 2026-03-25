@@ -9214,3 +9214,54 @@ body.modal-open #ageModal ~ .main-content {
         opacity: 1;
     }
 }
+
+/*-------------------- THUMBNAIL TITLE ---------------------*/
+.thumbnail-title {
+    position: absolute;
+    width: 100%;
+    padding: 10px;
+
+    /* Typography */
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(16px, 10vw, 26px);
+    text-transform: uppercase;
+    line-height: 1.2;
+    max-height: calc(1.4em * 2);
+
+    color: white;
+
+    /* Readability */
+    -webkit-text-stroke: 0.2px black;
+    text-shadow: 0 3px 10px rgba(0, 0, 0, 0.9);
+
+    /* Poster-style gradient */
+    /*background: linear-gradient(
+      to top,
+      rgba(0,0,0,0.9),
+      rgba(0,0,0,0.4),
+      transparent
+    );*/
+
+    /* 🔥 Handle long titles (BEST PART) */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* max 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    /* Smooth look */
+    transition: all 0.3s ease;
+}
+
+.thumbnail-title-top {
+    top: 10px;
+}
+
+.thumbnail-title-bottom {
+    bottom: 10px;
+}
+
+.thumbnail-title-middle {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
