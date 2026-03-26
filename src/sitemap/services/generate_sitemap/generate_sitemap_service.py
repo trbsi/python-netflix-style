@@ -11,7 +11,10 @@ from src.sitemap.models import SitemapFile
 class GenerateSitemapService():
     BATCH_SIZE = 50000  # Max URLs per sitemap
 
-    def generate_sitemap(self, full_regeneration: bool, use_gzip: bool):
+    def __init__(self):
+        self.messages = []
+
+    def generate_sitemap(self, full_regeneration: bool, use_gzip: bool) -> list:
         os.makedirs(settings.SITEMAPS_DIR, exist_ok=True)
 
         if full_regeneration:
@@ -52,6 +55,8 @@ class GenerateSitemapService():
         self.write_index()
         print("Sitemap generation complete.")
 
+        return self.messages
+
     def write_sitemap(self, videos: list[VideoItem], index: int, use_gzip: bool):
         filename = f"sitemap_videos_{index}.xml"
         filepath = os.path.join(settings.SITEMAPS_DIR, filename)
@@ -77,7 +82,9 @@ class GenerateSitemapService():
             end_id=videos[-1].id,
             url_count=len(videos)
         )
-        print(f"Generated {os.path.basename(filepath)} with {len(videos)} URLs")
+        message = f"Generated {os.path.basename(filepath)} with {len(videos)} URLs"
+        self.messages.append(message)
+        print(message)
 
     def write_index(self):
         index_path = os.path.join(settings.SITEMAPS_DIR, "sitemap.xml")

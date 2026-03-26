@@ -29,7 +29,7 @@ class Command(BaseCommand):
         self.info('Starting to generate sitemaps')
 
         service = GenerateSitemapService()
-        service.generate_sitemap(is_full, use_gzip)
+        returned_messages = service.generate_sitemap(is_full, use_gzip)
 
         end = time.time()
         minutes = (end - start) / 60
@@ -37,7 +37,7 @@ class Command(BaseCommand):
         message = f"GenerateSitemapCommand. Execution time: {minutes:.2f} minutes. "
         full = "Full sitemaps generated. " if is_full else "Incremental sitemaps generated. "
         use_gzip = "Using gzip. " if use_gzip else "Not using gzip. "
-        message = message + use_gzip + full
+        message = message + use_gzip + full + '. '.join(returned_messages)
 
         print(message)
         push = PushNotificationValueObject(body=message)
