@@ -98,6 +98,7 @@ services:
     volumes:
       - ../:/app
       - ./media-asset:/app/media-asset
+      - automationapp_sitemaps:/app/sitemaps
     depends_on: [ redis, django ]
     command: poetry run celery -A automationapp worker --loglevel=info --autoscale=8,2
     networks: [ automationapp-net ]
