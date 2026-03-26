@@ -62,7 +62,7 @@ def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
 def categories_search_api(request: HttpRequest) -> HttpResponse:
     get = request.GET
     service = SearchByCategoryService()
-    videos, has_next = service.search_videos(get.get('query'), int(get.get('page')))
+    videos, has_next = service.search_videos(get.get('query'), int(get.get('last_id')))
 
     return JsonResponse({
         "videos": videos,

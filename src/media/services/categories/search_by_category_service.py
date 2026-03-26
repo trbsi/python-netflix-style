@@ -1,25 +1,28 @@
-from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404
 
-from src.media.models import VideoItem
+from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 
 
 class SearchByCategoryService:
-    def search_videos(self, slug: str, page: int) -> tuple:
-        videos_qs = (
-            VideoItem.objects
-            .filter(categories_relation__slug=slug)
-            .prefetch_related('categories_relation')
-            .order_by("-id")
-            .distinct()
-        )
+    PAGE_SIZE = 20
 
-        paginator = Paginator(videos_qs, 20)
-        page_obj = paginator.get_page(page)
+    def search_videos(self, slug: str, last_id: int) -> tuple:
+        category = get_object_or_404(VideoCategory, slug=slug)
 
-        videos = []
+        query = VideoCategoryPivot.objects.filter(category=category).order_by('-video_id')
+        if last_id > 0:
+            query = query.filter(video_id__lt=last_id)
 
-        for video in page_obj:
-            videos.append({
+        video_ids = query.values_list('video_id', flat=True)[:self.PAGE_SIZE + 1]
+        has_next = len(video_ids) > self.PAGE_SIZE
+
+        video_ids = video_ids[:self.PAGE_SIZE]
+        videos = VideoItem.objects.filter(pk__in=video_ids)
+
+        result = []
+
+        for video in videos:
+            result.append({
                 "id": video.id,
                 "title": video.title,
                 "thumbnail": video.thumbnail_small,
@@ -33,4 +36,4 @@ class SearchByCategoryService:
                 ]
             })
 
-        return videos, page_obj.has_next()
+        return result, has_next

@@ -3,12 +3,17 @@ function loadVideos(){
     if(loading) return;
 
     loading = true;
+
     $(".load-more-btn .button-text").text("Loading...");
 
-    $.get(`${api_url}?query=${query}&page=${page}`, function(data) {
+    if (lastId) {
+        api_url += `&last_id=${lastId}`;
+    }
+
+    $.get(api_url, function(data) {
 
         data.videos.forEach(function(video){
-
+            lastId = video.id;
             let categories = "";
 
             video.categories.forEach(function(cat){
