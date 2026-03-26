@@ -14,7 +14,7 @@ class SearchByCategoryService:
             query = query.filter(video_id__lt=last_id)
 
         video_ids = query.values_list('video_id', flat=True)[:self.PAGE_SIZE + 1]
-        has_next = len(video_ids) > self.PAGE_SIZE
+        has_next = 1 if len(video_ids) > self.PAGE_SIZE else 0
 
         video_ids = video_ids[:self.PAGE_SIZE]
         videos = VideoItem.objects.filter(pk__in=video_ids)

@@ -73,7 +73,7 @@ function loadVideos(){
         }
 
         console.log('HAS NEXT', data.has_next)
-        let hasNext = (data.has_next === true || data.has_next === 'true');
+        let hasNext = (data.has_next === 1 || data.has_next === '1');
         if(!hasNext){
             $(".load-more-btn").hide();
         } else {
