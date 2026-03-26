@@ -71,7 +71,6 @@ function loadVideos(){
             $(".load-more-btn").hide();
         }
 
-        page++;
         loading = false;
     });
 }
