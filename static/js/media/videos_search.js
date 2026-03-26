@@ -72,12 +72,11 @@ function loadVideos(){
             lastId = data.videos[data.videos.length - 1].id;
         }
 
-        console.log('HAS NEXT', data.has_next)
         let hasNext = (data.has_next === true || data.has_next === 'true');
-        if(!hasNext){
-            $(".load-more-btn").hide();
+        if (hasNext){
+            $(".load-more-btn").show();
         } else {
-            $(".load-more-btn").show(); // ensure it's visible if more pages exist
+            $(".load-more-btn").hide(); // ensure it's visible if more pages exist
         }
 
         loading = false;

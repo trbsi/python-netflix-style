@@ -370,21 +370,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-  $(document).ready(function () {
-    // Add event listener to "Load More" buttons
-    $('.load-more-btn').click(function () {
-      // Find the section containing the button that was clicked
-      var section = $(this).closest('.section-padding');
-
-      // Show the hidden tags within this section
-      section.find('.hidden-tags').fadeIn();
-
-      // Hide the "Load More" button once all tags are shown
-      if (section.find('.hidden-tags').length === 0) {
-        $(this).fadeOut();
-      }
-    });
-  });
 
   /*------------load more------------------*/
   $(document).ready(function () {
