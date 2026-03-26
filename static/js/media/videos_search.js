@@ -1,4 +1,5 @@
 function loadVideos(){
+    let url = `${api_url}?query=${query}`;
 
     if(loading) return;
 
@@ -7,11 +8,10 @@ function loadVideos(){
     $(".load-more-btn .button-text").text("Loading...");
 
     if (lastId) {
-        api_url += `&last_id=${lastId}`;
+        url += `&last_id=${lastId}`;
     }
 
-    $.get(api_url, function(data) {
-
+    $.get(url, function(data) {
         data.videos.forEach(function(video){
             lastId = video.id;
             let categories = "";
@@ -67,8 +67,17 @@ function loadVideos(){
 
         });
 
-        if(data.has_next === false){
+        // update lastId AFTER the loop
+        if(data.videos.length > 0){
+            lastId = data.videos[data.videos.length - 1].id;
+        }
+
+        console.log('HAS NEXT', data.has_next)
+        let hasNext = (data.has_next === true || data.has_next === 'true');
+        if(!hasNext){
             $(".load-more-btn").hide();
+        } else {
+            $(".load-more-btn").show(); // ensure it's visible if more pages exist
         }
 
         loading = false;

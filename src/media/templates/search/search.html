@@ -23,7 +23,8 @@
 <script>
 let lastId = null;
 let loading = false;
-let api_url = "{% url 'media.api.search' %}?query={{query}}"
+let query = '{{query}}';
+let api_url = "{% url 'media.api.search' %}"
 </script>
 <script src="{% static 'js/media/videos_search.js' %}"></script>
 {% endblock javascript_include %}
