@@ -17,7 +17,7 @@ class SearchByCategoryService:
         has_next = len(video_ids) > self.PAGE_SIZE
 
         video_ids = video_ids[:self.PAGE_SIZE]
-        videos = VideoItem.objects.filter(pk__in=video_ids)
+        videos = VideoItem.objects.filter(pk__in=video_ids).order_by('id')
 
         result = []
 
