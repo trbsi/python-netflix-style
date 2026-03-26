@@ -73,7 +73,7 @@ function loadVideos(){
             lastId = data.videos[data.videos.length - 1].id;
         }
 
-        let hasNext = (data.has_next === true || data.has_next === 'true');
+        let hasNext = (data.has_next === true && data.videos.length > 0);
         if (hasNext){
             $(".load-more-btn").show();
         } else {

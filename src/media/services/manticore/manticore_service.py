@@ -86,11 +86,11 @@ class ManticoreService:
         self.indexApi.bulk('\n'.join(map(json.dumps, docs)))
 
     # https://manual.manticoresearch.com/Searching/Pagination#Scrolling-via-JSON
-    def search_index(self, to_search: str) -> SearchResult:
+    def search_index(self, to_search: str, scroll: str | None) -> SearchResult:
         query = {
             "table": self.VIDEOS_INDEX,
             "options": {
-                "scroll": True
+                "scroll": True if scroll is None else scroll,
             },
             "query": {
                 "match": {"title": to_search}

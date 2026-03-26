@@ -6,5 +6,5 @@ class SearchFullTextService:
     def __init__(self):
         self.search_index_service = ManticoreService()
 
-    def search_media(self, query: str) -> SearchResult:
-        return self.search_index_service.search_index(query)
+    def search_media(self, query: str, scroll: str | None) -> SearchResult:
+        return self.search_index_service.search_index(query, scroll)

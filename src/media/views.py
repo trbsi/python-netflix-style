@@ -63,7 +63,7 @@ def categories_search_api(request: HttpRequest) -> HttpResponse:
     get = request.GET
     last_id = int(get.get('last_id')) if get.get('last_id') else 0
     query = get.get('query')
-    
+
     service = SearchByCategoryService()
     videos, has_next = service.search_videos(query, last_id)
 
@@ -82,10 +82,12 @@ def search_videos(request: HttpRequest) -> HttpResponse:
 @require_GET
 def search_videos_api(request: HttpRequest) -> HttpResponse:
     query = request.GET.get('query')
+    scroll = request.GET.get('last_id')
+
     service = SearchFullTextService()
-    result = service.search_media(query)
+    result = service.search_media(query, scroll)
 
     return JsonResponse({
         "videos": result.to_array(),
-        "has_next": False
+        "has_next": True
     })
