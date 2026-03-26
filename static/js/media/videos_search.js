@@ -67,11 +67,12 @@ function loadVideos(){
 
         });
 
-        if(!data.has_next){
+        if(data.has_next === false){
             $(".load-more-btn").hide();
         }
 
         loading = false;
+        $(".load-more-btn .button-text").text("Load More");
     });
 }
 
