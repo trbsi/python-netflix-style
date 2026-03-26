@@ -27,7 +27,7 @@ class GenerateSitemapService():
             if last_sitemap and last_sitemap.url_count < self.BATCH_SIZE:
                 # Regenerate last partial sitemap
                 next_start_id = last_sitemap.start_id
-                next_index = int(last_sitemap.filename.split('_')[1].split('.')[0])
+                next_index = int(last_sitemap.filename.split('_')[-1].split('.')[0])
                 print(f"Regenerating partial sitemap: {last_sitemap.filename}")
                 os.remove(os.path.join(settings.SITEMAPS_DIR, last_sitemap.filename))
                 last_sitemap.delete()
