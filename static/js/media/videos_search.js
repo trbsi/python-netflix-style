@@ -1,7 +1,11 @@
-function loadVideos(){
+let lastId = null
+let scrollCursor = null
+let loading = false;
+
+function loadVideos() {
     let url = `${api_url}?query=${query}`;
 
-    if(loading) return;
+    if (loading) return;
 
     loading = true;
 
@@ -11,12 +15,16 @@ function loadVideos(){
         url += `&last_id=${lastId}`;
     }
 
-    $.get(url, function(data) {
-        data.videos.forEach(function(video){
+    if (scrollCursor) {
+        url += `&scroll_cursor=${scrollCursor}`;
+    }
+
+    $.get(url, function (data) {
+        data.videos.forEach(function (video) {
             lastId = video.id;
             let categories = "";
 
-            video.categories.forEach(function(cat){
+            video.categories.forEach(function (cat) {
                 categories += `<a href="/media/categories/${cat.slug}" class="font-size-14">${cat.title}</a> | `;
             });
 
@@ -69,12 +77,13 @@ function loadVideos(){
         });
 
         // update lastId AFTER the loop
-        if(data.videos.length > 0){
+        if (data.videos.length > 0) {
             lastId = data.videos[data.videos.length - 1].id;
         }
+        scrollCursor = data.scroll_cursor
 
         let hasNext = (data.has_next === true && data.videos.length > 0);
-        if (hasNext){
+        if (hasNext) {
             $(".load-more-btn").show();
         } else {
             $(".load-more-btn").hide(); // ensure it's visible if more pages exist
@@ -85,13 +94,12 @@ function loadVideos(){
     });
 }
 
-$(document).ready(function(){
-
+$(document).ready(function () {
     // load first page
     loadVideos();
 
     // load next page on click
-    $(".load-more-btn").click(function(){
+    $(".load-more-btn").click(function () {
         loadVideos();
     });
 

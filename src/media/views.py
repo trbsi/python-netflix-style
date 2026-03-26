@@ -82,12 +82,13 @@ def search_videos(request: HttpRequest) -> HttpResponse:
 @require_GET
 def search_videos_api(request: HttpRequest) -> HttpResponse:
     query = request.GET.get('query')
-    scroll = request.GET.get('last_id')
+    scroll_cursor = request.GET.get('scroll_cursor')
 
     service = SearchFullTextService()
-    result = service.search_media(query, scroll)
+    result = service.search_media(query, scroll_cursor)
 
     return JsonResponse({
         "videos": result.to_array(),
+        "scroll_cursor": result.scroll_cursor,
         "has_next": True
     })

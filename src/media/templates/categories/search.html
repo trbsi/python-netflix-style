@@ -3,28 +3,27 @@
 {% block title %}Porn in {{ category }} Category {% endblock %}
 
 {% block content %}
-<div class="section-padding view-all-movies">
-    <div class="container-fluid">
-        <div class="card-style-grid">
-            <div class="row gy-4 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 data-listing"  id="videos-container">
-            </div>
-            <!-- Static Load More -->
-            <div class="text-center mt-4">
-                <button type="button" class="btn btn-primary position-relative load-more-btn">
-                    <span class="button-text">Load More</span>
-                </button>
+    <div class="section-padding view-all-movies">
+        <div class="container-fluid">
+            <div class="card-style-grid">
+                <div class="row gy-4 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 data-listing"
+                     id="videos-container">
+                </div>
+                <!-- Static Load More -->
+                <div class="text-center mt-4">
+                    <button type="button" class="btn btn-primary position-relative load-more-btn">
+                        <span class="button-text">Load More</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block javascript_include %}
-<script>
-let lastId = null;
-let loading = false;
-let query = '{{slug}}';
-let api_url = "{% url 'media.api.categories_search' %}"
-</script>
-<script src="{% static 'js/media/videos_search.js' %}"></script>
+    <script>
+        let query = '{{slug}}';
+        let api_url = "{% url 'media.api.categories_search' %}"
+    </script>
+    <script src="{% static 'js/media/videos_search.js' %}"></script>
 {% endblock javascript_include %}
