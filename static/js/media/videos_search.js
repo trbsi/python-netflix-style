@@ -28,6 +28,7 @@ function loadVideos(){
                         <div class="img-box w-100">
                             <a href="${video.url}">
                                 <img src="${video.thumbnail}" class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                <span class="thumbnail-title thumbnail-title-bottom">${video.title}</span>
                             </a>
                         </div>
 
