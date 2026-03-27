@@ -37,7 +37,7 @@ class Command(BaseCommand):
         end = time.time()
 
         minutes = (end - start) / 60
-        message = f"DeleteVideosCommand. Execution time: {minutes:.2f} minutes. Total deleted: {total_deleted}."
+        message = f"DeleteVideosCommand {site}. Execution time: {minutes:.2f} minutes. Total deleted: {total_deleted}."
         print(message)
 
         push = PushNotificationValueObject(body=message)

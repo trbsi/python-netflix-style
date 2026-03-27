@@ -45,7 +45,7 @@ class Command(BaseCommand):
         end = time.time()
 
         minutes = (end - start) / 60
-        message = f"ImportDumpCommand. Execution time: {minutes:.2f} minutes. Total imported: {total_imported}. Imported today: {count_today}. " + message
+        message = f"ImportDumpCommand {site}. Execution time: {minutes:.2f} minutes. Total imported: {total_imported}. Imported today: {count_today}. " + message
         print(message)
 
         push = PushNotificationValueObject(body=message)
