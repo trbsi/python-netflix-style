@@ -256,3 +256,6 @@ IP_DATABASE_PATH = os.path.join(IP_DATABASE_BASE_PATH, 'geoip-db.mmdb')
 
 # Sitemap
 SITEMAPS_DIR = os.path.join(BASE_DIR, 'sitemaps')
+
+# Sites
+ENABLED_SITES = env('ENABLED_SITES').split(',')
