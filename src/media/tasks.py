@@ -8,12 +8,6 @@ from automationapp import settings
 from src.media.services.import_dump.download_zip_service import DownloadZipService
 
 
-# Not used right now
-@shared_task
-def import_from_rss_task():
-    call_command('import_rss_feed_command')
-
-
 # ------------ CLEAN EXTRACT DIRECTORY --------------
 @shared_task
 def clean_extract_directory_task():
