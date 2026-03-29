@@ -14,18 +14,19 @@
                  data-pagination="true">
                 <ul class="p-0 swiper-wrapper m-0  list-inline personality-card">
                     {% for video in favourite_personality %}
-                        <li class="swiper-slide">
-                            <a href="{{ video.video_url }}">
-                                <img src="{{ video.thumbnail_large }}" alt="personality" loading="lazy"
-                                     class="img-fluid object-cover mb-3 rounded-3 personality-img">
-                            </a>
-                            <div class="text-center">
-                                <h6 class="mb-0">
-                                    <a href="{{ video.video_url }}"
-                                       class="font-size-14 text-decoration-none cast-title text-capitalize">{{ video.title|safe }}</a>
-                                </h6>
-                            </div>
-                        </li>
+                    <li class="swiper-slide">
+                        <a href="{{ video.video_url }}">
+                            <img src="{{ video.thumbnail_large }}" alt="personality" loading="lazy"
+                                 class="img-fluid object-cover mb-3 rounded-3 personality-img">
+                        </a>
+                        <div class="text-center">
+                            <h6 class="mb-0">
+                                <a href="{{ video.video_url }}"
+                                   class="font-size-14 text-decoration-none cast-title text-capitalize">{{
+                                    video.title|safe }}</a>
+                            </h6>
+                        </div>
+                    </li>
                     {% endfor %}
                 </ul>
                 <div class="d-none d-lg-block">
@@ -49,54 +50,54 @@
                      data-pagination="true">
                     <ul class="p-0 swiper-wrapper m-0  list-inline">
                         {% for video in popular_movies %}
-                            <li class="swiper-slide">
-                                <div class="iq-card card-hover">
-                                    <div class="block-images position-relative w-100">
-                                        <div class="img-box w-100">
-                                            <a href="{{ video.video_url }}"
-                                               class="position-relative top-0 bottom-0 start-0 end-0">
-                                                <img src="{{ video.thumbnail_large }}"
-                                                     alt="movie-card"
-                                                     class="img-fluid object-cover w-100 d-block border-0 rounded-3"
-                                                     loading="lazy">
-                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.title }}</span>
-                                            </a>
-                                        </div>
-                                        <div class="card-description with-transition">
-                                            <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
-                                                <li class="fw-semi-bold">
-                                                    {% for category in video.categories_array %}
-                                                        <a href="{% url 'media.categories_search' slug=category.slug %}"
-                                                           tabindex="0"
-                                                           class="font-size-14 ">{{ category.title }}</a> |
-                                                    {% endfor %}
-                                                </li>
-                                            </ul>
-                                            <div class="cart-content">
-                                                <div class="content-left">
-                                                    <h5 class="iq-title text-capitalize">
-                                                        <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
-                                                    </h5>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
-                                                <div class="iq-play-button iq-button">
-                                                    <a href="{{ video.video_url }}"
-                                                       class="btn btn-primary w-100">Play Now
-                                                    </a>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                        <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
-                                             data-bs-toggle="tooltip" data-bs-placement="top"
-                                             data-bs-original-title="Premium">
-                                            <i class="ph-fill ph-crown "></i>
-                                        </div>
+                        <li class="swiper-slide">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+                                    <div class="img-box w-100">
+                                        <a href="{{ video.video_url }}"
+                                           class="position-relative top-0 bottom-0 start-0 end-0">
+                                            <img src="{{ video.thumbnail_large }}"
+                                                 alt="movie-card"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3"
+                                                 loading="lazy">
+                                            <span class="thumbnail-title thumbnail-title-bottom">{{ video.title|safe }}</span>
+                                        </a>
                                     </div>
+                                    <div class="card-description with-transition">
+                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
+                                            <li class="fw-semi-bold">
+                                                {% for category in video.categories_array %}
+                                                <a href="{% url 'media.categories_search' slug=category.slug %}"
+                                                   tabindex="0"
+                                                   class="font-size-14 ">{{ category.title }}</a> |
+                                                {% endfor %}
+                                            </li>
+                                        </ul>
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="{{ video.video_url }}"
+                                                   class="btn btn-primary w-100">Play Now
+                                                </a>
+                                            </div>
+                                        </div>
 
+                                    </div>
+                                    <div class="position-absolute z-1 primium-product d-flex align-items-center justify-content-center"
+                                         data-bs-toggle="tooltip" data-bs-placement="top"
+                                         data-bs-original-title="Premium">
+                                        <i class="ph-fill ph-crown "></i>
+                                    </div>
                                 </div>
-                            </li>
+
+                            </div>
+                        </li>
                         {% endfor %}
                     </ul>
                     <div class="d-none d-lg-block">
