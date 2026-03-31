@@ -1,8 +1,6 @@
 import gzip
 import os
 
-from django.utils import timezone
-
 from automationapp import settings
 from src.media.models import VideoItem
 from src.sitemap.models import SitemapFile
@@ -94,7 +92,7 @@ class GenerateSitemapService():
         for sitemap in SitemapFile.objects.order_by('id'):
             f.write("  <sitemap>\n")
             f.write(f"    <loc>{settings.APP_URL}/sitemaps/{sitemap.filename}</loc>\n")
-            f.write(f"    <lastmod>{timezone.now().date()}</lastmod>\n")
+            f.write(f"    <lastmod>{sitemap.generated_at.date()}</lastmod>\n")
             f.write("  </sitemap>\n")
         f.write("</sitemapindex>\n")
         f.close()
