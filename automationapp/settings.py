@@ -271,6 +271,11 @@ TELEGRAM_BOTS = {
         'name': 'Female Svetlana',
         'token': env('TELEGRAM_FEMALE_1_TOKEN')
     },
+    'peachka': {
+        'id': 'peachka',
+        'name': 'Official Peachka',
+        'token': env('TELEGRAM_PEACHKA_TOKEN')
+    },
 }
 
 # Grok
