@@ -13,7 +13,7 @@ from src.chat.tasks import auto_reply_task, define_personality_task
 
 
 class TelegramBot:
-    BOT = settings.TELEGRAM_BOTS['default']
+    BOT = settings.TELEGRAM_BOTS[settings.DEFAULT_BOT]
 
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
