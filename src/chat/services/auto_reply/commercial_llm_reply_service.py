@@ -1,0 +1,56 @@
+import httpx
+from openai import OpenAI
+
+from automationapp import settings
+from src.inbox.models import Conversation, Message
+
+
+class CommercialLLMReplyService:
+    GROK_MODEL = 'grok-4-1-fast-reasoning'
+
+    def get_remote_reply(self, conversation: Conversation, last_message: str, is_new: bool) -> str:
+        client = OpenAI(
+            api_key=settings.GROK_API_KEY,
+            base_url="https://api.x.ai/v1",
+            timeout=httpx.Timeout(3600.0),  # Override default timeout with longer timeout for reasoning models
+        )
+
+        if is_new:
+            personality = conversation.bot_personality
+            if not personality:
+                personality = 'You are dirty girl who wants to be submissive and you want dirty talk.'
+
+            personality = personality + '. Use short sentences. Reply short. Keep user engaged in conversation. Always use punctuation marks.'
+
+            response = client.responses.create(
+                model=self.GROK_MODEL,
+                input=[
+                    {"role": "system", "content": personality},
+                    {"role": "user", "content": "Hello"},
+                ],
+            )
+        else:
+            last_reply: Message = conversation.get_last_reply()
+            response = client.responses.create(
+                model=self.GROK_MODEL,
+                previous_response_id=last_reply.llm_reply['id'],
+                input=[
+                    {"role": "user", "content": last_message},
+                ],
+            )
+
+        print(response)
+
+        return self._extract_text(response)
+
+    def _extract_text(self, response) -> str:
+        if hasattr(response, "output_text"):
+            return response.output_text
+
+        text = ""
+        for item in response.output:
+            if item.type == "message":
+                for content in item.content:
+                    if content.type == "output_text":
+                        text += content.text
+        return text

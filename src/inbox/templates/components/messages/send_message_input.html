@@ -1,0 +1,59 @@
+<div id="chat_footer"
+     class="fixed bottom-0 left-0 w-full p-4 border-t border-gray-800 bg-black flex flex-col items-center justify-center">
+
+    <!-- Preview Section -->
+    <template x-if="previewUrl">
+        <div class="relative w-full mb-5">
+            <!-- Image Preview -->
+            <img x-show="isAttachmentImage" :src="previewUrl" alt="Attachment preview"
+                 class="rounded-lg max-h-60 w-auto mx-auto object-contain"/>
+
+
+            <!-- Video Preview -->
+            <video x-show="isAttachmentVideo" :src="previewUrl" controls
+                   class="rounded-lg max-h-60 w-auto mx-auto object-contain">
+            </video>
+
+            <!-- Remove button -->
+            <button @click="removeAttachment"
+                    class="absolute top-2 right-2 bg-black/60 hover:bg-black/80 text-white rounded-full p-1.5">
+                <i class="ri-close-line text-lg"></i>
+            </button>
+        </div>
+    </template>
+
+    <!-- Show loader while sending -->
+    <div x-show="isSending" x-cloak class="flex items-center justify-center w-full">
+        {% include "components/elements/loader.html" %}
+    </div>
+
+    <!-- Normal footer when not sending -->
+    <div x-show="!isSending" class="flex items-center space-x-2 w-full">
+        <!-- Hidden file input -->
+        <input type="file" x-ref="fileInput" class="hidden" @change="handleFileUpload">
+
+        <!-- Attach button / Remove button -->
+        <template x-if="!attachment">
+            <button class="text-gray-400 hover:text-white" @click="$refs.fileInput.click()">
+                <i class="ri-attachment-2 ri-xl"></i>
+            </button>
+        </template>
+
+        <!-- Auto-expanding textarea -->
+        <textarea
+                x-ref="messageInput"
+                placeholder="Type a message..."
+                x-model="newMessage"
+                rows="1"
+                class="flex-1 bg-gray-900 text-white rounded-xl px-4 py-2 focus:outline-none resize-none overflow-hidden"
+                @input="$refs.messageInput.style.height = 'auto'; $refs.messageInput.style.height = $refs.messageInput.scrollHeight + 'px'"
+                @keydown.enter.exact.prevent="sendMessage"
+                @keydown.shift.enter.stop
+        ></textarea>
+
+        <!-- Send Button -->
+        <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl" @click="sendMessage">
+            Send
+        </button>
+    </div>
+</div>

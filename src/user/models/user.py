@@ -1,10 +1,11 @@
-from automationapp import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 from django.db import models
 from django.urls import reverse_lazy
 
+from automationapp import settings
 from src.user.enum import UserEnum
+from src.user.services.create_user.create_user_service import CreateUserService
 
 
 # Create your models here.
@@ -40,3 +41,11 @@ class User(AbstractUser):
     @staticmethod
     def get_admin():
         return User.objects.filter(is_superuser=True).first()
+
+    @staticmethod
+    def get_or_create(user_id: int):
+        sender = User.objects.filter(username=user_id).first()
+        if not sender:
+            sender = CreateUserService.create_random_user(user_id)
+
+        return sender

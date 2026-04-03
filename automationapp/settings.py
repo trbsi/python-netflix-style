@@ -57,6 +57,8 @@ INSTALLED_APPS = [
     'src.myadmin.apps.AdminConfig',
     'src.sitemap.apps.SitemapConfig',
     'src.age_verification.apps.AgeVerificationConfig',
+    'src.chat.apps.ChatConfig',
+    'src.inbox.apps.InboxConfig',
 
     'django.contrib.sitemaps',
     'django_celery_beat',
@@ -259,3 +261,16 @@ SITEMAPS_DIR = os.path.join(BASE_DIR, 'sitemaps')
 
 # Sites
 ENABLED_SITES = env('ENABLED_SITES').split(',')
+
+# --------- CHAT -----------
+REMOTE_LLM = env.bool('REMOTE_LLM')
+TELEGRAM_BOTS = {
+    'female_1': {
+        'id': 'female_1',
+        'name': 'Female Svetlana',
+        'token': env('TELEGRAM_FEMALE_1_TOKEN')
+    },
+}
+
+# Grok
+GROK_API_KEY = env('GROK_API_KEY')

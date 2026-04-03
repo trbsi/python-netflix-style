@@ -1,0 +1,75 @@
+<div
+        id="message_list"
+        class="flex-1 overflow-y-auto flex flex-col p-4 space-y-4"
+        x-ref="scrollContainer"
+        @scroll.passive="handleScroll($event)"
+>
+    <!-- Loading indicator at the top for older messages -->
+    <div x-show="loading" class="flex justify-center py-2">
+        {% include "components/elements/loader.html" %}
+    </div>
+
+    <template x-for="msg in messagesList" :key="msg.id">
+        <div>
+            <!-- Received -->
+            <template x-if="msg.sender.id !== currentUserId">
+                <div class="flex items-end space-x-2 mb-2">
+                    <img :src="msg.sender.profile_picture" class="w-10 h-10 rounded-full" alt="User">
+                    <div class="max-w-xs">
+                        <template x-if="msg.message">
+                            <div class="break-words bg-gray-800 text-white px-4 py-2 rounded-2xl rounded-bl-none whitespace-pre-line"
+                                 x-text="msg.message"></div>
+                        </template>
+                        <template x-if="msg.attachment_url">
+                            <div class="mt-1">
+                                <template x-if="isImage(msg.attachment_url)">
+                                    <img :src="msg.attachment_url" class="rounded-lg w-full">
+                                </template>
+                                <template x-if="isVideo(msg.attachment_url)">
+                                    <video controls class="rounded-lg w-full">
+                                        <source :src="msg.attachment_url" type="video/mp4">
+                                    </video>
+                                </template>
+                            </div>
+                        </template>
+                        <span class="text-xs text-gray-400" x-text="formatTime(msg.created_at)"></span>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Sent -->
+            <template x-if="msg.sender.id === currentUserId">
+                <div class="flex items-end justify-end space-x-2 mb-2">
+                    <div class="max-w-xs text-right">
+                        <template x-if="msg.message">
+                            <div class="break-words bg-blue-600 text-white px-4 py-2 rounded-2xl rounded-br-none whitespace-pre-line"
+                                 x-text="msg.message"></div>
+                        </template>
+                        <template x-if="msg.attachment_url">
+                            <div class="mt-1">
+                                <template x-if="isImage(msg.attachment_url)">
+                                    <img :src="msg.attachment_url" class="rounded-lg w-full ml-auto">
+                                </template>
+                                <template x-if="isVideo(msg.attachment_url)">
+                                    <video controls class="rounded-lg w-full ml-auto">
+                                        <source :src="msg.attachment_url" type="video/mp4">
+                                    </video>
+                                </template>
+                            </div>
+                        </template>
+                        <span class="text-xs text-gray-400" x-text="formatTime(msg.created_at)"></span>
+                    </div>
+                    <img :src="msg.sender.profile_picture" class="w-10 h-10 rounded-full" alt="Me">
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <!-- No Messages Placeholder -->
+    <div x-show="!loading && messagesList.length === 0"
+         class="flex flex-col items-center justify-center h-full text-gray-400">
+        <i class="ri-chat-off-line ri-3x mb-2"></i>
+        <p class="text-lg">No messages yet</p>
+        <p class="text-sm">Say hello 👋</p>
+    </div>
+</div>

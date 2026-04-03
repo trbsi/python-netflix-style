@@ -25,6 +25,7 @@ urlpatterns = (
         path('', include('src.core.urls')),
         path('notification/', include('src.notification.urls')),
         path('accounts/', include('allauth.urls')),
+        path('chat/', include('src.chat.urls')),
         # path('user/', include('src.user.urls')), not used for now
         path('movies/', include('src.media.urls')),
         path('dynamic-sitemaps/', include('src.sitemap.urls')),
