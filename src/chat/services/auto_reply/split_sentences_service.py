@@ -3,14 +3,20 @@ import re
 
 
 class SplitSentencesService():
+
     def split_sentences(self, sentence: str) -> list:
-        sentences = re.split(r'(?<=[.!?])\s+', sentence)
+        sentences = re.split(r'(?<=[.!?])\s+(?=[A-Z0-9"“])', sentence)
 
         protected_word = {'i'}
         startswith = {"i'"}
 
-        for index, sentence in enumerate(sentences):
-            # Randomly strip punctuation at the end
+        question_sentences = []
+        normal_sentences = []
+
+        for sentence in sentences:
+            original_sentence = sentence  # keep original for later check
+
+            # Randomly strip punctuation at the end (exclude '?')
             if sentence and sentence[-1] in {'.', '!'}:
                 if random.choice([True, False]):
                     sentence = sentence[:-1]
@@ -33,6 +39,11 @@ class SplitSentencesService():
             if sentence and random.choice([True, False]):
                 sentence = sentence[0].upper() + sentence[1:]
 
-            sentences[index] = sentence
+            # Separate question sentences
+            if original_sentence.strip().endswith('?'):
+                question_sentences.append(sentence)
+            else:
+                normal_sentences.append(sentence)
 
-        return sentences
+        # Put questions at the end
+        return normal_sentences + question_sentences
