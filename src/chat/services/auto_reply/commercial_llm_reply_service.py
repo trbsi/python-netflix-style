@@ -2,7 +2,7 @@ import httpx
 from openai import OpenAI
 
 from automationapp import settings
-from src.inbox.models import Conversation, Message
+from src.inbox.models import Conversation
 
 
 class CommercialLLMReplyService:
@@ -30,10 +30,9 @@ class CommercialLLMReplyService:
                 ],
             )
         else:
-            last_reply: Message = conversation.get_last_reply()
             response = client.responses.create(
                 model=self.GROK_MODEL,
-                previous_response_id=last_reply.llm_reply['id'],
+                previous_response_id=conversation.external_last_id,
                 input=[
                     {"role": "user", "content": last_message},
                 ],

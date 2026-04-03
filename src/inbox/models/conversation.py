@@ -46,13 +46,5 @@ class Conversation(models.Model):
 
         return self.recipient
 
-    def get_last_reply(self):
-        """
-        Return the latest Message in this conversation, or None if there are no messages.
-        Uses the reverse relation `messages` defined on Message.conversation with related_name='messages'.
-        messages is relation from Message model related_name='messages'
-        """
-        return self.messages.order_by('-id').first()
-
     def bot_token_from_id(self) -> str:
         return settings.TELEGRAM_BOTS[self.local_bot_id]['token']
