@@ -14,9 +14,9 @@ class Command(BaseCommand):
     async def handle(self, *args, **options):
         url = options['url']
         if url is None:
-            url = f"{settings.APP_URL}/{reverse_lazy('chat.webhook')}"
+            url = f"{settings.APP_URL}{reverse_lazy('chat.webhook')}"
 
-        for telegram_bot in settings.TELEGRAM_BOTS:
+        for key, telegram_bot in settings.TELEGRAM_BOTS.items():
             bot = Bot(telegram_bot['token'])
             await bot.set_webhook(url)
         self.info(f'Webhook set successfully to {url}')
