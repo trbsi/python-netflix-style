@@ -44,5 +44,5 @@ async def set_webhook(request: HttpRequest) -> JsonResponse:
 
 @require_GET
 def test_reply(request: HttpRequest) -> JsonResponse:
-    auto_reply_task.delay(message='hey ho', chat_id=6612820383, user_id=948373, local_bot_id='female_1')
+    auto_reply_task.delay(message='hey ho', chat_id=8499962108, user_id=948373, local_bot_id='female_1')
     return JsonResponse({'success': True})

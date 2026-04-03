@@ -22,6 +22,7 @@ class AutoReplyService:
         self.split_sentences_service = SplitSentencesService()
 
     def reply_now(self, last_message: str, chat_id: int, user_id: int, local_bot_id: str) -> None:
+        print('AUTO REPLY', chat_id, user_id)
         try:
             admin = User.get_admin()
             sender = CreateUserService.get_or_create(user_id)
