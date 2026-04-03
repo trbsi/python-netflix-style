@@ -17,6 +17,7 @@ class Conversation(models.Model):
     local_bot_id = models.CharField(max_length=20)
     bot_personality = models.TextField(null=True, blank=True)
     external_chat_id = models.CharField(max_length=20)
+    external_last_id = models.CharField(max_length=20, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

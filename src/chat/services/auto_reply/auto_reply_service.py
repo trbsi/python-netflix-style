@@ -11,6 +11,7 @@ from src.inbox.models import Conversation
 from src.inbox.services.create_conversation.create_conversation_service import CreateConversationService
 from src.inbox.services.send_message.send_message_service import SendMessageService
 from src.user.models import User
+from src.user.services.create_user.create_user_service import CreateUserService
 
 
 class AutoReplyService:
@@ -23,7 +24,7 @@ class AutoReplyService:
     def reply_now(self, last_message: str, chat_id: int, user_id: int, local_bot_id: str) -> None:
         try:
             admin = User.get_admin()
-            sender = User.get_or_create(user_id)
+            sender = CreateUserService.get_or_create(user_id)
             conversation, is_new = self.create_conversation_service.get_or_create_conversation(
                 sender=sender,
                 recipient=admin,

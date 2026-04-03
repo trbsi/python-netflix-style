@@ -20,3 +20,11 @@ class CreateUserService:
         service.post_register(user=user)
 
         return user
+
+    @staticmethod
+    def get_or_create(user_id: int):
+        sender = User.objects.filter(username=user_id).first()
+        if not sender:
+            sender = CreateUserService.create_random_user(user_id)
+
+        return sender

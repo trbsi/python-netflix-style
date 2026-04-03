@@ -265,7 +265,7 @@ ENABLED_SITES = env('ENABLED_SITES').split(',')
 # --------- CHAT -----------
 REMOTE_LLM = env.bool('REMOTE_LLM')
 TELEGRAM_BOTS = {
-    'female_1': {
+    'default': {
         'id': 'female_1',
         'name': 'Female Svetlana',
         'token': env('TELEGRAM_FEMALE_1_TOKEN')

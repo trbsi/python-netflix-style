@@ -9,7 +9,7 @@ from telegram import Update, Bot
 
 from automationapp import settings
 from src.chat.bot import TelegramBot
-from src.chat.services.auto_reply.auto_reply_service import AutoReplyService
+from src.chat.tasks import auto_reply_task
 
 bot = TelegramBot()
 app = bot.build_application()
@@ -44,6 +44,5 @@ async def set_webhook(request: HttpRequest) -> JsonResponse:
 
 @require_GET
 def test_reply(request: HttpRequest) -> JsonResponse:
-    service = AutoReplyService()
-    service.reply_now(last_message='hey ho', chat_id=6612820383, user_id=948373, local_bot_id='female_1')
+    auto_reply_task.delay(message='hey ho', chat_id=6612820383, user_id=948373, local_bot_id='female_1')
     return JsonResponse({'success': True})

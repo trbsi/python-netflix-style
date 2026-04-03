@@ -1,5 +1,6 @@
 from src.inbox.services.create_conversation.create_conversation_service import CreateConversationService
 from src.user.models import User
+from src.user.services.create_user.create_user_service import CreateUserService
 
 
 class PersonalityService:
@@ -13,8 +14,9 @@ class PersonalityService:
             local_bot_id: str,
             personality_message: str
     ) -> None:
+        print('PERSONALITY MESSAGE', personality_message)
         admin = User.get_admin()
-        sender = User.get_or_create(user_id)
+        sender = CreateUserService.get_or_create(user_id)
         conversation, is_new = self.create_conversation_service.get_or_create_conversation(
             sender=sender,
             recipient=admin,
@@ -23,4 +25,5 @@ class PersonalityService:
         )
 
         conversation.bot_personality = personality_message
+        conversation.external_last_id = None
         conversation.save()

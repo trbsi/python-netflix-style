@@ -15,7 +15,7 @@ class CommercialLLMReplyService:
             timeout=httpx.Timeout(3600.0),  # Override default timeout with longer timeout for reasoning models
         )
 
-        if is_new:
+        if is_new or conversation.external_last_id is None:
             personality = conversation.bot_personality
             if not personality:
                 personality = 'You are dirty girl who wants to be submissive and you want dirty talk.'
@@ -39,7 +39,10 @@ class CommercialLLMReplyService:
                 ],
             )
 
-        print(response)
+        print('GROK RESPONSE', response)
+
+        conversation.external_last_id = response.id
+        conversation.save()
 
         return self._extract_text(response)
 
