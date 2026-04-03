@@ -8,6 +8,7 @@ from src.inbox.models import Conversation
 class CommercialLLMReplyService:
     GROK_MODEL = 'grok-4-1-fast-reasoning'
 
+    # https://docs.x.ai/developers/models?cluster=us-east-1#detailed-pricing-for-all-grok-models
     def get_remote_reply(self, conversation: Conversation, last_message: str, is_new: bool) -> str:
         client = OpenAI(
             api_key=settings.GROK_API_KEY,
