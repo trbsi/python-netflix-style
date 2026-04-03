@@ -61,6 +61,9 @@ class AutoReplyService:
                 message_content=sentences[i]
             )
 
+        conversation.last_message = sentences[number_of_sentences - 1]
+        conversation.save()
+
         asyncio.run(self._send(sentences, chat_id, number_of_sentences, conversation))
 
     async def _send(
@@ -73,8 +76,5 @@ class AutoReplyService:
         bot = Bot(token=conversation.bot_token_from_id())
         for i in range(number_of_sentences):
             last_message = sentences[i]
-            conversation.last_message = last_message
-            conversation.save()
-
             await asyncio.sleep(random.randint(1, 5))
             await bot.send_message(chat_id=chat_id, text=last_message)
