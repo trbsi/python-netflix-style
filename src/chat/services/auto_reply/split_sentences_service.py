@@ -3,7 +3,6 @@ import re
 
 
 class SplitSentencesService():
-
     def split_sentences(self, sentence: str) -> list:
         sentences = re.split(r'(?<=[.!?])\s+', sentence)
 
@@ -11,8 +10,10 @@ class SplitSentencesService():
         startswith = {"i'"}
 
         for index, sentence in enumerate(sentences):
-            if sentence.endswith('.'):
-                sentence = sentence.removesuffix('.')
+            # Randomly strip punctuation at the end
+            if sentence and sentence[-1] in {'.', '!'}:
+                if random.choice([True, False]):
+                    sentence = sentence[:-1]
 
             words = sentence.split()
 
