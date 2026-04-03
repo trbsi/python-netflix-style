@@ -18,7 +18,6 @@ class TelegramBot:
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             chat_id = update.effective_chat.id
-            # bot = Bot(token=self.BOT['token']) @TODO-delete
             await context.bot.send_message(
                 chat_id=chat_id,
                 text='hello fucker. tell me, what you want me to be? dominant bitch, gentle little submissive slut or something else? tell me your wishes'

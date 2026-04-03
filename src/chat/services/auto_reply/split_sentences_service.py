@@ -45,5 +45,25 @@ class SplitSentencesService():
             else:
                 normal_sentences.append(sentence)
 
-        # Put questions at the end
-        return normal_sentences + question_sentences
+        #  Put questions at the end
+        sentences = normal_sentences + question_sentences
+
+        # Randomly stitch sentences together
+        stitched = []
+        i = 0
+
+        while i < len(sentences):
+            current = sentences[i]
+
+            # Decide randomly whether to merge with next sentence
+            if i < len(sentences) - 1 and random.choice([True, False]):
+                next_sentence = sentences[i + 1]
+
+                # Join with space (or you can randomize this too)
+                current = f"{current} {next_sentence}"
+                i += 1  # skip next since it's merged
+
+            stitched.append(current)
+            i += 1
+
+        return stitched

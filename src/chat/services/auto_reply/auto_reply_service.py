@@ -51,7 +51,7 @@ class AutoReplyService:
             conversation: Conversation,
     ):
         sentences = self.split_sentences_service.split_sentences(sentence)
-        number_of_sentences = random.randint(1, min(3, len(sentences)))
+        number_of_sentences = len(sentences)
 
         for i in range(number_of_sentences):
             # admin is sending a message
