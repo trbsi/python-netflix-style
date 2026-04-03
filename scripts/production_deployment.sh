@@ -7,15 +7,26 @@ BEAT="automationapp-celery-beat"
 NGINX="automationapp-nginx-proxy"
 
 BUILD_DOCKER=false
+BRANCH="master"  # default
 
-# Parse optional flag
-if [[ "$1" == "--build" ]]; then
-    BUILD_DOCKER=true
-fi
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        --build)
+            BUILD_DOCKER=true
+            ;;
+        *)
+            BRANCH="$arg"
+            ;;
+    esac
+done
 
 echo "🚀 --------------------------- Updating repository ---------------------------"
-git checkout master
-git checkout .
+echo "Using branch: $BRANCH"
+
+git fetch origin
+git checkout "$BRANCH"
+git reset --hard "origin/$BRANCH"
 git pull --rebase
 
 echo "🚀 --------------------------- Install dependencies ---------------------------"
