@@ -37,7 +37,7 @@ class SplitSentencesService():
 
             # Random capitalization
             if sentence and random.choice([True, False]):
-                sentence = sentence[0].upper() + sentence[1:]
+                sentence = sentence[0].lower() + sentence[1:]
 
             # Separate question sentences
             if original_sentence.strip().endswith('?'):
