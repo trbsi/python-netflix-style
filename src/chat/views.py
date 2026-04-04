@@ -35,11 +35,13 @@ async def set_webhook(request: HttpRequest) -> JsonResponse:
     if url is None:
         url = f"{settings.APP_URL}{reverse_lazy('chat.webhook')}"
 
+    bots = []
     for key, telegram_bot in settings.TELEGRAM_BOTS.items():
+        bots.append(key)
         bot = Bot(telegram_bot['token'])
         await bot.set_webhook(url)
 
-    return JsonResponse({"ok": True, 'url': url})
+    return JsonResponse({"ok": True, 'url': url, 'bots': bots})
 
 
 @require_GET
