@@ -13,6 +13,12 @@ def auto_reply_task(
 ) -> None:
     try:
         service = AutoReplyService()
-        service.reply_now(message, chat_id, user_id, local_bot_id)
+        service.reply_now(
+            last_message=message,
+            chat_id=chat_id,
+            user_id=user_id,
+            local_bot_id=local_bot_id,
+            send_to_bot=True
+        )
     except Exception as e:
         bugsnag.notify(e)

@@ -21,10 +21,22 @@ class AutoReplyService:
         self.send_message_service = SendMessageService()
         self.split_sentences_service = SplitSentencesService()
 
-    def reply_now(self, last_message: str, chat_id: int, user_id: int, local_bot_id: str) -> None:
+    def reply_now(
+            self,
+            last_message: str,
+            chat_id: int | str,
+            user_id: int | str,
+            local_bot_id: str,
+            send_to_bot: bool,
+            admin_id: int | str = None
+    ) -> list:
         print('AUTO REPLY', chat_id, user_id)
         try:
-            admin = User.get_admin()
+            if not admin_id:
+                admin = User.get_admin()
+            else:
+                admin = CreateUserService.get_or_create(admin_id)
+
             sender = CreateUserService.get_or_create(user_id)
             conversation, is_new = self.create_conversation_service.get_or_create_conversation(
                 sender=sender,
@@ -40,42 +52,44 @@ class AutoReplyService:
             else:
                 raise Exception('No other LLM is set for reply')
 
-            self._prepare_and_send_messages(sentence, chat_id, admin, conversation)
+            sentences = self._prepare_messages(sentence, admin, conversation)
+            if send_to_bot:
+                asyncio.run(self._send(sentences, chat_id, conversation))
+
+            return sentences
         except Exception as e:
             bugsnag.notify(e)
+            return []
 
-    def _prepare_and_send_messages(
+    def _prepare_messages(
             self,
             sentence: str,
-            chat_id: int,
             admin: User,
             conversation: Conversation,
-    ):
+    ) -> list:
         sentences = self.split_sentences_service.split_sentences(sentence)
-        number_of_sentences = len(sentences)
 
-        for i in range(number_of_sentences):
+        for sentence in sentences:
             # admin is sending a message
             self.send_message_service.send_message(
                 sender=admin,
                 conversation=conversation,
-                message_content=sentences[i]
+                message_content=sentence
             )
 
-        conversation.last_message = sentences[number_of_sentences - 1]
+        conversation.last_message = sentences[-1]
         conversation.save()
 
-        asyncio.run(self._send(sentences, chat_id, number_of_sentences, conversation))
+        return sentences
 
     async def _send(
             self,
             sentences: list,
             chat_id: int,
-            number_of_sentences: int,
             conversation: Conversation
     ) -> None:
         bot = Bot(token=conversation.bot_token_from_id())
-        for i in range(number_of_sentences):
-            last_message = sentences[i]
+        for sentence in sentences:
+            last_message = sentence
             await asyncio.sleep(random.randint(1, 5))
             await bot.send_message(chat_id=chat_id, text=last_message)
