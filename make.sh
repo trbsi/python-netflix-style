@@ -5,6 +5,9 @@ set -e  # Exit immediately if a command fails
 
 DOCKER_DIR="./docker"
 DJANGO_CONTAINER="automationapp-django"
+WORKER="automationapp-celery-worker"
+BEAT="automationapp-celery-beat"
+NGINX="automationapp-nginx-proxy"
 
 # Functions
 builddocker() {
@@ -45,6 +48,13 @@ copy_category_images() {
     cp -R static/images/ media-asset/
 }
 
+restartall() {
+  docker restart $DJANGO_CONTAINER
+  docker restart $WORKER
+  docker restart $BEAT
+  docker restart $NGINX
+}
+
 # Parse command-line argument
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 {builddocker|migrate|makemigrations}"
@@ -75,6 +85,9 @@ case "$1" in
         ;;
     copy_category_images)
         copy_category_images
+        ;;
+    restartall)
+        restartall
         ;;
     *)
         echo "Unknown command: $1"
