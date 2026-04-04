@@ -31,6 +31,7 @@ class AutoReplyService:
                 recipient=admin,
                 external_chat_id=chat_id,
                 local_bot_id=local_bot_id,
+                last_message=last_message
             )
             self.send_message_service.send_message(sender, conversation, last_message)
 

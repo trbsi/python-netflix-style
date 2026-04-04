@@ -11,6 +11,7 @@ class CreateConversationService:
             recipient: User,
             external_chat_id: int,
             local_bot_id: str,
+            last_message: str,
     ) -> tuple[Conversation, bool]:
         conversation = (
             Conversation.objects
@@ -29,6 +30,7 @@ class CreateConversationService:
                 recipient=recipient,
                 external_chat_id=external_chat_id,
                 local_bot_id=local_bot_id,
+                bot_personality=last_message,
             )
 
         if sender == conversation.sender:
