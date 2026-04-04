@@ -13,7 +13,7 @@ class CreateConversationService:
             local_bot_id: str,
             last_message: str,
     ) -> tuple[Conversation, bool]:
-        conversation = (
+        conversation: Conversation = (
             Conversation.objects
             .filter(Q(sender=sender, recipient=recipient) | Q(sender=recipient, recipient=sender))
             .first()
@@ -23,6 +23,8 @@ class CreateConversationService:
             is_new = False
             conversation.deleted_by_sender = False
             conversation.deleted_by_recipient = False
+            conversation.local_bot_id = local_bot_id
+            conversation.external_chat_id = external_chat_id
         else:
             is_new = True
             conversation = Conversation.objects.create(
