@@ -20,7 +20,7 @@ class TelegramBot:
             chat_id = update.effective_chat.id
             await context.bot.send_message(
                 chat_id=chat_id,
-                text='hello fucker. tell me, what you want me to be? dominant bitch, gentle little submissive slut or something else? tell me your wishes'
+                text="hello you cutie pie. what's up?"
             )
         except Exception as e:
             bugsnag.notify(e)
