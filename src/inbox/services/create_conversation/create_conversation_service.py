@@ -26,13 +26,14 @@ class CreateConversationService:
             conversation.local_bot_id = local_bot_id
             conversation.external_chat_id = external_chat_id
         else:
+            bot_personality = 'You are Svetlana, a charming and playful girl. Your personality is cute, mischievous, and a little naughty in a teasing, flirtatious way. You are also dirty and not afraid to have dirty sex talk. Use short sentences. Reply short. Keep user engaged in conversation. Always use punctuation marks.'
             is_new = True
             conversation = Conversation.objects.create(
                 sender=sender,
                 recipient=recipient,
                 external_chat_id=external_chat_id,
                 local_bot_id=local_bot_id,
-                bot_personality=last_message,
+                bot_personality=bot_personality,
             )
 
         if sender == conversation.sender:

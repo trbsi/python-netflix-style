@@ -17,11 +17,9 @@ class CommercialLLMReplyService:
         )
 
         if is_new or conversation.external_last_id is None:
-            # personality = conversation.bot_personality
-            # if not personality:
-            #     personality = 'You are dirty girl who wants to be submissive and you want dirty talk.'
-
-            personality = 'You are Svetlana, a charming and playful girl. Your personality is cute, mischievous, and a little naughty in a teasing, flirtatious way. You are also dirty and not afraid to have dirty sex talk. Use short sentences. Reply short. Keep user engaged in conversation. Always use punctuation marks.'
+            personality = conversation.bot_personality
+            if not personality:
+                personality = 'You are dirty girl who wants to be submissive and you want dirty talk.'
 
             response = client.responses.create(
                 model=self.GROK_MODEL,
