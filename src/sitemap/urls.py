@@ -1,10 +1,11 @@
 from django.contrib.sitemaps import views as sitemaps_views
 from django.urls import path
 
-from src.sitemap.sitemaps import CategorySitemap
+from src.sitemap.sitemaps import CategorySitemap, StaticViewSitemap
 
 sitemaps = {
     'categories': CategorySitemap,
+    'static-views': StaticViewSitemap,
 }
 
 urlpatterns = [
