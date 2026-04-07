@@ -1,7 +1,8 @@
 import asyncio
 import json
 
-from django.http import HttpRequest, JsonResponse
+from django.http import HttpRequest, JsonResponse, HttpResponse
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET
@@ -64,3 +65,8 @@ def reply(request: HttpRequest) -> JsonResponse:
         admin_id=get.get('main_user')
     )
     return JsonResponse({'messages': messages})
+
+
+@require_GET
+def about(request: HttpRequest) -> HttpResponse:
+    return render(request, 'chat_about.html')
