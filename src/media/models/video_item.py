@@ -11,7 +11,9 @@ from src.core.utils import full_url_for_route
 class VideoItem(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.TextField()
+    title_rewritten = models.TextField()
     slug = models.SlugField(default='', max_length=100)
+    slug_rewritten = models.SlugField(default='', max_length=100)
     link = models.CharField(max_length=300)
     duration = models.PositiveIntegerField(help_text="Duration in seconds")
     thumb_small = models.TextField()
