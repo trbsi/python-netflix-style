@@ -1,7 +1,7 @@
 import time
 
 from django.db.models import QuerySet
-from django.template.defaultfilters import slugify
+from django.utils.text import slugify
 from xai_sdk import Client
 from xai_sdk.chat import system, user
 
@@ -66,12 +66,13 @@ class AiRewriteService:
         print("\n--- Results ---")
         results = client.batch.list_batch_results(batch_id=batch.batch_id)
 
+        field = VideoItem._meta.get_field('slug_rewritten')
         for result in results.succeeded:
             try:
                 video: VideoItem = VideoItem.objects.get(id=result.batch_request_id)
                 new_title = result.response.content.strip()
                 video.title_rewritten = new_title
-                video.slug_rewritten = slugify(new_title)
+                video.slug_rewritten = slugify(new_title)[:field.max_length]
                 video.save()
             except Exception as e:
                 print(e)
