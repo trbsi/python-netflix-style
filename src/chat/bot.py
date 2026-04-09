@@ -9,7 +9,8 @@ from telegram.ext import (
 )
 
 from automationapp import settings
-from src.chat.tasks import auto_reply_task, define_personality_task
+from src.chat.services.personality.personality_service import PersonalityService
+from src.chat.tasks import auto_reply_task
 
 
 class TelegramBot:
@@ -44,7 +45,8 @@ class TelegramBot:
             await context.bot.send_message(chat_id=chat_id, text="Usage: /personality <text>")
             return
 
-        define_personality_task.delay(chat_id, user_id, self.BOT['id'], text)
+        service = PersonalityService()
+        service.define_bot_personality(chat_id, user_id, self.BOT['id'], text)
 
     def build_application(self) -> Application:
         app = ApplicationBuilder().token(self.BOT['token']).build()
