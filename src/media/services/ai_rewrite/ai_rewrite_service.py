@@ -25,7 +25,7 @@ class AiRewriteService:
 
         feedback_data = []
         for video in videos:
-            feedback_data.append({"id": video.id, "text": video.title})
+            feedback_data.append({"id": str(video.id), "text": video.title})
 
         # Step 1: Create a batch
         print("Creating batch...")
@@ -41,8 +41,7 @@ class AiRewriteService:
                 batch_request_id=item["id"],
             )
             chat.append(system(
-                "Rewrite title and make it SEO friendly. "
-                "Respond with only new title."
+                "Rewrite title. Make it SEO friendly. Respond with only new title."
             ))
             chat.append(user(item["text"]))
             batch_requests.append(chat)
