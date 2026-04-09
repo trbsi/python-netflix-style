@@ -60,7 +60,7 @@ class AiRewriteService:
 
             if pending == 0:
                 break
-            time.sleep(2)
+            time.sleep(300)
 
         # Step 4: Retrieve and display results
         print("\n--- Results ---")
