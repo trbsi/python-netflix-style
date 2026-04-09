@@ -24,7 +24,7 @@ class SearchByCategoryService:
         for video in videos:
             result.append({
                 "id": video.id,
-                "title": video.title,
+                "title": video.main_title,
                 "thumbnail": video.thumbnail_small,
                 "duration": video.duration_formatted,
                 "url": video.video_url,

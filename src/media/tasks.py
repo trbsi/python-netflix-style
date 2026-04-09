@@ -44,3 +44,9 @@ def delete_videos_task():
 @shared_task
 def generate_frontpage_task():
     call_command('generate_frontpage_command')
+
+
+# ------------ AI Rewrite  ----------------------
+@shared_task
+def rewrite_title_task(batch_size):
+    call_command('rewrite_title_command', batch_size)

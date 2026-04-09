@@ -20,7 +20,7 @@
                                                 <img src="{{ video.thumbnail_large }}" alt="movie-card"
                                                      class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                      loading="lazy">
-                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.title|safe }}</span>
+                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>
                                             </a>
                                         </div>
                                         <div class="card-description with-transition">
@@ -36,7 +36,7 @@
                                             <div class="cart-content">
                                                 <div class="content-left">
                                                     <h5 class="iq-title text-capitalize">
-                                                        <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
+                                                        <a href="{{ video.video_url }}">{{ video.main_title|safe }}</a>
                                                     </h5>
                                                 </div>
                                             </div>
@@ -87,7 +87,7 @@
                                 <div class="text-center">
                                     <h6 class="mb-0">
                                         <a href="{{ video.video_url }}"
-                                           class="font-size-14 text-decoration-none cast-title text-capitalize">{{ video.title|safe }}</a>
+                                           class="font-size-14 text-decoration-none cast-title text-capitalize">{{ video.main_title|safe }}</a>
                                     </h6>
                                     <a href="{{ video.video_url }}"
                                        class="font-size-12 fw-semibold text-decoration-none text-capitalize text-body">{{ video.duration_formatted }}</a>
@@ -121,7 +121,7 @@
                                 <div class="text-center">
                                     <h6 class="mb-0">
                                         <a href="{{ video.video_url }}"
-                                           class="font-size-14 text-decoration-none cast-title text-capitalize">{{ video.title|safe }}</a>
+                                           class="font-size-14 text-decoration-none cast-title text-capitalize">{{ video.main_title|safe }}</a>
                                     </h6>
                                     <a href="{{ video.video_url }}"
                                        class="font-size-12 fw-semibold text-decoration-none text-capitalize text-body">{{ video.pub_date_formatted }}</a>
@@ -155,7 +155,7 @@
                                                 <img src="{{ video.thumbnail_large }}" alt="movie-card"
                                                      class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                      loading="lazy">
-                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.title|safe }}</span>
+                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>
                                             </a>
                                         </div>
                                         <div class="card-description with-transition">
@@ -171,7 +171,7 @@
                                             <div class="cart-content">
                                                 <div class="content-left">
                                                     <h5 class="iq-title text-capitalize">
-                                                        <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
+                                                        <a href="{{ video.video_url }}">{{ video.main_title|safe }}</a>
                                                     </h5>
                                                 </div>
                                             </div>
@@ -224,7 +224,7 @@
                                                      alt="movie-card"
                                                      class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                      loading="lazy">
-                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.title|safe }}</span>
+                                                <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>
                                             </a>
                                         </div>
                                         <div class="card-description with-transition">
@@ -240,7 +240,7 @@
                                             <div class="cart-content">
                                                 <div class="content-left">
                                                     <h5 class="iq-title text-capitalize">
-                                                        <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
+                                                        <a href="{{ video.video_url }}">{{ video.main_title|safe }}</a>
                                                     </h5>
                                                 </div>
                                             </div>

@@ -25,7 +25,7 @@
                                     <div class="d-flex align-items-center justify-content-between px-2 mb-1">
                                         <ul class="list-inline m-0 p-0 d-flex row-gap-1 column-gap-3 flex-wrap movie-list-item">
                                             <li class="iq-preogress-movie-title position-relative font-size-14"><span
-                                                    class="text-capitalize fw-semibold ">{{ video.title|safe|truncatechars:20 }}</span>
+                                                    class="text-capitalize fw-semibold ">{{ video.main_title|safe|truncatechars:20 }}</span>
                                             </li>
                                             <li class="flex-shrink-0 fw-semibold font-size-14">
                                           <span>
@@ -82,7 +82,7 @@
                                                  alt="movie-card"
                                                  class="object-cover rounded-3"
                                                  loading="lazy">
-                                            <span class="thumbnail-title thumbnail-title-middle">{{ video.title|safe }}</span>
+                                            <span class="thumbnail-title thumbnail-title-middle">{{ video.main_title|safe }}</span>
                                         </a>
                                         <span class="top-ten-numbers texture-text">{{ forloop.counter }}</span>
                                     </div>
@@ -120,7 +120,7 @@
                                                  alt="movie-card"
                                                  class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                  loading="lazy">
-                                            <span class="thumbnail-title thumbnail-title-bottom">{{ video.title|safe }}</span>
+                                            <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>
                                         </a>
                                     </div>
                                     <div class="card-description with-transition">
@@ -136,7 +136,7 @@
                                         <div class="cart-content">
                                             <div class="content-left">
                                                 <h5 class="iq-title text-capitalize">
-                                                    <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
+                                                    <a href="{{ video.video_url }}">{{ video.main_title|safe }}</a>
                                                 </h5>
                                                 {% comment %}
                                                 <div class="d-flex align-items-center gap-3">
@@ -201,7 +201,7 @@
                                                  alt="movie-card"
                                                  class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                  loading="lazy">
-                                            <span class="thumbnail-title thumbnail-title-bottom">{{ video.title|safe }}</span>
+                                            <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>
                                         </a>
                                     </div>
                                     <div class="card-description with-transition">
@@ -217,7 +217,7 @@
                                         <div class="cart-content">
                                             <div class="content-left">
                                                 <h5 class="iq-title text-capitalize mb-0">
-                                                    <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
+                                                    <a href="{{ video.video_url }}">{{ video.main_title|safe }}</a>
                                                 </h5>
                                             </div>
                                         </div>
@@ -271,7 +271,7 @@
                                                  alt="movie-card"
                                                  class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                  loading="lazy">
-                                            <span class="thumbnail-title thumbnail-title-bottom">{{ video.title|safe }}</span>
+                                            <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>
                                         </a>
                                     </div>
                                     <div class="card-description with-transition">
@@ -287,7 +287,7 @@
                                         <div class="cart-content">
                                             <div class="content-left">
                                                 <h5 class="iq-title text-capitalize">
-                                                    <a href="{{ video.video_url }}">{{ video.title|safe }}</a>
+                                                    <a href="{{ video.video_url }}">{{ video.main_title|safe }}</a>
                                                 </h5>
                                                 {% comment %}
                                                 <div class="d-flex align-items-center gap-3">

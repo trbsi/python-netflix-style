@@ -4,11 +4,17 @@
     <li><h1><a href="{% url 'admin.commands' %}?site=pornhub">Pornhub</a></h1></li>
     <li><h1><a href="{% url 'admin.commands' %}?site=eporner">Eporner</a></h1></li>
 </ul>
-
+<div>
+    <form method="GET">
+        Batch size:
+        <input type="number" name="batch_size" value="{{batch_size}}">
+    </form>
+</div>
 <h1>Actions</h1>
 <ul>
     <li><h1><a href="{% url 'admin.trigger_import_partial' %}?site={{site}}">Trigger partial import</a></h1></li>
     <li><h1><a href="{% url 'admin.trigger_generate_frontend' %}?site={{site}}">Trigger generate frontend</a></h1></li>
     <li><h1><a href="{% url 'admin.trigger_sitemap_partial' %}?site={{site}}">Trigger sitemap partial</a></h1></li>
     <li><h1><a href="{% url 'chat.set_webhook' %}">Set telegram bot webhook</a></h1></li>
+    <li><h1><a href="{% url 'admin.trigger_title_rewrite' %}?batch_size={{batch_size}}">Trigger title rewrite</a></h1></li>
 </ul>

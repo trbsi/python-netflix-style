@@ -99,3 +99,7 @@ class VideoItem(models.Model):
     @property
     def thumbnail_small(self):
         return random.choice(self.thumb_small.split(','))
+
+    @property
+    def main_title(self):
+        return self.title_rewritten if self.title_rewritten else self.title

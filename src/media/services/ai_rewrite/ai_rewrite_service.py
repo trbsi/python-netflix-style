@@ -68,7 +68,7 @@ class AiRewriteService:
 
         for result in results.succeeded:
             try:
-                video = VideoItem.objects.get(id=result.batch_request_id)
+                video: VideoItem = VideoItem.objects.get(id=result.batch_request_id)
                 new_title = result.response.content.strip()
                 video.title_rewritten = new_title
                 video.slug_rewritten = slugify(new_title)

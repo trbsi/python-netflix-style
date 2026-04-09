@@ -26,7 +26,7 @@ class ManticoreService:
             "table": self.VIDEOS_INDEX,
             "id": video.id,
             "doc": {
-                "title": video.title,
+                "title": video.main_title,
                 "slug": video.slug,
                 "thumbnail": video.thumb_large,
                 "duration": video.duration,
@@ -73,7 +73,7 @@ class ManticoreService:
                     "table": self.VIDEOS_INDEX,
                     "id": v.id,
                     "doc": {
-                        "title": v.title,
+                        "title": v.main_title,
                         "slug": v.slug,
                         "thumbnail": v.thumb_large,
                         "duration": v.duration,
