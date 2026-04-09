@@ -11,9 +11,9 @@ from src.core.utils import full_url_for_route
 class VideoItem(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.TextField()
-    title_rewritten = models.TextField()
+    title_rewritten = models.TextField(null=True, blank=True)
     slug = models.SlugField(default='', max_length=100)
-    slug_rewritten = models.SlugField(default='', max_length=100)
+    slug_rewritten = models.SlugField(default='', max_length=100, null=True, blank=True)
     link = models.CharField(max_length=300)
     duration = models.PositiveIntegerField(help_text="Duration in seconds")
     thumb_small = models.TextField()
@@ -49,11 +49,13 @@ class VideoItem(models.Model):
 
     @property
     def video_url(self):
-        return reverse_lazy('media.single_video', kwargs={'id': self.id, 'slug': self.slug})
+        slug = self.slug_rewritten if self.slug_rewritten else self.slug
+        return reverse_lazy('media.single_video', kwargs={'id': self.id, 'slug': slug})
 
     @property
     def video_full_url(self):
-        return full_url_for_route('media.single_video', kwargs={'id': self.id, 'slug': self.slug})
+        slug = self.slug_rewritten if self.slug_rewritten else self.slug
+        return full_url_for_route('media.single_video', kwargs={'id': self.id, 'slug': slug})
 
     @property
     def duration_formatted(self) -> str:

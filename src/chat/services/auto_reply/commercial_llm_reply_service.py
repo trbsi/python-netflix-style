@@ -9,6 +9,7 @@ class CommercialLLMReplyService:
     GROK_MODEL = 'grok-4-1-fast-reasoning'
 
     # https://docs.x.ai/developers/models?cluster=us-east-1#detailed-pricing-for-all-grok-models
+    # https://docs.x.ai/developers/model-capabilities/text/generate-text#creating-a-new-model-response
     def get_remote_reply(self, conversation: Conversation, last_message: str, is_new: bool) -> str:
         client = OpenAI(
             api_key=settings.GROK_API_KEY,
