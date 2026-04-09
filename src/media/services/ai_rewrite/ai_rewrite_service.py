@@ -72,6 +72,7 @@ class AiRewriteService:
                 new_title = result.response.content.strip()
                 video.title_rewritten = new_title
                 video.slug_rewritten = slugify(new_title)
+                video.save()
             except Exception as e:
                 print(e)
 
