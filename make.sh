@@ -55,6 +55,10 @@ restartall() {
   docker restart $NGINX
 }
 
+cleardockerlogs() {
+  sudo find /var/lib/docker/containers/ -name "*.log" -type f -exec truncate -s 0 {} \;
+}
+
 # Parse command-line argument
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 {builddocker|migrate|makemigrations}"
@@ -88,6 +92,9 @@ case "$1" in
         ;;
     restartall)
         restartall
+        ;;
+    cleardockerlogs)
+        cleardockerlogs
         ;;
     *)
         echo "Unknown command: $1"
