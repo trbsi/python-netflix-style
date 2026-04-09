@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 
 from src.media.tasks import import_from_dump_partial_task, delete_videos_task, generate_frontpage_task, \
-    rewrite_title_task
+    rewrite_title_send_to_batch_task
 from src.sitemap.tasks import generate_sitemap_partial_task
 
 
@@ -49,5 +49,5 @@ def trigger_sitemap_partial(request: HttpRequest) -> HttpResponse:
 
 @staff_member_required
 def trigger_title_rewrite(request: HttpRequest) -> HttpResponse:
-    rewrite_title_task.delay(int(request.GET.get('batch_size')))
+    rewrite_title_send_to_batch_task.delay(int(request.GET.get('batch_size')))
     return HttpResponse('rewrite_title_task is queued', status=200)

@@ -48,5 +48,10 @@ def generate_frontpage_task():
 
 # ------------ AI Rewrite  ----------------------
 @shared_task
-def rewrite_title_task(batch_size):
-    call_command('rewrite_title_command', batch_size)
+def rewrite_title_send_to_batch_task(batch_size):
+    call_command('rewrite_title_command', 'send_to_batch', batch_size)
+
+
+@shared_task
+def rewrite_title_check_batch_task():
+    call_command('rewrite_title_command', 'check_batch')

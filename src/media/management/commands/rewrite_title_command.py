@@ -4,14 +4,19 @@ from src.media.services.ai_rewrite.ai_rewrite_service import AiRewriteService
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument('batch_size', type=int)
+        parser.add_argument('type', type=str)
+        parser.add_argument('batch_size', type=int, nargs='?')
 
     def handle(self, *args, **options):
         self.info('Start batching')
 
-        batch_size = options['batch_size']
-
+        type = options['type']
         service = AiRewriteService()
-        service.rewrite_title(batch_size)
 
-        self.info('Finish batching')
+        if type == 'send_to_batch':
+            batch_size = int(options['batch_size'])
+            service.send_to_batch(batch_size)
+            self.info('Finish batching')
+        elif type == 'check_batch':
+            service.check_and_save_batch_result()
+            self.info('Finish checking reults')
