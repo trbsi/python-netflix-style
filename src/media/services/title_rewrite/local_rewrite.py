@@ -2,7 +2,7 @@ import re
 
 from django.db import transaction
 
-from .models import VideoItem
+from src.media.models import VideoItem
 
 
 class LocalRewriteService:
