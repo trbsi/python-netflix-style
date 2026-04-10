@@ -117,7 +117,7 @@ def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     videos = (
         VideoItem.objects
         .order_by("-id")
-        .filter(title_rewritten__isnull=True)[:limit]
+        .filter(slug_rewritten__isnull=True)[:limit]
     )
 
     return JsonResponse({
