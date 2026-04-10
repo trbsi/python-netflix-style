@@ -1,5 +1,6 @@
 from src.core.management.commands.base_command import BaseCommand
 from src.media.services.title_rewrite.ai_rewrite_service import AiRewriteService
+from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 
 
 class Command(BaseCommand):
