@@ -1,7 +1,10 @@
+import json
+
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.views.decorators.http import require_GET
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_POST
 
 from automationapp import settings
 from src.core.utils import unslugify
@@ -92,3 +95,13 @@ def search_videos_api(request: HttpRequest) -> HttpResponse:
         "scroll_cursor": result.scroll_cursor,
         "has_next": True
     })
+
+
+@require_POST
+@csrf_exempt
+def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
+    post = json.loads(request.body)
+    video: VideoItem = VideoItem.objects.get(pk=post.get('video_id'))
+    video.title_rewritten = post.get('title')
+    video.save()
+    return JsonResponse({})
