@@ -52,7 +52,7 @@ class AiRewriteService:
                 batch_request_id=item["id"],
             )
             chat.append(system(
-                "Rewrite title. Make it SEO friendly. Respond with only new title."
+                "SEO rewrite. Title only."
             ))
             chat.append(user(item["text"]))
             batch_requests.append(chat)
