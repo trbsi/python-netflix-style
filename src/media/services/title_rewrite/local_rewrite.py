@@ -1,28 +1,19 @@
-import random
-import string
+import re
 
-import nltk
 from django.db import transaction
-from django.db.models import QuerySet
-from tqdm import tqdm
 
-from src.media.models import VideoItem
+from .models import VideoItem
 
-
-# ==================== DJANGO MANAGEMENT COMMAND ====================
-# Save this file as:
-#   your_app/management/commands/rewrite_adult_titles.py
-#   (create the folders management/commands/ if they don't exist)
-#
-# Run with:  python manage.py rewrite_adult_titles
-#
-# Everything is now inside the Command class as requested.
 
 class LocalRewriteService:
-    help = 'Rewrite all VideoItem.title fields using rule-based adult synonyms (no AI)'
+    """
+    Deterministic SEO title generator (no AI).
+    Converts raw titles into structured SEO-safe titles.
+    """
 
-    # ====================== MASSIVE ADULT SYNONYM DICTIONARY ======================
-    # 70+ most common adult video title words with multiple natural variations
+    # =========================
+    # YOUR SYNONYMS (USED FOR EXPANSION ONLY)
+    # =========================
     CUSTOM_SYNONYMS = {
         # === CORE VERBS ===
         "fuck": ["bang", "screw", "pound", "plow", "rail", "drill", "hump", "shag", "bonk", "boink", "ream", "nail"],
@@ -98,117 +89,135 @@ class LocalRewriteService:
         "facial": ["cumshot", "facecum"],
     }
 
+    # =========================
+    # SEMANTIC GROUPING (IMPORTANT UPGRADE)
+    # =========================
+    CATEGORIES = {
+        "milf", "teen", "bbw", "lesbian", "cuckold",
+        "interracial", "bbc", "busty", "petite"
+    }
+
+    ACTIONS = {
+        "blowjob", "anal", "gangbang", "threesome",
+        "squirt", "handjob", "rimjob", "deepthroat"
+    }
+
+    ADJECTIVES = {
+        "hot", "sexy", "big", "huge", "hard",
+        "rough", "wet", "tight", "dirty", "wild"
+    }
+
+    FALLBACK_WORD = "Video"
+
     def __init__(self):
-        self.syn_cache = {}  # per-run cache (lives inside the class)
+        self.reverse_map = self.build_reverse_map()
 
-    # ====================== SAFE ONE-TIME NLTK DOWNLOAD ======================
-    def _ensure_wordnet(self):
-        """Downloads WordNet only once — never again on future runs."""
-        try:
-            nltk.data.find('corpora/wordnet')
-        except LookupError:
-            print("Downloading WordNet (one-time only)...")
-            nltk.download('wordnet', quiet=True)
-            print(("WordNet ready."))
+    def build_reverse_map(self):
+        reverse_map = {}
+        for key, values in self.CUSTOM_SYNONYMS.items():
+            reverse_map[key] = key
+            for v in values:
+                reverse_map[v] = key
+        return reverse_map
 
-    # ====================== SYNONYM LOOKUP ======================
-    def get_synonyms(self, word: str):
-        word_lower = word.lower().strip(string.punctuation)
-        if word_lower in self.syn_cache:
-            return self.syn_cache[word_lower]
+    # =========================
+    # TEXT CLEANING
+    # =========================
+    def clean(self, text: str) -> str:
+        text = text.lower()
+        text = re.sub(r"[^a-z0-9\s]", " ", text)
+        text = re.sub(r"\s+", " ", text).strip()
+        return text
 
-        synonyms = set()
+    # =========================
+    # TOKEN NORMALIZATION
+    # =========================
+    def normalize(self, text: str):
+        words = text.split()
+        return words
 
-        # Adult dictionary has priority
-        if word_lower in self.CUSTOM_SYNONYMS:
-            synonyms.update(self.CUSTOM_SYNONYMS[word_lower])
+    # =========================
+    # SYNONYM COLLAPSING (KEY UPGRADE)
+    # =========================
+    def collapse_synonyms(self, words):
+        """
+        Instead of expanding synonyms (which creates noise),
+        we collapse them into canonical forms.
+        """
 
-        # WordNet fallback
-        for syn in nltk.corpus.wordnet.synsets(word_lower):
-            for lemma in syn.lemmas():
-                synonyms.add(lemma.name())
+        return [self.reverse_map.get(w, w) for w in words]
 
-        synonyms.discard(word_lower)  # never return the original word
-        self.syn_cache[word_lower] = list(synonyms)
-        return self.syn_cache[word_lower]
+    # =========================
+    # STRUCTURE EXTRACTION
+    # =========================
+    def extract(self, words):
+        category = None
+        action = None
+        adjectives = []
 
-    # ====================== TITLE REWRITER ======================
-    def rewrite_title(self, title: str, replacement_prob: float = 0.42) -> str:
-        if not title:
-            return title
+        for w in words:
+            if w in self.CATEGORIES:
+                category = w
+            elif w in self.ACTIONS:
+                action = w
+            elif w in self.ADJECTIVES:
+                adjectives.append(w)
 
-        words = title.split()
-        new_words = []
+        return category, action, adjectives
 
-        for word in words:
-            clean_word = word.strip(string.punctuation)
-            punct = word[len(clean_word):] if len(word) > len(clean_word) else ""
+    # =========================
+    # TITLE BUILDER (SEO CONTROLLED)
+    # =========================
+    def build_title(self, category, action, adjectives):
+        parts = []
 
-            if (random.random() < replacement_prob and
-                    clean_word.isalpha() and
-                    len(clean_word) > 2):
+        # limit adjectives for SEO cleanliness
+        if adjectives:
+            parts.extend(adjectives[:2])
 
-                synonyms = self.get_synonyms(clean_word)
-                if synonyms:
-                    new_word = random.choice(synonyms)
-                    if word and word[0].isupper():
-                        new_word = new_word.capitalize()
-                    new_words.append(new_word + punct)
-                    continue
+        if category:
+            parts.append(category)
 
-            new_words.append(word)
+        if action:
+            parts.append(action)
 
-        new_title = " ".join(new_words)
-        new_title = (new_title
-                     .replace(" ,", ",")
-                     .replace(" .", ".")
-                     .replace(" !", "!")
-                     .replace(" ?", "?")
-                     .replace("  ", " "))
-        return new_title
+        parts.append(self.FALLBACK_WORD)
 
-    def rewrite_until_different(self, title: str, max_attempts: int = 5) -> str:
-        original = title.strip()
-        for _ in range(max_attempts):
-            candidate = self.rewrite_title(original)
-            if candidate != original and candidate.strip():
-                return candidate
-        return original.rstrip(".!?") + " - remastered"
+        return " ".join([p.capitalize() for p in parts])
 
-    # ====================== MAIN HANDLE ======================
-    def local_rewrite(self):
-        self._ensure_wordnet()  # ← downloads only once, ever
+    # =========================
+    # MAIN FUNCTION
+    # =========================
+    def rewrite(self, title: str) -> str:
+        cleaned = self.clean(title)
+        words = self.normalize(cleaned)
+        words = self.collapse_synonyms(words)
 
-        BATCH_SIZE = 2000
-        total_updated = 0
-        items_to_update = []
+        category, action, adjectives = self.extract(words)
 
-        queryset: QuerySet[VideoItem] = VideoItem.objects.only('pk', 'title').order_by('id').iterator(
-            chunk_size=BATCH_SIZE)
+        if not category and not action:
+            return " ".join(words[:5]).capitalize() + " Video"
 
-        print((
-            f"Starting rewrite using {len(self.CUSTOM_SYNONYMS)} adult synonym rules..."
-        ))
+        return self.build_title(category, action, adjectives)
 
-        for item in tqdm(queryset, desc="Rewriting adult titles"):
-            if item.title:
-                new_title = self.rewrite_until_different(item.title)
-                if new_title != item.title:
-                    item.title_rewritten = new_title
-                    items_to_update.append(item)
-                    total_updated += 1
+    # =========================
+    # BULK PROCESSOR (DJANGO)
+    # =========================
+    @transaction.atomic
+    def process_all(self, batch_size=5000):
+        qs = VideoItem.objects.only("id", "title")
 
-                    if len(items_to_update) >= BATCH_SIZE:
-                        with transaction.atomic():
-                            VideoItem.objects.bulk_update(items_to_update, ['title_rewritten'])
-                        items_to_update.clear()
+        buffer = []
 
-        # Final batch
-        if items_to_update:
-            with transaction.atomic():
-                VideoItem.objects.bulk_update(items_to_update, ['title_rewritten'])
+        for obj in qs.iterator(chunk_size=batch_size):
+            new_title = self.rewrite(obj.title)
 
-        print((
-            f"\n✅ DONE! {total_updated:,} titles rewritten and saved."
-        ))
-        print("All titles now sound similar but different — 100% rule-based, no AI.")
+            obj.title_rewritten = new_title
+            buffer.append(obj)
+
+            if len(buffer) >= batch_size:
+                VideoItem.objects.bulk_update(buffer, ["title_rewritten"])
+                buffer.clear()
+
+        if buffer:
+            VideoItem.objects.bulk_update(buffer, ["title_rewritten"])
