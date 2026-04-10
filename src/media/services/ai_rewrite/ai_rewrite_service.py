@@ -13,7 +13,9 @@ class AiRewriteService:
     # https://docs.x.ai/developers/models?cluster=us-east-1#detailed-pricing-for-all-grok-models
     # https://docs.x.ai/developers/advanced-api-usage/batch-api
     def send_to_batch(self, batch_size: int):
-        client = Client(api_key=settings.GROK_API_KEY)
+        translations = TranslationBatch.objects.filter(status=TranslationBatch.STATUS_STARTED).count()
+        if translations >= 10:
+            return
 
         batch: TranslationBatch = TranslationBatch.objects.order_by('-id').first()
         if batch:
@@ -37,6 +39,7 @@ class AiRewriteService:
 
         # Step 1: Create a batch
         print("Creating batch...")
+        client = Client(api_key=settings.GROK_API_KEY)
         batch = client.batch.create(batch_name="title_rewrite")
         print(f"Batch created: {batch.batch_id}")
 
@@ -59,13 +62,13 @@ class AiRewriteService:
 
         model = TranslationBatch()
         model.batch_id = batch.batch_id
-        model.status = 'started'
+        model.status = TranslationBatch.STATUS_STARTED
         model.last_id = feedback_data[-1]['id']
         model.save()
 
     def check_and_save_batch_result(self):
         client = Client(api_key=settings.GROK_API_KEY)
-        batches = TranslationBatch.objects.filter(status='started')
+        batches = TranslationBatch.objects.filter(status=TranslationBatch.STATUS_STARTED)
 
         for batch in batches:
             # Step 3: Wait for completion
@@ -104,5 +107,5 @@ class AiRewriteService:
             cost_usd = batch.cost_breakdown.total_cost_usd_ticks / 1e10
             print("\nTotal cost: $%.4f" % cost_usd)
 
-            batch.status = 'finished'
+            batch.status = TranslationBatch.STATUS_FINISHED
             batch.save()
