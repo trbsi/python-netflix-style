@@ -22,22 +22,12 @@ def import_from_dump_partial_for_enabled_sites_task():
         call_command('import_dump_command', site)
 
 
-@shared_task
-def import_from_dump_partial_task():
-    import_from_dump_partial_for_enabled_sites_task.delay()
-
-
 # ------------ DUMP IMPORT ----------------------
 
 @shared_task
 def delete_videos_for_enabled_sites_task():
     for site in settings.ENABLED_SITES:
         call_command('delete_videos_command', site)
-
-
-@shared_task
-def delete_videos_task():
-    delete_videos_for_enabled_sites_task.delay()
 
 
 # ------------ FRONTPAGE  ----------------------
