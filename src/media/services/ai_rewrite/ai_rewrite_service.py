@@ -64,6 +64,7 @@ class AiRewriteService:
         model.batch_id = batch.batch_id
         model.status = TranslationBatch.STATUS_STARTED
         model.last_id = feedback_data[-1]['id']
+        model.batch_size = batch_size
         model.save()
 
     def check_and_save_batch_result(self):

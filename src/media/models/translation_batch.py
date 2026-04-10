@@ -9,5 +9,6 @@ class TranslationBatch(models.Model):
     batch_id = models.CharField(max_length=100)
     status = models.CharField(max_length=15)
     last_id = models.IntegerField()
+    batch_size = models.IntegerField(default=0)
 
     objects = models.Manager()
