@@ -183,7 +183,8 @@ class LocalRewriteService:
         total_updated = 0
         items_to_update = []
 
-        queryset: QuerySet[VideoItem] = VideoItem.objects.only('pk', 'title').iterator(chunk_size=BATCH_SIZE)
+        queryset: QuerySet[VideoItem] = VideoItem.objects.only('pk', 'title').order_by('id').iterator(
+            chunk_size=BATCH_SIZE)
 
         print((
             f"Starting rewrite using {len(self.CUSTOM_SYNONYMS)} adult synonym rules..."
@@ -199,13 +200,13 @@ class LocalRewriteService:
 
                     if len(items_to_update) >= BATCH_SIZE:
                         with transaction.atomic():
-                            VideoItem.objects.bulk_update(items_to_update, ['title'])
+                            VideoItem.objects.bulk_update(items_to_update, ['title_rewritten'])
                         items_to_update.clear()
 
         # Final batch
         if items_to_update:
             with transaction.atomic():
-                VideoItem.objects.bulk_update(items_to_update, ['title'])
+                VideoItem.objects.bulk_update(items_to_update, ['title_rewritten'])
 
         print((
             f"\n✅ DONE! {total_updated:,} titles rewritten and saved."
