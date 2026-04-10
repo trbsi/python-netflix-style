@@ -3,7 +3,6 @@ import json
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -13,6 +12,7 @@ from src.media.models import VideoItem, VideoCategory
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
 from src.media.services.home.list_media_service import ListMediaService
 from src.media.services.search.search_fulltext_service import SearchFullTextService
+from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 
 
 @require_GET
@@ -65,7 +65,7 @@ def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
 @require_GET
 def categories_search_api(request: HttpRequest) -> HttpResponse:
     get = request.GET
-    last_id = int(get.get('last_id')) if get.get('last_id') else 0
+    last_id = int(get.get('last_id'.č)) if get.get('last_id') else 0
     query = get.get('query')
 
     service = SearchByCategoryService()
@@ -101,21 +101,31 @@ def search_videos_api(request: HttpRequest) -> HttpResponse:
 @require_POST
 @csrf_exempt
 def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
-    post = json.loads(request.body)
-    field = VideoItem._meta.get_field('slug_rewritten')
+    payload = json.loads(request.body)
+    service = LocalRewriteService()
+    updated = service.update_titles(payload)
 
-    video: VideoItem = VideoItem.objects.get(pk=post.get('video_id'))
-    video.title_rewritten = post.get('title')
-    video.slug_rewritten = slugify(post.get('title'))[:field.max_length]
-    video.save()
-
-    return JsonResponse({})
+    return JsonResponse({
+        "updated": updated
+    })
 
 
 @require_GET
 def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
-    video: VideoItem = VideoItem.objects.order_by('-id').filter(title_rewritten__isnull=True).first()
+    limit = int(request.GET.get("limit", 10))
+
+    videos = (
+        VideoItem.objects
+        .order_by("-id")
+        .filter(title_rewritten__isnull=True)[:limit]
+    )
+
     return JsonResponse({
-        'video_id': video.id,
-        'title': video.title,
+        "items": [
+            {
+                "video_id": v.id,
+                "title": v.title,
+            }
+            for v in videos
+        ]
     })
