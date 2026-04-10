@@ -3,6 +3,7 @@ import json
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -101,9 +102,13 @@ def search_videos_api(request: HttpRequest) -> HttpResponse:
 @csrf_exempt
 def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     post = json.loads(request.body)
+    field = VideoItem._meta.get_field('slug_rewritten')
+
     video: VideoItem = VideoItem.objects.get(pk=post.get('video_id'))
     video.title_rewritten = post.get('title')
+    video.slug_rewritten = slugify(post.get('title'))[:field.max_length]
     video.save()
+
     return JsonResponse({})
 
 
