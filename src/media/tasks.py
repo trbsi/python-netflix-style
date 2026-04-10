@@ -34,14 +34,3 @@ def delete_videos_for_enabled_sites_task():
 @shared_task
 def generate_frontpage_task():
     call_command('generate_frontpage_command')
-
-
-# ------------ AI Rewrite  ----------------------
-@shared_task
-def rewrite_title_send_to_batch_task(batch_size):
-    call_command('rewrite_title_command', 'send_to_batch', batch_size)
-
-
-@shared_task
-def rewrite_title_check_batch_task():
-    call_command('rewrite_title_command', 'check_batch')
