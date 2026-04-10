@@ -25,6 +25,7 @@ class VideoItem(models.Model):
     tags = models.TextField()
     categories = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     objects = models.Manager()
 
