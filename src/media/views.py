@@ -105,3 +105,12 @@ def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     video.title_rewritten = post.get('title')
     video.save()
     return JsonResponse({})
+
+
+@require_GET
+def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
+    video: VideoItem = VideoItem.objects.order_by('-id').filter(title_rewritten__isnull=True).first()
+    return JsonResponse({
+        'video_id': video.id,
+        'title': video.title,
+    })
