@@ -1,5 +1,5 @@
 from src.core.management.commands.base_command import BaseCommand
-from src.media.services.ai_rewrite.ai_rewrite_service import AiRewriteService
+from src.media.services.title_rewrite.ai_rewrite_service import AiRewriteService
 
 
 class Command(BaseCommand):
@@ -11,12 +11,15 @@ class Command(BaseCommand):
         self.info('Start batching')
 
         type = options['type']
-        service = AiRewriteService()
+        ai_service = AiRewriteService()
+        local_service = LocalRewriteService()
 
         if type == 'send_to_batch':
             batch_size = int(options['batch_size'])
-            service.send_to_batch(batch_size)
+            ai_service.send_to_batch(batch_size)
             self.info('Finish batching')
         elif type == 'check_batch':
-            service.check_and_save_batch_result()
+            ai_service.check_and_save_batch_result()
             self.info('Finish checking reults')
+        elif type == 'local_rewrite':
+            local_service.local_rewrite()
