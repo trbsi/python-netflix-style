@@ -104,9 +104,5 @@ class AiRewriteService:
                 for result in results.failed:
                     print(f"[{result.batch_request_id}] {result.error_message}")
 
-            # Display cost
-            cost_usd = batch.cost_breakdown.total_cost_usd_ticks / 1e10
-            print("\nTotal cost: $%.4f" % cost_usd)
-
             batch.status = TranslationBatch.STATUS_FINISHED
             batch.save()
