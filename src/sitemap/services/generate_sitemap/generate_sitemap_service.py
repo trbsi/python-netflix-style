@@ -22,32 +22,39 @@ class GenerateSitemapService():
                 if f.startswith("sitemap_") and (f.endswith(".xml") or f.endswith(".xml.gz")):
                     os.remove(os.path.join(settings.SITEMAPS_DIR, f))
             next_start_id = 0
-            next_index = 0
+            next_sitemap_index = 0
         else:
             last_sitemap = SitemapFile.objects.order_by('-end_id').first()
             if last_sitemap and last_sitemap.url_count < self.BATCH_SIZE:
                 # Regenerate last partial sitemap
                 next_start_id = last_sitemap.start_id
-                next_index = int(last_sitemap.filename.split('_')[-1].split('.')[0])
+                next_sitemap_index = int(last_sitemap.filename.split('_')[-1].split('.')[0])
                 print(f"Regenerating partial sitemap: {last_sitemap.filename}")
                 os.remove(os.path.join(settings.SITEMAPS_DIR, last_sitemap.filename))
                 last_sitemap.delete()
             else:
                 next_start_id = last_sitemap.end_id + 1 if last_sitemap else 0
-                next_index = SitemapFile.objects.count()
+                next_sitemap_index = 0
+                if last_sitemap:
+                    next_sitemap_index = int(last_sitemap.filename.split('_')[-1].split('.')[0])
+                    next_sitemap_index += 1
 
         last_id = next_start_id
 
         while True:
-            videos = list(VideoItem.objects.filter(id__gt=last_id).order_by('id')[:self.BATCH_SIZE])
+            videos = list(
+                VideoItem.objects
+                .filter(slug_rewritten__isnull=False)
+                .filter(id__gt=last_id).order_by('id')[:self.BATCH_SIZE]
+            )
 
             if not videos:
                 break
 
-            self.write_sitemap(videos, next_index, use_gzip)
+            self.write_sitemap(videos, next_sitemap_index, use_gzip)
 
             last_id = videos[-1].id
-            next_index += 1
+            next_sitemap_index += 1
 
         # Generate sitemap index
         self.write_index()

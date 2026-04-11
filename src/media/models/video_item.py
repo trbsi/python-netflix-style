@@ -33,6 +33,7 @@ class VideoItem(models.Model):
         indexes = [
             models.Index(fields=["link"]),
             models.Index(fields=['external_created_at']),
+            models.Index(fields=['slug_rewritten']),
         ]
 
         constraints = [

@@ -121,6 +121,9 @@ def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     )
 
     return JsonResponse({
+        "info": {
+            "count": VideoItem.objects.filter(slug_rewritten__isnull=False).count()
+        },
         "items": [
             {
                 "video_id": v.id,
