@@ -113,6 +113,7 @@ def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
 @require_GET
 def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     limit = int(request.GET.get("limit", 10))
+    count = (request.GET.get("count"))
 
     videos = (
         VideoItem.objects
@@ -122,7 +123,7 @@ def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
 
     return JsonResponse({
         "info": {
-            "count": VideoItem.objects.filter(slug_rewritten__isnull=False).count()
+            "count": VideoItem.objects.filter(slug_rewritten__isnull=False).count() if count else 0
         },
         "items": [
             {
