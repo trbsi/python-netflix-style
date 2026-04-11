@@ -105,9 +105,7 @@ def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     service = LocalRewriteService()
     updated = service.update_titles(payload)
 
-    return JsonResponse({
-        "updated": updated
-    })
+    return JsonResponse({"updated": updated})
 
 
 @require_GET
@@ -115,21 +113,7 @@ def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     limit = int(request.GET.get("limit", 10))
     count = (request.GET.get("count"))
 
-    videos = (
-        VideoItem.objects
-        .order_by("-id")
-        .filter(slug_rewritten__isnull=True)[:limit]
-    )
+    service = LocalRewriteService()
+    result = service.get_videos_for_rewrite(limit, count)
 
-    return JsonResponse({
-        "info": {
-            "count": VideoItem.objects.filter(slug_rewritten__isnull=False).count() if count else 0
-        },
-        "items": [
-            {
-                "video_id": v.id,
-                "title": v.title,
-            }
-            for v in videos
-        ]
-    })
+    return JsonResponse(result)

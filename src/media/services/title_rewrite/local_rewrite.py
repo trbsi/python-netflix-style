@@ -31,3 +31,25 @@ class LocalRewriteService:
             updated.append(video_id)
 
         return updated
+
+    def get_videos_for_rewrite(self, limit: int, count: bool | None) -> dict:
+        videos = (
+            VideoItem.objects
+            .order_by("-id")
+            .filter(slug_rewritten__isnull=True)[:limit]
+        )
+
+        counter = VideoItem.objects.filter(slug_rewritten__isnull=False).count() if count else 0
+
+        return {
+            "info": {
+                "count": counter
+            },
+            "items": [
+                {
+                    "video_id": v.id,
+                    "title": v.title,
+                }
+                for v in videos
+            ]
+        }
