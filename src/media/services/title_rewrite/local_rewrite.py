@@ -39,6 +39,11 @@ class LocalRewriteService:
             .filter(slug_rewritten__isnull=True)[:limit]
         )
 
+        VideoItem.objects.filter(
+            id__in=list(videos.values_list('id', flat=True)),
+            slug_rewritten__isnull=True
+        ).update(slug_rewritten="__PROCESSING__")
+
         counter = VideoItem.objects.filter(slug_rewritten__isnull=False).count() if count else 0
 
         return {
