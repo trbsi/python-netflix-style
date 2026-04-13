@@ -14,6 +14,7 @@ class VideoItem(models.Model):
     title_rewritten = models.TextField(null=True, blank=True)
     slug = models.SlugField(default='', max_length=100)
     slug_rewritten = models.SlugField(max_length=100, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     link = models.CharField(max_length=300)
     duration = models.PositiveIntegerField(help_text="Duration in seconds")
     thumb_small = models.TextField()
@@ -105,3 +106,7 @@ class VideoItem(models.Model):
     @property
     def main_title(self):
         return self.title_rewritten if self.title_rewritten else self.title
+
+    @property
+    def main_description(self):
+        return self.description

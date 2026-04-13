@@ -7,7 +7,8 @@ urlpatterns = [
     path('categories/<str:slug>', views.categories_search, name='media.categories_search'),
     path('play/<int:id>', views.play_video, name='media.play_video'),
     path('search', views.search_videos, name='media.search'),
-    
+    path('all', views.all_videos, name='media.all_videos'),
+
     path('api/categories/search', views.categories_search_api, name='media.api.categories_search'),
     path('api/search', views.search_videos_api, name='media.api.search'),
     path('api/update-title', views.update_title_rewritten_api),

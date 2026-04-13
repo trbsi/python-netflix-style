@@ -9,6 +9,7 @@ from django.views.decorators.http import require_GET, require_POST
 from automationapp import settings
 from src.core.utils import unslugify
 from src.media.models import VideoItem, VideoCategory
+from src.media.services.all_videos.all_videos_service import AllVideosService
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
 from src.media.services.home.list_media_service import ListMediaService
 from src.media.services.search.search_fulltext_service import SearchFullTextService
@@ -65,7 +66,7 @@ def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
 @require_GET
 def categories_search_api(request: HttpRequest) -> HttpResponse:
     get = request.GET
-    last_id = int(get.get('last_id'.č)) if get.get('last_id') else 0
+    last_id = int(get.get('last_id')) if get.get('last_id') else 0
     query = get.get('query')
 
     service = SearchByCategoryService()
@@ -81,6 +82,14 @@ def categories_search_api(request: HttpRequest) -> HttpResponse:
 def search_videos(request: HttpRequest) -> HttpResponse:
     query = request.GET.get('query')
     return render(request, 'search/search.html', {'query': query})
+
+
+@require_GET
+def all_videos(request: HttpRequest) -> HttpResponse:
+    page = int(request.GET.get('page', 1))
+    service = AllVideosService()
+    page = service.get_all_videos(page)
+    return render(request, 'videos/all_videos.html', {'page_obj': page})
 
 
 @require_GET

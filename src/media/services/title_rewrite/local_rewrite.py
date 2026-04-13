@@ -15,6 +15,7 @@ class LocalRewriteService:
         for item in items:
             video_id = item.get('video_id')
             title = item.get('title')
+            description = item.get('description')
 
             if not video_id or not title:
                 continue
@@ -26,6 +27,8 @@ class LocalRewriteService:
 
             video.title_rewritten = title
             video.slug_rewritten = slugify(title)[:field.max_length]
+            if description:
+                video.description = description
             video.save()
 
             updated.append(video_id)

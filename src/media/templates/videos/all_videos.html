@@ -1,0 +1,92 @@
+{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Porn Categories{% endblock %}
+
+{% block content %}
+<div class="blog-pagination section-padding">
+    <div class="container">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 gy-5">
+            {% for video in page_obj.object_list %}
+            <div class="col-lg-3 col-sm-4">
+                <div class="iq-blog-box">
+                    <div class="iq-blog-image clearfix">
+                        <a href="{{video.video_url}}">
+                            <img src="{{video.thumbnail_large}}" alt="blogImg-01"
+                                 class="img-fluid w-100 rounded-3">
+                        </a>
+                    </div>
+                    <div class="iq-blog-detail">
+                        <h4 class="mb-3 blog-heading">
+                            <a href="{{video.video_url}}">
+                                {{video.main_title}}
+                            </a>
+                        </h4>
+                        <p class="line-count-2">{{video.main_description}}</p>
+                        <div class="">
+                            <a href="{{video.video_url}}"
+                               class="btn btn-link blog-readMore p-0 text-capitalize position-relative font-size-14">
+                                <span class="">Watch</span>
+                                <span><i class="ph ph-caret-right align-middle"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- Static Pagination Controls -->
+        <div class="pagination justify-content-center mt-4">
+            <ul class="pagination blog-pagination gap-2" id="pagination">
+
+                <!-- Previous button -->
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link rounded-3" href="?page={{ page_obj.previous_page_number }}">
+                        <i class="ph ph-caret-left pageicon-lineheight"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link rounded-3">
+                        <i class="ph ph-caret-left pageicon-lineheight"></i>
+                    </span>
+                </li>
+                {% endif %}
+
+                <!-- Page numbers -->
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                    <li class="page-item active">
+                            <span class="page-link d-flex justify-content-center pageicon-lineheight rounded-3">
+                                {{ num }}
+                            </span>
+                    </li>
+                    {% else %}
+                    <li class="page-item">
+                        <a class="page-link d-flex justify-content-center pageicon-lineheight rounded-3"
+                           href="?page={{ num }}">
+                            {{ num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next button -->
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link rounded-3" href="?page={{ page_obj.next_page_number }}">
+                        <i class="ph ph-caret-right pageicon-lineheight"></i>
+                    </a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <span class="page-link rounded-3">
+                        <i class="ph ph-caret-right pageicon-lineheight"></i>
+                    </span>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
