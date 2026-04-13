@@ -88,8 +88,14 @@ def search_videos(request: HttpRequest) -> HttpResponse:
 def all_videos(request: HttpRequest) -> HttpResponse:
     page = int(request.GET.get('page', 1))
     service = AllVideosService()
-    page = service.get_all_videos(page)
-    return render(request, 'videos/all_videos.html', {'page_obj': page})
+    page_obj = service.get_all_videos(page)
+    page_numbers = service.get_pages_with_gaps(page_obj)
+
+    return render(
+        request,
+        'videos/all_videos.html',
+        {'page_obj': page_obj, 'pages_with_gaps': page_numbers}
+    )
 
 
 @require_GET

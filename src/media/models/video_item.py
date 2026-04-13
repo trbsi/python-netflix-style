@@ -109,4 +109,4 @@ class VideoItem(models.Model):
 
     @property
     def main_description(self):
-        return self.description
+        return self.description if self.description else ''

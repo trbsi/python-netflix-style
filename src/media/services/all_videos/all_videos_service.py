@@ -18,3 +18,24 @@ class AllVideosService:
         page = paginator.page(current_page)
 
         return page
+
+    def get_pages_with_gaps(self, page_obj: Page):
+        total = page_obj.paginator.num_pages
+        current = page_obj.number
+
+        pages = set()
+        pages.update(range(1, min(4, total + 1)))  # first 3
+        pages.update(range(max(total - 2, 1), total + 1))  # last 3
+        pages.update(range(current - 1, current + 2))  # current ±1
+
+        pages = sorted(p for p in pages if 1 <= p <= total)
+
+        result = []
+        prev = None
+        for p in pages:
+            if prev and p - prev > 1:
+                result.append("...")
+            result.append(p)
+            prev = p
+
+        return result
