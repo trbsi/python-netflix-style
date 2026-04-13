@@ -1,5 +1,6 @@
 {% extends "core/layout.html" %}
 {% load static %}
+{% load number_format %}
 {% block title %}Porn Categories{% endblock %}
 
 {% block content %}
@@ -65,7 +66,7 @@
                     {% elif item == page_obj.number %}
                         <li class="page-item active">
                             <span class="page-link d-flex justify-content-center pageicon-lineheight rounded-3">
-                                {{ item }}
+                                {{ item|compact_number  }}
                             </span>
                         </li>
 
@@ -73,7 +74,7 @@
                         <li class="page-item">
                             <a class="page-link d-flex justify-content-center pageicon-lineheight rounded-3"
                                href="?page={{ item }}">
-                                {{ item }}
+                                {{ item|compact_number  }}
                             </a>
                         </li>
                     {% endif %}
