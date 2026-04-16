@@ -37,23 +37,16 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'media.categories' %}">
+                                <a class="nav-link" href="{{ media.categories_index_url }}">
                                     <div class="d-flex justify-content-between">
                                         <span class="item-name">Categories</span>
                                     </div>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'media.all_videos' %}">
+                                <a class="nav-link" href="{% url 'media.all_videos' lang=TEMPLATE_DEFAULT_LANGUAGE %}">
                                     <div class="d-flex justify-content-between">
                                         <span class="item-name">All movies</span>
-                                    </div>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'chat.about' %}">
-                                    <div class="d-flex justify-content-between">
-                                        <span class="item-name">Chat with me</span>
                                     </div>
                                 </a>
                             </li>
@@ -175,7 +168,7 @@
                                     style="width: 20rem;" id="search-box">
                                     <li class="p-0">
                                         <div class="form-group input-group mb-0">
-                                            <form method="GET" action="{% url 'media.search' %}">
+                                            <form method="GET" action="{% url 'media.search' lang=TEMPLATE_DEFAULT_LANGUAGE %}">
                                                 <input type="text" name="query"
                                                        class="form-control border-1 border-white"
                                                        placeholder="Search...">

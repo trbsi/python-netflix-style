@@ -17,7 +17,7 @@
                     <ul class="p-0 mb-2 list-inline d-flex flex-wrap movie-tag">
                         <li class="trending-list">
                             {% for category in video.categories_array %}
-                                <a href="{% url 'media.categories_search' slug=category.slug %}"
+                                <a href="{{ media.category_search_url }}"
                                    tabindex="0"
                                    class="font-size-14 ">{{ category.title }}</a> |
                             {% endfor %}
@@ -75,7 +75,7 @@
 
                     <div class="d-flex align-items-center flex-wrap gap-3 gap-md-4 my-5">
                         <div class="iq-play-button iq-button">
-                            <a href="{% url 'media.play_video' id=video.id %}"
+                            <a href="{{ video.video_play_url }}"
                                class="btn btn-primary w-100 rounded d-flex align-items-center justify-content-center gap-2 lh-1">
                                 <span><i class="ph-fill ph-play"></i></span>
                                 <span>Start Watching</span>

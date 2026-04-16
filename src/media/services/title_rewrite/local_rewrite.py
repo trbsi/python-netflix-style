@@ -17,7 +17,7 @@ class LocalRewriteService:
             title = item.get('title')
             description = item.get('description')
 
-            if not video_id or not title:
+            if not video_id:
                 continue
 
             try:
@@ -25,8 +25,9 @@ class LocalRewriteService:
             except VideoItem.DoesNotExist:
                 continue
 
-            video.title_rewritten = title
-            video.slug_rewritten = slugify(title)[:field.max_length]
+            if title:
+                video.title_rewritten = title
+                video.slug_rewritten = slugify(title)[:field.max_length]
             if description:
                 video.description = description
             video.save()
@@ -35,17 +36,20 @@ class LocalRewriteService:
 
         return updated
 
-    def get_videos_for_rewrite(self, limit: int, count: bool | None) -> dict:
-        videos = (
-            VideoItem.objects
-            .order_by("-id")
-            .filter(slug_rewritten__isnull=True)[:limit]
-        )
+    def get_videos_for_rewrite(self, limit: int, count: bool, latest: bool) -> dict:
+        if latest:
+            videos = VideoItem.objects.order_by("-id")
+        else:
+            videos = (
+                VideoItem.objects
+                .order_by("-id")
+                .filter(slug_rewritten__isnull=True)[:limit]
+            )
 
-        VideoItem.objects.filter(
-            id__in=list(videos.values_list('id', flat=True)),
-            slug_rewritten__isnull=True
-        ).update(slug_rewritten="__PROCESSING__")
+            VideoItem.objects.filter(
+                id__in=list(videos.values_list('id', flat=True)),
+                slug_rewritten__isnull=True
+            ).update(slug_rewritten="__PROCESSING__")
 
         counter = VideoItem.objects.filter(slug_rewritten__isnull=False).count() if count else 0
 

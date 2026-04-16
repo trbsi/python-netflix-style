@@ -125,10 +125,12 @@ def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
 
 @require_GET
 def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
-    limit = int(request.GET.get("limit", 10))
-    count = (request.GET.get("count"))
+    get = request.GET
+    limit = int(get.get("limit", 10))
+    count = bool(get.get("count")) if get.get("count") else False
+    latest = bool(get.get("latest")) if get.get("latest") else False
 
     service = LocalRewriteService()
-    result = service.get_videos_for_rewrite(limit, count)
+    result = service.get_videos_for_rewrite(limit, count, latest)
 
     return JsonResponse(result)

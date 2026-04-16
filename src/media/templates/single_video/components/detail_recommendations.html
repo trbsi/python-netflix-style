@@ -27,7 +27,7 @@
                                             <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
                                                 <li class="fw-semi-bold">
                                                     {% for category in video.categories_array %}
-                                                        <a href="{% url 'media.categories_search' slug=category.slug %}"
+                                                        <a href="{{ media.category_search_url }}"
                                                            tabindex="0"
                                                            class="font-size-14 ">{{ category.title }}</a> |
                                                     {% endfor %}
@@ -162,7 +162,7 @@
                                             <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
                                                 <li class="fw-semi-bold">
                                                     {% for category in video.categories_array %}
-                                                        <a href="{% url 'media.categories_search' slug=category.slug %}"
+                                                        <a href="{{ media.category_search_url }}"
                                                            tabindex="0"
                                                            class="font-size-14 ">{{ category.title }}</a> |
                                                     {% endfor %}
@@ -231,7 +231,7 @@
                                             <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
                                                 <li class="fw-semi-bold">
                                                     {% for category in video.categories_array %}
-                                                        <a href="{% url 'media.categories_search' slug=category.slug %}"
+                                                        <a href="{{ media.category_search_url }}"
                                                            tabindex="0"
                                                            class="font-size-14 ">{{ category.title }}</a> |
                                                     {% endfor %}

@@ -1,7 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-from src.media.models import VideoCategory
+from src.media.models import VideoCategory, VideoItem
 
 
 class CategorySitemap(Sitemap):
@@ -21,3 +21,11 @@ class StaticViewSitemap(Sitemap):
 
     def location(self, item):
         return reverse(item)
+
+
+class VideosSitemap(Sitemap):
+    changefreq = "daily"
+    priority = 0.8
+
+    def items(self):
+        return VideoItem.objects.order_by('-id')[:1000]

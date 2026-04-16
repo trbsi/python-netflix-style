@@ -83,6 +83,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     'bugsnag.django.middleware.BugsnagMiddleware',
     # 'src.age_verification.middlewares.AgeVerificationMiddleware',
+    'src.core.middlewares.LanguageMiddleware',
 ]
 
 ROOT_URLCONF = 'automationapp.urls'
