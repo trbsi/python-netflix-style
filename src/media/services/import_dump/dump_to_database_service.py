@@ -15,6 +15,8 @@ from src.media.services.manticore.manticore_service import ManticoreService
 
 
 class DumpToDatabaseService:
+    HARD_LIMIT = 100
+
     def __init__(self):
         self.search_index_service = ManticoreService()
         self.total_imported = 0
@@ -22,7 +24,8 @@ class DumpToDatabaseService:
     def save_to_database(self, site: str, fields_map: dict, csv_file_path: str) -> int:
         print("Reading CSV for database insert...")
         csv.field_size_limit(sys.maxsize)
-        videos_batch = 10_000
+        # videos_batch = 10_000
+        videos_batch = self.HARD_LIMIT
         categories_batch = 1000
         videos_array = []
         categories_array = []
@@ -55,6 +58,22 @@ class DumpToDatabaseService:
                     title = self._get_safe_by_size(fields, fields_map['title'], 'title')
                     slug = self._slug(fields, fields_map)
                     link = self._get_safe_by_size(fields, fields_map['url'], 'link')
+
+                    keywords = ["milf", "blowjob", "teen"]
+                    main_category = None
+                    for word in keywords:
+                        if word in categories.lower():
+                            main_category = word
+                            break
+
+                    if not main_category:
+                        continue
+
+                    db_category = VideoCategory.objects.filter(slug=slugify(main_category)).first()
+                    if db_category:
+                        count = VideoCategoryPivot.objects.filter(category=db_category).count()
+                        if count > self.HARD_LIMIT:
+                            continue
 
                     # VIDEOS
                     video = VideoItem(

@@ -16,6 +16,10 @@ SSH into manticore container and enter mysql:
 
 ```mysql -h 127.0.0.1 -P 9306;```
 
+## Drop index
+
+`drop table videos_index;`
+
 # Deployment
 
 Run `./scripts/production_deployment.sh`
@@ -35,6 +39,3 @@ ALTER TABLE media_videocategory AUTO_INCREMENT = 1;
 SET FOREIGN_KEY_CHECKS=1;
 ```
 
-## Manticore
-
-`drop table videos_index;`
