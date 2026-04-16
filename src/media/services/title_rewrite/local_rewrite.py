@@ -1,3 +1,4 @@
+from django.db.models import QuerySet
 from django.utils.text import slugify
 
 from src.media.models import VideoItem
@@ -38,9 +39,9 @@ class LocalRewriteService:
 
     def get_videos_for_rewrite(self, limit: int, count: bool, latest: bool) -> dict:
         if latest:
-            videos = VideoItem.objects.order_by("-id").filter(description__isnull=True)[:limit]
+            videos: QuerySet[VideoItem] = VideoItem.objects.order_by("-id").filter(description__isnull=True)[:limit]
         else:
-            videos = (
+            videos: QuerySet[VideoItem] = (
                 VideoItem.objects
                 .order_by("-id")
                 .filter(slug_rewritten__isnull=True)[:limit]
@@ -60,7 +61,7 @@ class LocalRewriteService:
             "items": [
                 {
                     "video_id": v.id,
-                    "title": v.title,
+                    "title": v.title_rewritten if v.title_rewritten else v.title,
                 }
                 for v in videos
             ]
