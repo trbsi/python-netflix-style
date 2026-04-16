@@ -16,7 +16,7 @@
                     {% for video in favourite_personality %}
                         <li class="swiper-slide">
                             <a href="{{ video.video_url }}">
-                                <img src="{{ video.thumbnail_large }}" alt="personality" loading="lazy"
+                                <img src="{{ video.thumbnail_large }}" alt="{{ video.main_title }}" loading="lazy"
                                      class="img-fluid object-cover mb-3 rounded-3 personality-img">
                             </a>
                             <div class="text-center">
@@ -56,7 +56,7 @@
                                             <a href="{{ video.video_url }}"
                                                class="position-relative top-0 bottom-0 start-0 end-0">
                                                 <img src="{{ video.thumbnail_large }}"
-                                                     alt="movie-card"
+                                                     alt="{{ video.main_title }}"
                                                      class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                      loading="lazy">
                                                 <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>

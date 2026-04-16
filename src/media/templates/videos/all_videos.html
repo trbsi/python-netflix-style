@@ -1,10 +1,11 @@
 {% extends "core/layout.html" %}
 {% load static %}
 {% load number_format %}
-{% block title %}Porn Categories{% endblock %}
+{% block title %}All Videos{% endblock %}
 
 {% block content %}
 <div class="blog-pagination section-padding">
+        <h1 class="visually-hidden">All Videos</h1>
     <div class="container">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 gy-5">
             {% for video in page_obj.object_list %}
@@ -12,7 +13,7 @@
                 <div class="iq-blog-box">
                     <div class="iq-blog-image clearfix">
                         <a href="{{video.video_url}}">
-                            <img src="{{video.thumbnail_large}}" alt="blogImg-01"
+                            <img src="{{video.thumbnail_large}}" alt="{{ video.main_title }}"
                                  class="img-fluid w-100 rounded-3">
                         </a>
                     </div>

@@ -20,7 +20,7 @@
                             <div class="iq-card-geners position-relative card-hover-style-two">
                                 <div class="img-box position-relative">
                                     <a href="{{ video.video_url }}">
-                                        <img src="{{ video.thumbnail_large }}" alt="geners-img"
+                                        <img src="{{ video.thumbnail_large }}" alt="{{ video.main_title }}"
                                              class="img-fluid" loading="lazy">
                                         <h6 class="blog-description">{{ video.main_title|safe|truncatechars:50 }}</h6>
                                     </a>
@@ -58,7 +58,7 @@
                                         <a href="{{ video.video_url }}"
                                            class="position-relative top-0 bottom-0 start-0 end-0">
                                             <img src="{{ video.thumbnail_large }}"
-                                                 alt="movie-card"
+                                                 alt="{{ video.main_title }}"
                                                  class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                  loading="lazy">
                                             <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>
@@ -125,7 +125,7 @@
                                         <a href="{{ video.video_url }}"
                                            class="position-relative top-0 bottom-0 start-0 end-0">
                                             <img src="{{ video.thumbnail_large }}"
-                                                 alt="movie-card"
+                                                 alt="{{ video.main_title }}"
                                                  class="img-fluid object-cover w-100 d-block border-0 rounded-3"
                                                  loading="lazy">
                                             <span class="thumbnail-title thumbnail-title-bottom">{{ video.main_title|safe }}</span>

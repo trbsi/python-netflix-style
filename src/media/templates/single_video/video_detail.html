@@ -1,6 +1,7 @@
 {% extends "core/layout.html" %}
 {% load static %}
-{% block title %}Details | {{ video.main_title }}{% endblock %}
+{% block title %}{{ video.main_title }} – Watch Online{% endblock %}
+{% block meta_description %}{{ video.main_description|truncatechars:155 }}{% endblock %}
 
 {% block content %}
     <!-- Banner Start -->
@@ -24,11 +25,11 @@
                         </li>
                     </ul>
                     <div class="d-block d-lg-flex align-items-center">
-                        <h3 class="trending-text fw-bold texture-text text-uppercase my-0 fadeInLeft animated d-inline-block"
+                        <h1 class="trending-text fw-bold texture-text text-uppercase my-0 fadeInLeft animated d-inline-block"
                             data-animation-in="fadeInLeft" data-delay-in="0.6"
                             style="opacity: 1; animation-delay: 0.6s">
                             {{ video.main_title|safe }}
-                        </h3>
+                        </h1>
                     </div>
                     <div class="movie-description mt-3 mb-4" id="readmore-wrapper">
                         <p class="line-count-3 RightAnimate-two mb-0">{{ video.main_description }}</p>

@@ -12,7 +12,7 @@
                                     <div class="block-images position-relative ">
                                         <div class="img-box slider--image">
                                             <img src="{{ video.thumbnail_large }}"
-                                                 class="w-100 rounded-3" alt="img"
+                                                 class="w-100 rounded-3" alt="{{ video.main_title }}"
                                                  loading="lazy">
                                         </div>
                                         <div class="block-description">
@@ -39,7 +39,7 @@
                             <div class="swiper-slide">
                                 <div class="slider--image block-images"><img
                                         src="{{ video.thumbnail_large }}"
-                                        loading="lazy" alt="img"/></div>
+                                        loading="lazy" alt="{{ video.main_title }}"/></div>
                                 <div class="description">
                                     <div class="block-description">
                                         {% comment %}

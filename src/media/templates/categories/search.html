@@ -1,9 +1,11 @@
 {% extends "core/layout.html" %}
 {% load static %}
-{% block title %}Porn in {{ category }} Category {% endblock %}
+{% block title %}{{ category }} Videos{% endblock %}
+{% block meta_description %}Watch the best {{ category }} videos. Stream free adult content online.{% endblock %}
 
 {% block content %}
     <div class="section-padding view-all-movies">
+        <h1 class="visually-hidden">{{ category }} Videos</h1>
         <div class="container-fluid">
             <div class="card-style-grid">
                 <div class="row gy-4 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 data-listing"

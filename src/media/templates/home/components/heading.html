@@ -10,7 +10,7 @@
                             <div class="swiper-slide swiper-bg">
                                 <div class="block-images position-relative ">
                                     <div class="img-box">
-                                        <img src="{{ video.thumbnail_large }}" class="img-fluid" alt="img"
+                                        <img src="{{ video.thumbnail_large }}" class="img-fluid" alt="{{ video.main_title }}"
                                              loading="eager">
                                         <div class="block-description">
                                             <h6 class="iq-title fw-500 line-count-3">{{ video.main_title|safe }}</h6>
@@ -50,9 +50,9 @@
                                     <div class="row align-items-center h-100 slider-content-full-height">
                                         <div class="col-lg-5 col-md-12">
                                             <div class="slider-content">
-                                                <h3 class="texture-text line-count-3 RightAnimate-two mb-1 mb-md-3">
+                                                <h1 class="texture-text line-count-3 RightAnimate-two mb-1 mb-md-3">
                                                     {{ video.main_title|safe }}
-                                                </h3>
+                                                </h1>
                                                 <div class="d-flex flex-wrap align-items-center gap-3 py-2 RightAnimate-three">
                                                     <div class="d-flex align-items-center gap-3">
                                                         <ul class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left gap-1">
