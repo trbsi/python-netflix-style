@@ -1,0 +1,36 @@
+<div class="pagination justify-content-center mt-4 d-flex flex-column align-items-center">
+
+    <!-- Showing results -->
+    <div class="text-center mb-3">
+        <small class="text-muted">
+            Showing latest results
+        </small>
+    </div>
+
+    <ul class="pagination blog-pagination gap-2 mb-0">
+
+        <!-- Previous = NOT meaningful in pure cursor unless you store history -->
+        <li class="page-item disabled">
+            <span class="page-link rounded-3">
+                <i class="ph ph-caret-left"></i>
+            </span>
+        </li>
+
+        <!-- Next button (cursor-based) -->
+        {% if data.has_next %}
+            <li class="page-item">
+                <a class="page-link rounded-3"
+                   href="?last_id={{ data.next_last_id }}">
+                    <i class="ph ph-caret-right"></i>
+                </a>
+            </li>
+        {% else %}
+            <li class="page-item disabled">
+                <span class="page-link rounded-3">
+                    <i class="ph ph-caret-right"></i>
+                </span>
+            </li>
+        {% endif %}
+
+    </ul>
+</div>

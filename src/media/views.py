@@ -60,9 +60,9 @@ def categories(request: HttpRequest) -> HttpResponse:
 def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
     category = unslugify(slug)
     service = SearchByCategoryService()
-    page_obj = service.search_videos(slug, int(request.GET.get('page', 1)))
+    data = service.get_category_videos(slug, int(request.GET.get('page', 1)))
 
-    context = {'category': category, 'slug': slug, 'page_obj': page_obj}
+    context = {'category': category, 'slug': slug, 'data': data}
     return render(request, 'categories/search.html', context)
 
 
