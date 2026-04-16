@@ -30,22 +30,15 @@
                             {{ video.main_title|safe }}
                         </h3>
                     </div>
-                    {% comment %}
-                <div class="movie-description mt-3 mb-4" id="readmore-wrapper">
-                    <p class="line-count-3 RightAnimate-two mb-0">Game of Heros is an action-packed fantasy epic
-                        where the fate of the
-                        world is decided in a battle of legendary warriors. When an ancient prophecy foretells an
-                        all-out war between the
-                        greatest heroes of all realms, champions from different eras and dimensions are summoned to
-                        fight for ultimate
-                        supremacy. Each warrior possesses unique abilities, weapons, and a past that drives them to
-                        victory—or doom.</p>
-                    <div class="iq-blog-meta-cat-tag iq-blogtag readmore-tags">
-                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewMoreDataModal"
-                           class="position-relative">Read More</a>
+                    <div class="movie-description mt-3 mb-4" id="readmore-wrapper">
+                        <p class="line-count-3 RightAnimate-two mb-0">{{ video.main_description }}</p>
+                        {% comment %}
+                        <div class="iq-blog-meta-cat-tag iq-blogtag readmore-tags">
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewMoreDataModal"
+                               class="position-relative">Read More</a>
+                        </div>
+                        {% endcomment %}
                     </div>
-                </div>
-                {% endcomment %}
 
                     <ul class="list-inline mx-0 p-0 d-flex align-items-center flex-wrap gap-3 movie-metalist">
                         <!-- Movie Views  -->

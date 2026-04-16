@@ -1,6 +1,5 @@
 from django.utils import translation
 from django.utils.deprecation import MiddlewareMixin
-from yourapp.models import Language
 
 
 class LanguageMiddleware(MiddlewareMixin):
