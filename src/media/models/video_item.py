@@ -3,7 +3,6 @@ import random
 
 from django.db import models
 from django.urls import reverse_lazy
-from django.utils import translation
 from django.utils.text import slugify
 
 from src.core.utils import full_url_for_route
@@ -58,21 +57,18 @@ class VideoItem(models.Model):
     @property
     def video_url(self):
         slug = self.slug_rewritten if self.slug_rewritten else self.slug
-        lang = translation.get_language()
-        kwargs = {'id': self.id, 'slug': slug, 'lang': lang}
+        kwargs = {'id': self.id, 'slug': slug}
         return reverse_lazy('media.single_video', kwargs=kwargs)
 
     @property
     def video_full_url(self):
         slug = self.slug_rewritten if self.slug_rewritten else self.slug
-        lang = translation.get_language()
-        kwargs = {'id': self.id, 'slug': slug, 'lang': lang}
+        kwargs = {'id': self.id, 'slug': slug}
         return full_url_for_route('media.single_video', kwargs=kwargs)
 
     @property
     def video_play_url(self):
-        lang = translation.get_language()
-        kwargs = {'id': self.id, 'lang': lang}
+        kwargs = {'id': self.id}
         return full_url_for_route('media.play_video', kwargs=kwargs)
 
     @property

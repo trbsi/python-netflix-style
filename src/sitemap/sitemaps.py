@@ -18,7 +18,7 @@ class StaticViewSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return ['chat.about', 'media.categories', 'media.all_videos']
+        return ['media.categories', 'media.all_videos']
 
     def location(self, item):
         return reverse(item)

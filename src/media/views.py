@@ -35,7 +35,7 @@ def media_home(request: HttpRequest) -> HttpResponse:
 
 
 @require_GET
-def single_video(request: HttpRequest, id: int, slug: str, lang: str) -> HttpResponse:
+def single_video(request: HttpRequest, id: int, slug: str) -> HttpResponse:
     video = get_object_or_404(VideoItem, pk=id)
     service = ListMediaService()
     videos = service.single_video_list()
@@ -44,20 +44,20 @@ def single_video(request: HttpRequest, id: int, slug: str, lang: str) -> HttpRes
 
 
 @require_GET
-def play_video(request: HttpRequest, lang: str, id: int) -> HttpResponse:
+def play_video(request: HttpRequest, id: int) -> HttpResponse:
     video = VideoItem.objects.get(id=id)
     context = {'video': video}
     return render(request, 'single_video/video_player.html', context)
 
 
 @require_GET
-def categories(request: HttpRequest, lang: str) -> HttpResponse:
+def categories(request: HttpRequest) -> HttpResponse:
     context = {'categories': VideoCategory.objects.all()}
     return render(request, 'categories/categories.html', context)
 
 
 @require_GET
-def categories_search(request: HttpRequest, lang: str, slug: str) -> HttpResponse:
+def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
     category = unslugify(slug)
     context = {'category': category, 'slug': slug}
     return render(request, 'categories/search.html', context)
@@ -79,22 +79,21 @@ def categories_search_api(request: HttpRequest) -> HttpResponse:
 
 
 @require_GET
-def search_videos(request: HttpRequest, lang: str) -> HttpResponse:
+def search_videos(request: HttpRequest) -> HttpResponse:
     query = request.GET.get('query')
     return render(request, 'search/search.html', {'query': query})
 
 
 @require_GET
-def all_videos(request: HttpRequest, lang: str) -> HttpResponse:
+def all_videos(request: HttpRequest) -> HttpResponse:
     page = int(request.GET.get('page', 1))
     service = AllVideosService()
     page_obj = service.get_all_videos(page)
-    page_numbers = service.get_pages_with_gaps(page_obj)
 
     return render(
         request,
         'videos/all_videos.html',
-        {'page_obj': page_obj, 'pages_with_gaps': page_numbers}
+        {'page_obj': page_obj}
     )
 
 

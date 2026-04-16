@@ -1,6 +1,5 @@
 from django.db import models
 from django.urls import reverse_lazy
-from django.utils import translation
 
 
 class VideoCategory(models.Model):
@@ -13,18 +12,14 @@ class VideoCategory(models.Model):
 
     # for sitemap
     def get_absolute_url(self):
-        lang = translation.get_language()
-        kwargs = {'slug': self.slug, 'lang': lang}
-        return reverse_lazy('media.categories_search', kwargs=kwargs)
+        return self.category_search_url
 
     @property
     def category_search_url(self):
-        lang = translation.get_language()
-        kwargs = {'slug': self.slug, 'lang': lang}
+        kwargs = {'slug': self.slug}
         return reverse_lazy('media.categories_search', kwargs=kwargs)
 
     @property
     def categories_index_url(self):
-        lang = translation.get_language()
-        kwargs = {'slug': self.slug, 'lang': lang}
+        kwargs = {'slug': self.slug}
         return reverse_lazy('media.categories', kwargs=kwargs)

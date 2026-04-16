@@ -1,76 +1,72 @@
-<div class="border-t border-gray-700 px-4 py-3 sm:px-6">
-    <!-- Showing results -->
-    <div class="text-center mb-4">
-        <p class="text-sm text-gray-400">
+<div class="pagination justify-content-center mt-4 d-flex flex-column align-items-center">
+
+    <!-- Showing results (ROW 1) -->
+    <div class="text-center mb-3">
+        <small class="text-muted">
             Showing
-            <span class="font-medium text-gray-200">{{ page_obj.start_index }}</span>
+            <span class="fw-semibold text-light">{{ page_obj.start_index }}</span>
             to
-            <span class="font-medium text-gray-200">{{ page_obj.end_index }}</span>
+            <span class="fw-semibold text-light">{{ page_obj.end_index }}</span>
             of
-            <span class="font-medium text-gray-200">{{ page_obj.paginator.count }}</span>
+            <span class="fw-semibold text-light">{{ page_obj.paginator.count }}</span>
             results
-        </p>
+        </small>
     </div>
-    <!-- Pagination -->
-    <div class="flex items-center justify-center space-x-2">
-        <!-- Previous arrow -->
+
+    <!-- Pagination (ROW 2) -->
+    <ul class="pagination blog-pagination gap-2 mb-0" id="pagination">
+
+        <!-- Previous button -->
         {% if page_obj.has_previous %}
-            <a href="?page={{ page_obj.previous_page_number }}"
-               class="inline-flex items-center rounded-md border border-gray-300  px-3 py-2 text-sm font-medium text-gray-400  hover:text-white">
-                &laquo;
-            </a>
+            <li class="page-item">
+                <a class="page-link rounded-3"
+                   href="?page={{ page_obj.previous_page_number }}">
+                    <i class="ph ph-caret-left pageicon-lineheight"></i>
+                </a>
+            </li>
         {% else %}
-            <span class="inline-flex items-center rounded-md border border-gray-300  px-3 py-2 text-sm text-gray-500 cursor-not-allowed">&laquo;</span>
+            <li class="page-item disabled">
+                <span class="page-link rounded-3">
+                    <i class="ph ph-caret-left pageicon-lineheight"></i>
+                </span>
+            </li>
         {% endif %}
-        <!-- Page input -->
-        <div class="flex items-center space-x-2">
-            <input type="number"
-                   id="pageInput"
-                   value="{{ page_obj.number }}"
-                   min="1"
-                   max="{{ page_obj.paginator.num_pages }}"
-                   class="w-16 rounded-md border border-gray-500  px-2 py-1 text-center text-sm text-gray-200 focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
-                   placeholder="Page">
-            <span class="text-gray-400 text-sm">of {{ page_obj.paginator.num_pages }}</span>
-        </div>
-        <!-- Next arrow -->
+
+        <!-- Input -->
+        <li class="page-item">
+            <div class="d-flex align-items-center gap-2 px-2">
+
+                <input type="number"
+                       id="pageInput"
+                       value="{{ page_obj.number }}"
+                       min="1"
+                       max="{{ page_obj.paginator.num_pages }}"
+                       class="form-control form-control-sm text-center"
+                       style="width: 70px;">
+
+                <span class="text-muted small">
+                    / {{ page_obj.paginator.num_pages }}
+                </span>
+
+            </div>
+        </li>
+
+        <!-- Next button -->
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}"
-               class="inline-flex items-center rounded-md border border-gray-300  px-3 py-2 text-sm font-medium text-gray-400  hover:text-white">
-                &raquo;
-            </a>
+            <li class="page-item">
+                <a class="page-link rounded-3"
+                   href="?page={{ page_obj.next_page_number }}">
+                    <i class="ph ph-caret-right pageicon-lineheight"></i>
+                </a>
+            </li>
         {% else %}
-            <span class="inline-flex items-center rounded-md border border-gray-300  px-3 py-2 text-sm text-gray-500 cursor-not-allowed">&raquo;</span>
+            <li class="page-item disabled">
+                <span class="page-link rounded-3">
+                    <i class="ph ph-caret-right pageicon-lineheight"></i>
+                </span>
+            </li>
         {% endif %}
-    </div>
+
+    </ul>
+
 </div>
-{% block javascript_global %}
-    <script>
-    $(document).ready(function() {
-    function goToPage() {
-        let pageNumber = $("#pageInput").val().trim();
-        let maxPage = parseInt($("#pageInput").attr("max")) || 1;
-        let minPage = parseInt($("#pageInput").attr("min")) || 1;
-
-        if (pageNumber) {
-            pageNumber = Math.max(minPage, Math.min(maxPage, parseInt(pageNumber, 10))); // clamp value
-            window.location.search = "?page=" + pageNumber;
-        }
-    }
-
-    // Trigger on Enter
-    $("#pageInput").on("keypress", function(e) {
-        if (e.which === 13) { // Enter key
-            e.preventDefault();
-            goToPage();
-        }
-    });
-
-    // Trigger on blur
-    $("#pageInput").on('blur', function() {
-        console.log('blur');
-        goToPage();
-    });
-});
-    </script>
-{% endblock javascript_global %}

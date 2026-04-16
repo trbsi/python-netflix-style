@@ -18,3 +18,35 @@ $(document).ready(function () {
     });
 });
 
+$(document).ready(function () {
+
+    function goToPage() {
+        let pageNumber = $("#pageInput").val().trim();
+        let maxPage = parseInt($("#pageInput").attr("max")) || 1;
+        let minPage = parseInt($("#pageInput").attr("min")) || 1;
+
+        if (!pageNumber) return;
+
+        pageNumber = Math.max(
+            minPage,
+            Math.min(maxPage, parseInt(pageNumber, 10))
+        );
+
+        window.location.search = "?page=" + pageNumber;
+    }
+
+    // Enter key
+    $("#pageInput").on("keypress", function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            goToPage();
+        }
+    });
+
+    // Blur
+    $("#pageInput").on("blur", function () {
+        goToPage();
+    });
+
+});
+

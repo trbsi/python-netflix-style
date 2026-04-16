@@ -37,14 +37,14 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'media.categories' lang=TEMPLATE_DEFAULT_LANGUAGE %}">
+                                <a class="nav-link" href="{% url 'media.categories' %}">
                                     <div class="d-flex justify-content-between">
                                         <span class="item-name">Categories</span>
                                     </div>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'media.all_videos' lang=TEMPLATE_DEFAULT_LANGUAGE %}">
+                                <a class="nav-link" href="{% url 'media.all_videos' %}">
                                     <div class="d-flex justify-content-between">
                                         <span class="item-name">All movies</span>
                                     </div>
@@ -169,7 +169,7 @@
                                     <li class="p-0">
                                         <div class="form-group input-group mb-0">
                                             <form method="GET"
-                                                  action="{% url 'media.search' lang=TEMPLATE_DEFAULT_LANGUAGE %}">
+                                                  action="{% url 'media.search' %}">
                                                 <input type="text" name="query"
                                                        class="form-control border-1 border-white"
                                                        placeholder="Search...">
