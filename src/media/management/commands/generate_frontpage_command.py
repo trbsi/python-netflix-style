@@ -8,15 +8,18 @@ from src.notification.value_objects.push_notification_value_object import PushNo
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        start = time.time()
+        try:
+            start = time.time()
 
-        service = FrontpageService()
-        ids_length = service.generate_frontpage()
+            service = FrontpageService()
+            ids_length = service.generate_frontpage()
 
-        end = time.time()
-        minutes = (end - start) / 60
-        message = f"GenerateFrontpageCommand. Execution time: {minutes:.2f} minutes. Total ids: {ids_length}"
-        print(message)
+            end = time.time()
+            minutes = (end - start) / 60
+            message = f"GenerateFrontpageCommand. Execution time: {minutes:.2f} minutes. Total ids: {ids_length}"
+            print(message)
 
-        push = PushNotificationValueObject(body=message)
-        NotificationService.send_notification(push)
+            push = PushNotificationValueObject(body=message)
+            NotificationService.send_notification(push)
+        except Exception as e:
+            print(e)
