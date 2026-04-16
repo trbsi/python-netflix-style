@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.utils import translation
 
 from src.core.utils import unslugify
 
@@ -13,12 +14,13 @@ class SearchItem:
         self.categories = categories
 
     def to_dict(self):
+        kwargs = {"id": self.id, "slug": self.slug, "lang": translation.get_language()}
         return {
             "id": self.id,
             "title": self.title,
             "duration": self.duration,
             "thumbnail": self.thumbnail,
-            "url": reverse_lazy("media.single_video", kwargs={"id": self.id, "slug": self.slug}),
+            "url": reverse_lazy("media.single_video", kwargs=kwargs),
             "categories": [
                 {
                     "title": category.strip(),
