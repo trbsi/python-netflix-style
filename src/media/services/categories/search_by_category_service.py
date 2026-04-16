@@ -44,7 +44,7 @@ class SearchByCategoryService:
 
         queryset = (
             VideoItem.objects
-            .filter(categories=category)
+            .filter(categories_relation=category)
             .order_by('-id')
             .distinct()
         )
