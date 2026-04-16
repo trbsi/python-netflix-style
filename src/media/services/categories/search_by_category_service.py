@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 
-from src.core.utils import GRADUAL_ROLLOUT
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 
 
@@ -38,50 +37,6 @@ class SearchByCategoryService:
             })
 
         return result, has_next
-
-    def get_category_videos_with_gradual_rollout(self, slug, last_id=0):
-        category = get_object_or_404(VideoCategory, slug=slug)
-
-        # 1. Base query limited to MAX_VIDEOS
-        base_ids = (
-            VideoCategoryPivot.objects
-            .filter(category=category)
-            .order_by('-video_id')
-            .values_list('video_id', flat=True)[:GRADUAL_ROLLOUT]
-        )
-
-        # 2. Apply cursor inside that limited set
-        query = VideoCategoryPivot.objects.filter(
-            category=category,
-            video_id__in=list(base_ids)
-        )
-
-        if last_id and last_id > 0:
-            query = query.filter(video_id__lt=last_id)
-
-        # 3. Pagination slice
-        video_ids = list(
-            query.order_by('-video_id')
-            .values_list('video_id', flat=True)[:self.PAGE_SIZE + 1]
-        )
-
-        has_next = len(video_ids) > self.PAGE_SIZE
-        video_ids = video_ids[:self.PAGE_SIZE]
-
-        # 4. Fetch objects
-        videos = list(
-            VideoItem.objects.filter(id__in=video_ids)
-        )
-
-        videos.sort(key=lambda x: x.id, reverse=True)
-
-        next_last_id = videos[-1].id if videos else None
-
-        return {
-            "results": videos,
-            "has_next": has_next,
-            "next_last_id": next_last_id,
-        }
 
     def get_category_videos(self, slug, last_id=0):
         """
