@@ -81,7 +81,7 @@ class ListMediaService:
 
     def single_video_list(self) -> dict:
         used_ids = set()
-        base_qs = VideoItem.objects.order_by("-id").all()
+        base_qs = VideoItem.objects.order_by("-id").filter(slug_rewritten__isnull=False)
 
         context = {
             "recommended": self._get_videos(

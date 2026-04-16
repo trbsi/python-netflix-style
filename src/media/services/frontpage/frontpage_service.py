@@ -15,7 +15,8 @@ class FrontpageService:
 
         # 1. Try getting all videos from last week
         candidates = list(
-            VideoItem.objects.filter(external_created_at__gte=week)
+            VideoItem.objects
+            .filter(slug_rewritten__isnull=False)
             .values_list('id', flat=True)
         )
 
@@ -44,5 +45,5 @@ class FrontpageService:
         # 4. Cache and return
         cache.set('frontpage_ids', selected_ids, 60 * 60 * 24)
         cache.delete('frontpage_html')
-        
+
         return len(selected_ids)
