@@ -60,25 +60,10 @@ def categories(request: HttpRequest) -> HttpResponse:
 def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
     category = unslugify(slug)
     service = SearchByCategoryService()
-    data = service.get_category_videos(slug, int(request.GET.get('last_id', 0)))
+    data = service.get_category_videos_with_gradual_rollout(slug, int(request.GET.get('last_id', 0)))
 
     context = {'category': category, 'slug': slug, 'data': data}
     return render(request, 'categories/search.html', context)
-
-
-@require_GET
-def categories_search_api(request: HttpRequest) -> HttpResponse:
-    get = request.GET
-    last_id = int(get.get('last_id')) if get.get('last_id') else 0
-    query = get.get('query')
-
-    service = SearchByCategoryService()
-    videos, has_next = service.search_videos_api(query, last_id)
-
-    return JsonResponse({
-        "videos": videos,
-        "has_next": has_next
-    })
 
 
 @require_GET
@@ -100,6 +85,7 @@ def all_videos(request: HttpRequest) -> HttpResponse:
     )
 
 
+# ------------------- VIDEO/CATEGORY SEARCH API ----------------------
 @require_GET
 def search_videos_api(request: HttpRequest) -> HttpResponse:
     query = request.GET.get('query')
@@ -115,6 +101,36 @@ def search_videos_api(request: HttpRequest) -> HttpResponse:
     })
 
 
+@require_GET
+def categories_search_api(request: HttpRequest) -> HttpResponse:
+    get = request.GET
+    last_id = int(get.get('last_id')) if get.get('last_id') else 0
+    query = get.get('query')
+
+    service = SearchByCategoryService()
+    videos, has_next = service.search_videos_api(query, last_id)
+
+    return JsonResponse({
+        "videos": videos,
+        "has_next": has_next
+    })
+
+
+# ------------------- REWRITE TITLE/SLUG/DESCRIPTION ----------------------
+@require_GET
+def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
+    get = request.GET
+    limit = int(get.get("limit", 10))
+    count = bool(get.get("count")) if get.get("count") else False
+    latest = bool(get.get("latest")) if get.get("latest") else False
+    category = get.get("category")
+
+    service = LocalRewriteService()
+    result = service.get_videos_for_rewrite(limit, count, latest, category)
+
+    return JsonResponse(result)
+
+
 @require_POST
 @csrf_exempt
 def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
@@ -123,16 +139,3 @@ def update_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     updated = service.update_titles(payload)
 
     return JsonResponse({"updated": updated})
-
-
-@require_GET
-def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
-    get = request.GET
-    limit = int(get.get("limit", 10))
-    count = bool(get.get("count")) if get.get("count") else False
-    latest = bool(get.get("latest")) if get.get("latest") else False
-
-    service = LocalRewriteService()
-    result = service.get_videos_for_rewrite(limit, count, latest)
-
-    return JsonResponse(result)

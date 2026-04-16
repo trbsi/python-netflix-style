@@ -1,7 +1,7 @@
 from django.db.models import QuerySet
 from django.utils.text import slugify
 
-from src.media.models import VideoItem
+from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 
 
 class LocalRewriteService:
@@ -37,9 +37,16 @@ class LocalRewriteService:
 
         return updated
 
-    def get_videos_for_rewrite(self, limit: int, count: bool, latest: bool) -> dict:
+    def get_videos_for_rewrite(self, limit: int, count: bool, latest: bool, category: str | None) -> dict:
         if latest:
             videos: QuerySet[VideoItem] = VideoItem.objects.order_by("-id").filter(description__isnull=True)[:limit]
+        elif category:
+            video_category = VideoCategory.objects.filter(slug=category).first()
+            video_ids = (VideoCategoryPivot.objects
+                         .filter(category_id=video_category.id)
+                         .values_list('video_id', flat=True)[:limit])
+
+            videos: QuerySet[VideoItem] = VideoItem.objects.filter(id__in=list(video_ids))
         else:
             videos: QuerySet[VideoItem] = (
                 VideoItem.objects
