@@ -24,8 +24,7 @@ class DumpToDatabaseService:
     def save_to_database(self, site: str, fields_map: dict, csv_file_path: str) -> int:
         print("Reading CSV for database insert...")
         csv.field_size_limit(sys.maxsize)
-        # videos_batch = 10_000
-        videos_batch = self.HARD_LIMIT
+        videos_batch = 10_000
         categories_batch = 1000
         videos_array = []
         categories_array = []
