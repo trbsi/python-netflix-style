@@ -48,8 +48,11 @@ docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py compress
 echo "📜 --------------------------- Running migrations ---------------------------"
 docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py migrate
 
-echo "📜 --------------------------- Clearing cache ---------------------------"
-docker exec -it $DOCKER_CONTAINER python manage.py shell -c "from django.core.cache import cache; cache.delete('frontpage_html')"
+echo "🧹 --------------------------- Clearing cache ---------------------------"
+docker exec -it $DOCKER_CONTAINER python manage.py shell -c "from django.core.cache import cache; cache.delete('frontpage_html'); cache.delete('frontpage_ids')"
+
+echo "🤖 --------------------------- Generate new frontpage ids ---------------------------"
+docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py generate_frontpage_command
 
 echo "🔄 --------------------------- Restarting containers ---------------------------"
 docker restart "$DOCKER_CONTAINER" "$WORKER" "$BEAT" "$NGINX"
