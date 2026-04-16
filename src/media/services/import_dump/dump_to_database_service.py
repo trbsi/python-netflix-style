@@ -59,11 +59,13 @@ class DumpToDatabaseService:
                     slug = self._slug(fields, fields_map)
                     link = self._get_safe_by_size(fields, fields_map['url'], 'link')
 
+                    # ----- HARD LIMIT -----
                     keywords = ["milf", "blowjob", "teen"]
                     main_category = None
                     for word in keywords:
                         if word in categories.lower():
                             main_category = word
+                            categories = main_category
                             break
 
                     if not main_category:
@@ -74,6 +76,7 @@ class DumpToDatabaseService:
                         count = VideoCategoryPivot.objects.filter(category=db_category).count()
                         if count > self.HARD_LIMIT:
                             continue
+                    # ----- HARD LIMIT -----
 
                     # VIDEOS
                     video = VideoItem(
@@ -90,6 +93,12 @@ class DumpToDatabaseService:
                         external_id=external_id,
                         external_created_at=external_created_at,
                     )
+
+                    # ----- HARD LIMIT -----
+                    if len(videos_array) > self.HARD_LIMIT:
+                        continue
+                    # ----- HARD LIMIT -----
+
                     videos_array.append(video)
                 except Exception as e:
                     exception = Exception(f'Exception: {str(e)}. Line: {line}')
