@@ -59,7 +59,10 @@ def categories(request: HttpRequest) -> HttpResponse:
 @require_GET
 def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
     category = unslugify(slug)
-    context = {'category': category, 'slug': slug}
+    service = SearchByCategoryService()
+    page_obj = service.search_videos(slug, int(request.GET.get('page', 1)))
+
+    context = {'category': category, 'slug': slug, 'page_obj': page_obj}
     return render(request, 'categories/search.html', context)
 
 
@@ -70,7 +73,7 @@ def categories_search_api(request: HttpRequest) -> HttpResponse:
     query = get.get('query')
 
     service = SearchByCategoryService()
-    videos, has_next = service.search_videos(query, last_id)
+    videos, has_next = service.search_videos_api(query, last_id)
 
     return JsonResponse({
         "videos": videos,
