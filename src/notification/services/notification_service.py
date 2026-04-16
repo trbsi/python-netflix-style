@@ -1,3 +1,5 @@
+import bugsnag
+
 from src.notification.services.browser_service import BrowserService
 from src.notification.services.email_service import EmailService
 from src.notification.services.slack_service import SlackService
@@ -9,8 +11,11 @@ class NotificationService():
     @staticmethod
     def send_notification(*notifications) -> None:
         for notification in notifications:
-            if isinstance(notification, EmailValueObject):
-                EmailService.send(notification)
-            if isinstance(notification, PushNotificationValueObject):
-                BrowserService.send(notification)
-                SlackService.send(notification)
+            try:
+                if isinstance(notification, EmailValueObject):
+                    EmailService.send(notification)
+                if isinstance(notification, PushNotificationValueObject):
+                    BrowserService.send(notification)
+                    SlackService.send(notification)
+            except Exception as e:
+                bugsnag.notify(e)
