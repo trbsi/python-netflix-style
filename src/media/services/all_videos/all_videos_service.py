@@ -7,6 +7,7 @@ from src.media.models import VideoItem
 class LargeTablePaginator(Paginator):
     @property
     def count(self):
+        return GRADUAL_ROLLOUT
         return 10000000
 
 
