@@ -38,7 +38,7 @@ class LocalRewriteService:
 
     def get_videos_for_rewrite(self, limit: int, count: bool, latest: bool) -> dict:
         if latest:
-            videos = VideoItem.objects.order_by("-id")
+            videos = VideoItem.objects.order_by("-id").filter(description__isnull=True)[:limit]
         else:
             videos = (
                 VideoItem.objects
