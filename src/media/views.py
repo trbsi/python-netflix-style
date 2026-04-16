@@ -11,7 +11,7 @@ from src.core.utils import unslugify
 from src.media.models import VideoItem, VideoCategory
 from src.media.services.all_videos.all_videos_service import AllVideosService
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
-from src.media.services.home.list_media_service import ListMediaService
+from src.media.services.frontpage.list_media_service import ListMediaService
 from src.media.services.search.search_fulltext_service import SearchFullTextService
 from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 

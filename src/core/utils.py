@@ -10,6 +10,7 @@ from django.utils.http import urlencode
 from automationapp import settings
 from src.core.value_object.ip_data import IpData
 
+# @todo-delete this
 GRADUAL_ROLLOUT = 200
 
 

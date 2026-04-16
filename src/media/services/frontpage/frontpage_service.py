@@ -14,11 +14,12 @@ class FrontpageService:
         total_videos = 200
 
         # 1. Try getting all videos from last week
+        # @todo-revert this
         candidates = list(
             VideoItem.objects
             # .filter(external_created_at__gte=week)
             .order_by('-id')
-            .values_list('id', flat=True)[:500]
+            .values_list('id', flat=True)[:total_videos]
         )
 
         # 2. If there aren’t enough, take additional videos from older entries

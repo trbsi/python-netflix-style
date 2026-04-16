@@ -7,21 +7,22 @@
                     <div class="swiper-container " data-swiper="slider-thumbs-inner-ott">
                         <div class="swiper-wrapper">
                             {% for video in main_header %}
-                            <div class="swiper-slide swiper-bg">
-                                <div class="block-images position-relative ">
-                                    <div class="img-box">
-                                        <img src="{{ video.thumbnail_large }}" class="img-fluid" alt="{{ video.main_title }}"
-                                             loading="eager">
-                                        <div class="block-description">
-                                            <h6 class="iq-title fw-500 line-count-3">{{ video.main_title|safe }}</h6>
-                                            <div class="d-flex align-items-center gap-1">
-                                                <i class="ph ph-clock"></i>
-                                                <span class="fs-12">{{ video.duration_formatted }}</span>
+                                <div class="swiper-slide swiper-bg">
+                                    <div class="block-images position-relative ">
+                                        <div class="img-box">
+                                            <img src="{{ video.thumbnail_large }}" class="img-fluid"
+                                                 alt="{{ video.main_title }}"
+                                                 loading="eager">
+                                            <div class="block-description">
+                                                <h6 class="iq-title fw-500 line-count-3">{{ video.main_title|safe }}</h6>
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <i class="ph ph-clock"></i>
+                                                    <span class="fs-12">{{ video.duration_formatted }}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             {% endfor %}
                         </div>
                     </div>
@@ -37,57 +38,61 @@
                 <div class="swiper-container" data-swiper="slider-images-inner-ott">
                     <div class="swiper-wrapper m-0">
                         {% for video in main_header %}
-                        <div class="swiper-slide banner-bg p-0">
-                            <div class="slider--image block-images position-relative">
-                                <!-- LCP-optimized image -->
-                                <img src="{{ video.thumbnail_large }}"
-                                     alt="{{ video.main_title|escape }}"
-                                     class="w-100 h-100 position-absolute top-0 start-0 object-fit-cover"
-                                     fetchpriority="high"
-                                     loading="eager">
+                            <div class="swiper-slide banner-bg p-0">
+                                <div class="slider--image block-images position-relative">
+                                    <!-- LCP-optimized image -->
+                                    <img src="{{ video.thumbnail_large }}"
+                                         alt="{{ video.main_title|escape }}"
+                                         class="w-100 h-100 position-absolute top-0 start-0 object-fit-cover"
+                                         fetchpriority="high"
+                                         loading="eager">
 
-                                <div class="container-fluid position-relative">
-                                    <div class="row align-items-center h-100 slider-content-full-height">
-                                        <div class="col-lg-5 col-md-12">
-                                            <div class="slider-content">
-                                                <h1 class="texture-text line-count-3 RightAnimate-two mb-1 mb-md-3">
-                                                    {{ video.main_title|safe }}
-                                                </h1>
-                                                <div class="d-flex flex-wrap align-items-center gap-3 py-2 RightAnimate-three">
-                                                    <div class="d-flex align-items-center gap-3">
-                                                        <ul class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left gap-1">
-                                                            {% for i in "12345" %}
-                                                                {% if forloop.counter <= video.rating %}
-                                                                    <li><i class="ph-fill ph-star" aria-hidden="true"></i></li>
-                                                                {% else %}
-                                                                    <li><i class="ph ph-star" aria-hidden="true"></i></li>
-                                                                {% endif %}
-                                                            {% endfor %}
-                                                        </ul>
+                                    <div class="container-fluid position-relative">
+                                        <div class="row align-items-center h-100 slider-content-full-height">
+                                            <div class="col-lg-5 col-md-12">
+                                                <div class="slider-content">
+                                                    <h1 class="texture-text line-count-3 RightAnimate-two mb-1 mb-md-3">
+                                                        {{ video.main_title|safe }}
+                                                    </h1>
+                                                    <div class="d-flex flex-wrap align-items-center gap-3 py-2 RightAnimate-three">
+                                                        <div class="d-flex align-items-center gap-3">
+                                                            <ul class="ratting-start p-0 m-0 list-inline text-warning d-flex align-items-center justify-content-left gap-1">
+                                                                {% for i in "12345" %}
+                                                                    {% if forloop.counter <= video.rating %}
+                                                                        <li><i class="ph-fill ph-star"
+                                                                               aria-hidden="true"></i></li>
+                                                                    {% else %}
+                                                                        <li><i class="ph ph-star"
+                                                                               aria-hidden="true"></i></li>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </ul>
+                                                        </div>
+                                                        <div class="d-flex align-items-center gap-1">
+                                                            <i class="ph ph-clock"></i>
+                                                            <span class="font-size-16 fw-500">{{ video.duration_formatted }}</span>
+                                                        </div>
                                                     </div>
-                                                    <div class="d-flex align-items-center gap-1">
-                                                        <i class="ph ph-clock"></i>
-                                                        <span class="font-size-16 fw-500">{{ video.duration_formatted }}</span>
+                                                    <p class="line-count-3 my-3 RightAnimate-two">{{ video.main_description }}</p>
+                                                    <div class="RightAnimate-three mt-2">
+                                                        {{ video.categories_formatted }}
                                                     </div>
-                                                </div>
-                                                <p class="line-count-3 my-3 RightAnimate-two">{{ video.categories_formatted }}</p>
-
-                                                <div class="RightAnimate-four mt-4 pt-2">
-                                                    <a href="{{ video.video_url }}"
-                                                       class="btn btn-primary text-capitalize position-relative rounded-3">
+                                                    <div class="RightAnimate-four mt-4 pt-2">
+                                                        <a href="{{ video.video_url }}"
+                                                           class="btn btn-primary text-capitalize position-relative rounded-3">
                                                         <span class="d-flex align-items-center gap-2">
                                                             <span class="button-text">play now</span>
                                                             <i class="ph-fill ph-play fs-6"></i>
                                                         </span>
-                                                    </a>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <div class="col-lg-7 col-md-12"></div>
                                         </div>
-                                        <div class="col-lg-7 col-md-12"></div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         {% endfor %}
                     </div>
                     <div class="swiper-pagination d-block d-lg-none"></div>

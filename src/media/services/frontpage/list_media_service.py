@@ -19,7 +19,7 @@ class ListMediaService:
         used_ids = set()
         cache_ids = cache.get('frontpage_ids')
         if cache_ids:
-            base_qs = VideoItem.objects.filter(id__in=cache_ids).all()
+            base_qs = VideoItem.objects.filter(id__in=cache_ids).order_by('?')
         else:
             base_qs = VideoItem.objects.order_by('-id')
 
