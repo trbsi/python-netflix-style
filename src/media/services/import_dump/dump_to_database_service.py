@@ -36,6 +36,7 @@ class DumpToDatabaseService:
             total_rows = sum(1 for row in reader)
             print("Total rows:", total_rows)
             pbar = tqdm(total=total_rows)
+            category_counts = {}
 
             f.seek(0)  # reset to first line
             for index, line in enumerate(f):
@@ -61,20 +62,26 @@ class DumpToDatabaseService:
                     # ----- HARD LIMIT -----
                     keywords = ["milf", "blowjob", "teen"]
                     main_category = None
+
                     for word in keywords:
-                        if word in categories.lower():
+                        if re.search(rf'\b{re.escape(word)}\b', categories, re.IGNORECASE):
                             main_category = word
-                            categories = main_category
                             break
 
                     if not main_category:
                         continue
 
                     db_category = VideoCategory.objects.filter(slug=slugify(main_category)).first()
+
                     if db_category:
-                        count = VideoCategoryPivot.objects.filter(category=db_category).count()
-                        if count > self.HARD_LIMIT:
+                        if db_category.id not in category_counts:
+                            category_counts[db_category.id] = VideoCategoryPivot.objects.filter(
+                                category=db_category).count()
+
+                        if category_counts[db_category.id] >= self.HARD_LIMIT:
                             continue
+
+                        category_counts[db_category.id] += 1
                     # ----- HARD LIMIT -----
 
                     # VIDEOS
@@ -92,11 +99,6 @@ class DumpToDatabaseService:
                         external_id=external_id,
                         external_created_at=external_created_at,
                     )
-
-                    # ----- HARD LIMIT -----
-                    if len(videos_array) > self.HARD_LIMIT:
-                        continue
-                    # ----- HARD LIMIT -----
 
                     videos_array.append(video)
                 except Exception as e:
