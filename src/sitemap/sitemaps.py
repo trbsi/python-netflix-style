@@ -1,6 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
+from src.core.utils import GRADUAL_ROLLOUT
 from src.media.models import VideoCategory, VideoItem
 
 
@@ -28,4 +29,4 @@ class VideosSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return VideoItem.objects.order_by('-id')[:1000]
+        return VideoItem.objects.order_by('-id')[:GRADUAL_ROLLOUT]
