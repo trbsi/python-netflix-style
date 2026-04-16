@@ -18,7 +18,7 @@ class FrontpageService:
             VideoItem.objects
             # .filter(external_created_at__gte=week)
             .order_by('-id')
-            .values_list('id', flat=True)[:total_videos]
+            .values_list('id', flat=True)[:1000]
         )
 
         # 2. If there aren’t enough, take additional videos from older entries
