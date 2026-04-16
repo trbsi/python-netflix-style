@@ -4,7 +4,7 @@ from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 
 
 class SearchByCategoryService:
-    PAGE_SIZE = 20
+    PAGE_SIZE = 25
 
     def search_videos_api(self, slug: str, last_id: int) -> tuple:
         category = get_object_or_404(VideoCategory, slug=slug)
