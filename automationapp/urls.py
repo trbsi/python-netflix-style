@@ -29,7 +29,7 @@ urlpatterns = (
         path('chat/', include('src.chat.urls')),
         # path('user/', include('src.user.urls')), not used for now
         path('movies/api/', include('src.media.urls_api')),
-        path('dynamic-sitemaps/', include('src.sitemap.urls')),
+        path('sitemaps2/', include('src.sitemap.urls')),
         path('.privatniadmin/', include('src.myadmin.urls')),
         path('.privatnomjesto/', admin.site.urls),
     ]
