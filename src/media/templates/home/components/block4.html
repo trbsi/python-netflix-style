@@ -23,23 +23,7 @@
                                                     <span class="text-gold fw-bold font-size-18">#1 in Series today</span>
                                                 </div>
                                                 <h3 class="mb-2 fw-500 text-capitalize texture-text">{{ video.main_title|safe }}</h3>
-                                                {% comment %}
-                                            <p class="my-3 line-count-3 RightAnimate-three"> Pirates of Day One is
-                                                an original, epic
-                                                series that reimagines the classic pirate genre by blending
-                                                adventure, fantasy, and
-                                                historical drama. Set in an alternative 17th-century world where
-                                                mythical creatures,
-                                                ancient magic, and powerful artifacts exist, the series follows a
-                                                ragtag crew of
-                                                pirates with diverse backgrounds and mysterious pasts. Each
-                                                character is drawn to
-                                                the high seas for different reasons—revenge, freedom, treasure, or
-                                                secrets. They
-                                                form an unlikely family as they face formidable foes and legendary
-                                                sea monsters,
-                                                uncovering secrets that could reshape the world.</p>
-                                            {% endcomment %}
+                                                <p class="my-3 line-count-3 RightAnimate-three">{{ video.main_description }}</p>
                                                 <ul class="d-flex align-items-center list-inline gap-2 movie-tag p-0 mt-3 mb-40">
                                                     <li class="font-size-18 trending-list">{{ video.pub_date_formatted }}</li>
                                                 </ul>
