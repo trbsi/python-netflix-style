@@ -123,7 +123,7 @@ def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     limit = int(get.get("limit", 10))
     count = bool(get.get("count")) if get.get("count") else False
     latest = bool(get.get("latest")) if get.get("latest") else False
-    category = get.get("category")
+    category = bool(get.get("by_category")) if get.get("by_category") else False
 
     service = LocalRewriteService()
     result = service.get_videos_for_rewrite(limit, count, latest, category)

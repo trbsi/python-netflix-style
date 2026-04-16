@@ -1,3 +1,4 @@
+from django.core.cache import cache
 from django.db.models import QuerySet
 from django.utils.text import slugify
 
@@ -37,11 +38,17 @@ class LocalRewriteService:
 
         return updated
 
-    def get_videos_for_rewrite(self, limit: int, count: bool, latest: bool, category: str | None) -> dict:
+    def get_videos_for_rewrite(self, limit: int, count: bool, latest: bool, category: bool) -> dict:
         if latest:
             videos: QuerySet[VideoItem] = VideoItem.objects.order_by("-id").filter(description__isnull=True)[:limit]
         elif category:
-            video_category = VideoCategory.objects.filter(slug=category).first()
+            last_category = cache.get('last_category_tmp')
+            if not last_category:
+                video_category = VideoCategory.objects.order_by('id').first()
+            else:
+                video_category = VideoCategory.objects.filter(id__gt=last_category).order_by('id').first()
+
+            cache.set('last_category_tmp', video_category.id)
             video_ids = (VideoCategoryPivot.objects
                          .filter(category_id=video_category.id)
                          .values_list('video_id', flat=True)[:limit])

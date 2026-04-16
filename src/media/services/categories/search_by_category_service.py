@@ -53,7 +53,7 @@ class SearchByCategoryService:
         # 2. Apply cursor inside that limited set
         query = VideoCategoryPivot.objects.filter(
             category=category,
-            video_id__in=base_ids
+            video_id__in=list(base_ids)
         )
 
         if last_id and last_id > 0:
