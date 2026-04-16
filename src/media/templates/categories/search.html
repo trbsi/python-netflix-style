@@ -26,26 +26,14 @@
                                     </div>
 
                                     <div class="card-description with-transition">
-
-                                        <ul class="genres-list p-0 mb-2 d-flex align-items-center flex-wrap list-inline">
-                                            <li class="fw-semi-bold">
-                                                {% for c in video.categories_relation.all %}
-                                                    {{ c.title }}{% if not forloop.last %}, {% endif %}
-                                                {% endfor %}
-                                            </li>
-                                        </ul>
-
                                         <div class="cart-content">
                                             <div class="content-left">
-
                                                 <h5 class="iq-title text-capitalize">
                                                     <a href="{{ video.video_url }}">{{ video.main_title }}</a>
                                                 </h5>
-
                                                 <div class="d-flex align-items-center gap-3">
                                                     <small class="font-size-12">{{ video.duration }}</small>
                                                 </div>
-
                                             </div>
                                         </div>
 

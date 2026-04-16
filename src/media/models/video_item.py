@@ -28,12 +28,6 @@ class VideoItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    categories_relation = models.ManyToManyField(
-        "VideoCategory",
-        through="VideoCategoryPivot",
-        related_name="videos"
-    )
-
     objects = models.Manager()
 
     class Meta:
