@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404
 
+from src.core.utils import GRADUAL_ROLLOUT
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 
 
@@ -46,7 +47,7 @@ class SearchByCategoryService:
             VideoItem.objects
             .filter(categories_relation=category)
             .order_by('-id')
-            .distinct()
+            .distinct()[:GRADUAL_ROLLOUT]
         )
 
         paginator = Paginator(queryset, self.PAGE_SIZE)
