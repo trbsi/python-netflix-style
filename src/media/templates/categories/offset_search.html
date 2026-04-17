@@ -1,0 +1,58 @@
+{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}{{ category }} Videos{% endblock %}
+{% block meta_description %}Watch the best {{ category }} videos. Stream free adult content online.{% endblock %}
+
+{% block content %}
+    <div class="section-padding view-all-movies">
+        <h1 class="visually-hidden">{{ category }} Videos</h1>
+        <div class="container-fluid">
+            <div class="card-style-grid">
+                <div class="row gy-4 row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 data-listing"
+                     id="videos-container">
+                    {% for video in page_obj.object_list %}
+                        <div class="col">
+                            <div class="iq-card card-hover">
+                                <div class="block-images position-relative w-100">
+
+                                    <div class="img-box w-100">
+                                        <a href="{{ video.video_url }}">
+                                            <img src="{{ video.thumbnail_large }}"
+                                                 class="img-fluid object-cover w-100 d-block border-0 rounded-3">
+                                            <span class="thumbnail-title thumbnail-title-bottom">
+                                                {{ video.main_title }}
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div class="card-description with-transition">
+                                        <div class="cart-content">
+                                            <div class="content-left">
+                                                <h5 class="iq-title text-capitalize">
+                                                    <a href="{{ video.video_url }}">{{ video.main_title }}</a>
+                                                </h5>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <small class="font-size-12">{{ video.duration_formatted }}</small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex align-items-center justify-content-center gap-2 mt-3">
+                                            <div class="iq-play-button iq-button">
+                                                <a href="{{ video.video_url }}" class="btn btn-primary w-100">
+                                                    Play Now
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% include "components/elements/offset_pagination.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

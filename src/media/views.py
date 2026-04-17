@@ -60,11 +60,15 @@ def categories(request: HttpRequest) -> HttpResponse:
 def categories_search(request: HttpRequest, slug: str) -> HttpResponse:
     category = unslugify(slug)
     service = SearchByCategoryService()
-    # data = service.get_category_videos(slug, int(request.GET.get('last_id', 0)))
-    data = service.get_category_videos_paginator(slug, int(request.GET.get('page', 1)))
-
-    context = {'category': category, 'slug': slug, 'data': data}
-    return render(request, 'categories/search.html', context)
+    type = 'offset'
+    if type == 'offset':
+        page = service.get_category_videos_paginator(slug, int(request.GET.get('page', 1)))
+        context = {'category': category, 'slug': slug, 'page_obj': page}
+        return render(request, 'categories/offset_search.html', context)
+    else:
+        data = service.get_category_videos(slug, int(request.GET.get('last_id', 0)))
+        context = {'category': category, 'slug': slug, 'data': data}
+        return render(request, 'categories/cursor_search.html', context)
 
 
 @require_GET

@@ -51,16 +51,8 @@
                         </div>
                     {% endfor %}
                 </div>
-                {% include "components/elements/offset_pagination.html" %}
+                {% include "components/elements/cursor_pagination.html" %}
             </div>
         </div>
     </div>
 {% endblock %}
-
-{% block javascript_include %}
-    <script>
-        let query = '{{slug}}';
-        let api_url = "{% url 'media.api.categories_search' %}"
-    </script>
-    <script src="{% static 'js/media/videos_search.js' %}"></script>
-{% endblock javascript_include %}

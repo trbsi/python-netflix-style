@@ -87,6 +87,6 @@ class SearchByCategoryService:
 
     def get_category_videos_paginator(self, slug, page=1) -> Page:
         category = get_object_or_404(VideoCategory, slug=slug)
-        videos = VideoItem.objects.filter(video_category_links__category_id=category.id)
+        videos = VideoItem.objects.filter(video_category_links__category_id=category.id).order_by('-id')
         paginator = Paginator(object_list=videos, per_page=self.PAGE_SIZE)
         return paginator.page(page)
