@@ -30,6 +30,7 @@ urlpatterns = (
         # path('user/', include('src.user.urls')), not used for now
         path('movies/api/', include('src.media.urls_api')),
         path('sitemaps2/', include('src.sitemap.urls')),
+        path('i18n/', include('django.conf.urls.i18n')),
         path('.privatniadmin/', include('src.myadmin.urls')),
         path('.privatnomjesto/', admin.site.urls),
     ]

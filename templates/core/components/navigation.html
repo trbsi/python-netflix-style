@@ -1,4 +1,6 @@
 {% load static %}
+{% load i18n %}
+
 <!--Nav Start-->
 <header class="header-center-home header-default header-sticky">
     <nav class="nav navbar navbar-expand-xl navbar-light iq-navbar header-hover-menu py-xl-0">
@@ -49,6 +51,58 @@
                                         <span class="item-name">All movies</span>
                                     </div>
                                 </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="collapse" href="#languages" role="button"
+                                   aria-expanded="false" aria-controls="languages">
+                                    <div class="d-flex justify-content-between">
+                                        <span class="item-name">Languages</span>
+                                        <span class="menu-icon">
+                                            <i class="ph ph-caret-down align-middle"></i>
+                                        </span>
+                                    </div>
+                                </a>
+
+                                <ul class="sub-nav collapse list-unstyled" id="languages">
+                                    <!-- English -->
+                                    <li class="nav-item">
+                                        <form action="{% url 'set_language' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="language" value="en">
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <button type="submit" class="nav-link btn btn-link p-0 text-start">
+                                                🇬🇧 English
+                                            </button>
+                                        </form>
+                                    </li>
+                                    {% comment %}
+                                    <!-- Croatian -->
+                                    <li class="nav-item">
+                                        <form action="{% url 'set_language' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="language" value="hr">
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <button type="submit" class="nav-link btn btn-link p-0 text-start">
+                                                🇭🇷 Hrvatski
+                                            </button>
+                                        </form>
+                                    </li>
+
+                                    <!-- German -->
+                                    <li class="nav-item">
+                                        <form action="{% url 'set_language' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="language" value="de">
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <button type="submit" class="nav-link btn btn-link p-0 text-start">
+                                                🇩🇪 Deutsch
+                                            </button>
+                                        </form>
+                                    </li>
+                                    {% endcomment %}
+
+                                </ul>
                             </li>
                             {% comment %}
                             <li class="nav-item">
