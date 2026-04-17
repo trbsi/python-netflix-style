@@ -71,8 +71,20 @@
                                             {% csrf_token %}
                                             <input type="hidden" name="language" value="en">
                                             <input type="hidden" name="next" value="{{ request.path }}">
-                                            <button type="submit" class="nav-link btn btn-link p-0 text-start">
+                                            <button type="submit"
+                                                    class="nav-item btn border-0 pl-2 pb-2 align-baseline text-white">
                                                 🇬🇧 English
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li class="nav-item">
+                                        <form action="{% url 'set_language' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="language" value="hr">
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <button type="submit"
+                                                    class="nav-item btn border-0 pl-2 pb-2 align-baseline text-white">
+                                                🇬🇧 HR
                                             </button>
                                         </form>
                                     </li>
