@@ -49,8 +49,13 @@ echo "📜 --------------------------- Running migrations ----------------------
 docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py migrate
 
 echo "🧹 --------------------------- Clearing cache ---------------------------"
-docker exec -it $DOCKER_CONTAINER python manage.py shell -c "from django.core.cache import cache; cache.delete('frontpage_html'); cache.delete('frontpage_ids')"
+docker exec -it $DOCKER_CONTAINER python manage.py shell -c "
+from django.core.cache import cache
+from automationapp import settings
 
+for lang, _ in settings.SUPPORTED_LANGUAGES:
+    cache.delete(f'frontpage_html_{lang}')
+"
 echo "🤖 --------------------------- Generate new frontpage ids ---------------------------"
 docker exec -it "$DOCKER_CONTAINER" poetry run python manage.py generate_frontpage_command
 

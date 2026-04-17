@@ -5,6 +5,7 @@ import bugsnag
 from django.core.cache import cache
 from django.utils import timezone
 
+from automationapp import settings
 from src.media.models import VideoItem
 
 
@@ -46,6 +47,7 @@ class FrontpageService:
 
         # 4. Cache and return
         cache.set('frontpage_ids', selected_ids, 60 * 60 * 24)
-        cache.delete('frontpage_html')
+        for lang, name in settings.SUPPORTED_LANGUAGES:
+            cache.delete(f'frontpage_html_{lang}')
 
         return len(selected_ids)

@@ -18,18 +18,19 @@ from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
+    lang = request.LANGUAGE_CODE
     if settings.APP_ENV != 'production':
         service = ListMediaService()
         videos = service.home_video_list()
         return render(request, 'home/home.html', videos)
 
-    html = cache.get('frontpage_html')
+    html = cache.get(f'frontpage_html_{lang}')
 
     if not html:
         service = ListMediaService()
         videos = service.home_video_list()
         html = render(request, 'home/home.html', videos).content
-        cache.set('frontpage_html', html, 60 * 60)
+        cache.set(f'frontpage_html_{lang}', html, 60 * 60)
 
     return HttpResponse(html)
 

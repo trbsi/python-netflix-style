@@ -11,9 +11,6 @@ from django.utils.http import urlencode
 from automationapp import settings
 from src.core.value_object.ip_data import IpData
 
-# @todo-delete this
-GRADUAL_ROLLOUT = 200
-
 
 def get_client_ip(request) -> str:
     x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
