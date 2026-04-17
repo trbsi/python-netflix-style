@@ -14,7 +14,7 @@ class AllVideosService:
 
     def get_all_videos(self, current_page: int) -> Page:
         videos = VideoItem.objects.order_by('-id')
-        paginator = LargeTablePaginator(object_list=videos, per_page=self.PER_PAGE)
+        paginator = Paginator(object_list=videos, per_page=self.PER_PAGE)
         page = paginator.page(current_page)
 
         return page
