@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator, Page
 from django.shortcuts import get_object_or_404
 
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
@@ -83,3 +84,9 @@ class SearchByCategoryService:
             "has_next": has_next,
             "next_last_id": next_last_id,
         }
+
+    def get_category_videos_paginator(self, slug, page=1) -> Page:
+        category = get_object_or_404(VideoCategory, slug=slug)
+        videos = VideoItem.objects.filter(categories_relation__category_id=category.id)
+        paginator = Paginator(object_list=videos, per_page=self.PAGE_SIZE)
+        return paginator.page(page)

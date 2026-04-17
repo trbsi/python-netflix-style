@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.utils.text import slugify
 
 from src.core.utils import full_url_for_route
+from src.media.models import VideoCategory
 
 
 class VideoItem(models.Model):
@@ -29,6 +30,12 @@ class VideoItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = models.Manager()
+
+    categories_relation = models.ManyToManyField(
+        VideoCategory,
+        through='VideoCategoryPivot',
+        related_name='videos'
+    )
 
     class Meta:
         indexes = [
