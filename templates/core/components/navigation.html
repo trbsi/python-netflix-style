@@ -65,44 +65,11 @@
                                 </a>
 
                                 <ul class="sub-nav collapse list-unstyled" id="languages">
-                                    <!-- English -->
                                     <li class="nav-item">
-                                        <form action="{% url 'set_language' %}" method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="language" value="en">
-                                            <input type="hidden" name="next" value="{{ request.path }}">
-                                            <button type="submit"
-                                                    class="nav-item btn border-0 pl-2 pb-2 align-baseline text-white">
-                                                🇬🇧 English
-                                            </button>
-                                        </form>
+                                        <a class="nav-link " href="javsacript:;" onclick="setLanguage('en')">
+                                            🇬🇧 English
+                                        </a>
                                     </li>
-                                    {% comment %}
-                                    <!-- Croatian -->
-                                    <li class="nav-item">
-                                        <form action="{% url 'set_language' %}" method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="language" value="hr">
-                                            <input type="hidden" name="next" value="{{ request.path }}">
-                                            <button type="submit" class="nav-link btn btn-link p-0 text-start">
-                                                🇭🇷 Hrvatski
-                                            </button>
-                                        </form>
-                                    </li>
-
-                                    <!-- German -->
-                                    <li class="nav-item">
-                                        <form action="{% url 'set_language' %}" method="post">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="language" value="de">
-                                            <input type="hidden" name="next" value="{{ request.path }}">
-                                            <button type="submit" class="nav-link btn btn-link p-0 text-start">
-                                                🇩🇪 Deutsch
-                                            </button>
-                                        </form>
-                                    </li>
-                                    {% endcomment %}
-
                                 </ul>
                             </li>
                             {% comment %}

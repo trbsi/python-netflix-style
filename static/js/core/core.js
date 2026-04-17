@@ -2,6 +2,17 @@ function getCsrfToken() {
     return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 }
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        document.cookie.split(';').forEach(cookie => {
+            const [key, value] = cookie.trim().split('=');
+            if (key === name) cookieValue = decodeURIComponent(value);
+        });
+    }
+    return cookieValue;
+}
+
 $(document).ready(function () {
     if (localStorage.getItem("peachka18") !== "true") {
         var ageModal = new bootstrap.Modal(document.getElementById('ageModal'));
@@ -18,8 +29,22 @@ $(document).ready(function () {
     });
 });
 
-$(document).ready(function () {
+/* SET LANGUAGE */
 
+// doing it via JS because frontpage is cached and csrf token is also cached
+function setLanguage(lang) {
+    fetch('/i18n/setlang/', {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `language=${lang}&next=${window.location.pathname}`
+    }).then(() => location.reload());
+}
+
+/* PAGINATION */
+$(document).ready(function () {
     function goToPage() {
         let pageNumber = $("#pageInput").val().trim();
         let maxPage = parseInt($("#pageInput").attr("max")) || 1;
