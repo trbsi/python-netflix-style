@@ -29,7 +29,7 @@ class LocalRewriteService:
             except VideoItem.DoesNotExist:
                 continue
 
-            if lang:
+            if lang is not None and lang != 'en':
                 VideoTranslation.objects.create(
                     video=video,
                     language_code=lang,
