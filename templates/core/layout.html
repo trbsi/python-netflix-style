@@ -11,6 +11,8 @@
     <!-- Google Font Api KEY-->
     <meta name="description"
           content="{% block meta_description %}Watch premium adult videos online with unlimited streaming, fast performance, and high-quality porn. Enjoy a smooth and private viewing experience anytime.{% endblock %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#000000">
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}"/>
@@ -128,6 +130,7 @@
 
 {% include "core/components/cookie_consent.html" %}
 {% include "core/components/18_plus_popup.html" %}
+{% include "core/components/install_app.html" %}
 </body>
 
 </html>

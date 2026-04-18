@@ -1,0 +1,72 @@
+<div id="installPrompt"
+     class="position-fixed bottom-0 start-0 w-100 p-3"
+     style="display:none; z-index: 9999;">
+
+    <div class="card bg-dark text-white border-secondary shadow-lg mx-auto" style="max-width: 500px;">
+        <div class="card-body d-flex justify-content-between align-items-center">
+
+            <div>
+                <strong>Install app</strong><br>
+                <small>Get full-screen experience</small>
+            </div>
+
+            <div class="ms-3">
+                <button id="installBtn" class="btn btn-light btn-sm me-2">Install</button>
+                <button id="closeBtn" class="btn btn-outline-light btn-sm">✕</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let deferredPrompt;
+    const HIDE_KEY = "installPromptDismissedAt";
+    const HIDE_DAYS = 5;
+
+    // Show install prompt when available
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+
+        if (!shouldShowPrompt()) return;
+
+        deferredPrompt = e;
+        document.getElementById('installPrompt').style.display = 'block';
+    });
+
+    // Install button click
+    document.getElementById('installBtn').addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+
+        deferredPrompt.prompt();
+        const result = await deferredPrompt.userChoice;
+
+        console.log('User choice:', result.outcome);
+        deferredPrompt = null;
+
+        document.getElementById('installPrompt').style.display = 'none';
+    });
+
+    // Close button
+    document.getElementById('closeBtn').addEventListener('click', () => {
+        localStorage.setItem(HIDE_KEY, Date.now().toString());
+        document.getElementById('installPrompt').style.display = 'none';
+    });
+
+    // Optional: hide if already installed
+    window.addEventListener('appinstalled', () => {
+        document.getElementById('installPrompt').style.display = 'none';
+    });
+
+    function shouldShowPrompt() {
+        const dismissedAt = localStorage.getItem(HIDE_KEY);
+        if (!dismissedAt) return true;
+
+        const now = Date.now();
+        const diff = now - parseInt(dismissedAt, 10);
+        const days = diff / (1000 * 60 * 60 * 24);
+
+        return days >= HIDE_DAYS;
+    }
+</script>
