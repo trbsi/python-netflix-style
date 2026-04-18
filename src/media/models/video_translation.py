@@ -13,9 +13,6 @@ class VideoTranslation(models.Model):
     title = models.TextField()
     slug = models.SlugField(max_length=120)
     description = models.TextField(blank=True, null=True)
-    # SEO fields
-    meta_title = models.CharField(max_length=255, blank=True, null=True)
-    meta_description = models.CharField(max_length=300, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -2,13 +2,14 @@ from django.core.cache import cache
 from django.db.models import QuerySet
 from django.utils.text import slugify
 
-from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
+from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot, VideoTranslation
 
 
 class LocalRewriteService:
 
     def update_titles(self, payload: dict) -> list:
-        field = VideoItem._meta.get_field('slug_rewritten')
+        slug_rewritten_field = VideoItem._meta.get_field('slug_rewritten')
+        slug_translation = VideoTranslation._meta.get_field('slug')
 
         items = payload if isinstance(payload, list) else payload.get('items', [])
 
@@ -18,6 +19,7 @@ class LocalRewriteService:
             video_id = item.get('video_id')
             title = item.get('title')
             description = item.get('description')
+            lang = item.get('lang')
 
             if not video_id:
                 continue
@@ -27,12 +29,21 @@ class LocalRewriteService:
             except VideoItem.DoesNotExist:
                 continue
 
-            if title:
-                video.title_rewritten = title
-                video.slug_rewritten = slugify(title)[:field.max_length]
-            if description:
-                video.description = description
-            video.save()
+            if lang:
+                VideoTranslation.objects.create(
+                    video=video,
+                    language_code=lang,
+                    title=title,
+                    slug=slugify(title)[:slug_translation.max_length],
+                    description=description,
+                )
+            else:
+                if title:
+                    video.title_rewritten = title
+                    video.slug_rewritten = slugify(title)[:slug_rewritten_field.max_length]
+                if description:
+                    video.description = description
+                video.save()
 
             updated.append(video_id)
 
