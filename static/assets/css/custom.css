@@ -9264,3 +9264,29 @@ body.modal-open #ageModal ~ .main-content {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+/* IOS ARROW FOR APP INSTALL POPUP */
+.ios-arrow {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    background: #212529; /* Bootstrap dark */
+    transform: translateX(-50%) rotate(45deg);
+}
+
+/* Optional subtle animation */
+@keyframes bounce {
+    0%, 100% {
+        transform: translate(-50%, 0) rotate(45deg);
+    }
+    50% {
+        transform: translate(-50%, 5px) rotate(45deg);
+    }
+}
+
+.ios-arrow {
+    animation: bounce 1.5s infinite;
+}

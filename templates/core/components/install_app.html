@@ -21,14 +21,27 @@
 
 </div>
 
-<div id="iosInstallPrompt" class="position-fixed bottom-0 start-0 w-100 p-3" style="display:none; z-index:9999;">
-    <div class="card bg-dark text-white border-secondary shadow mx-auto" style="max-width:500px;">
-        <div class="card-body">
-            <strong>Install App</strong><br>
-            <small>Tap <b>Share</b> → <b>Add to Home Screen</b> in Safari</small>
+<div id="iosInstallPrompt"
+     class="position-fixed bottom-0 start-0 w-100 d-flex justify-content-center"
+     style="display:none; z-index:9999; padding-bottom: env(safe-area-inset-bottom);">
 
-            <button id="iosClose" class="btn btn-outline-light btn-sm mt-2 float-end">Got it</button>
+    <div class="bg-dark text-white rounded-4 shadow-lg p-3 mb-3 position-relative"
+         style="max-width: 360px; width: 95%;">
+
+        <!-- Arrow -->
+        <div class="ios-arrow"></div>
+
+        <div class="d-flex justify-content-between align-items-start">
+            <div>
+                <div class="fw-semibold">Install App</div>
+                <small class="text-white">
+                    Tap <strong>Share</strong> then <strong>Add to Home Screen</strong>
+                </small>
+            </div>
+
+            <button id="iosClose" class="btn btn-sm btn-outline-light ms-2">✕</button>
         </div>
+
     </div>
 </div>
 
@@ -43,3 +56,4 @@
             });
     }
 </script>
+<script src="{% static 'js/core/pwa.js' %}"></script>
