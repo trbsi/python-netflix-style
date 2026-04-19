@@ -59,6 +59,16 @@ cleardockerlogs() {
   sudo find /var/lib/docker/containers/ -name "*.log" -type f -exec truncate -s 0 {} \;
 }
 
+clearcache() {
+docker exec -it $DJANGO_CONTAINER python manage.py shell -c "
+from django.core.cache import cache
+from automationapp import settings
+
+for lang, _ in settings.SUPPORTED_LANGUAGES:
+    cache.delete(f'frontpage_html_{lang}')
+"
+}
+
 # Parse command-line argument
 if [[ $# -lt 1 ]]; then
     echo "Usage: $0 {builddocker|migrate|makemigrations}"
@@ -95,6 +105,9 @@ case "$1" in
         ;;
     cleardockerlogs)
         cleardockerlogs
+        ;;
+    clearcache)
+        clearcache
         ;;
     *)
         echo "Unknown command: $1"
