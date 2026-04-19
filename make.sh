@@ -65,6 +65,7 @@ from django.core.cache import cache
 from automationapp import settings
 
 for lang, _ in settings.SUPPORTED_LANGUAGES:
+    print('LANG', lang)
     cache.delete(f'frontpage_html_{lang}')
 "
 }
