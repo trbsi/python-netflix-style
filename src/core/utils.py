@@ -6,10 +6,16 @@ from django.core.paginator import Page
 from django.db.models import Model
 from django.http import HttpRequest
 from django.urls import reverse_lazy
+from django.utils import translation
 from django.utils.http import urlencode
 
 from automationapp import settings
 from src.core.value_object.ip_data import IpData
+
+
+def get_language():
+    lang = translation.get_language()
+    return lang.split('-')[0]
 
 
 def get_client_ip(request) -> str:

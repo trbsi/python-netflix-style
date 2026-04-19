@@ -3,11 +3,12 @@ import json
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
+from django.utils import translation
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from automationapp import settings
-from src.core.utils import unslugify
+from src.core.utils import unslugify, get_language
 from src.media.models import VideoItem, VideoCategory
 from src.media.services.all_videos.all_videos_service import AllVideosService
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
@@ -18,7 +19,7 @@ from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
-    lang = request.LANGUAGE_CODE
+    lang = get_language()
     if settings.APP_ENV != 'production':
         service = ListMediaService()
         videos = service.home_video_list()
