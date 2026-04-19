@@ -9266,27 +9266,23 @@ body.modal-open #ageModal ~ .main-content {
 }
 
 /* IOS ARROW FOR APP INSTALL POPUP */
-.ios-arrow {
+.ios-arrow-container {
     position: absolute;
-    bottom: -10px;
     left: 50%;
-    transform: translateX(-50%);
-    width: 20px;
-    height: 20px;
-    background: #212529; /* Bootstrap dark */
-    transform: translateX(-50%) rotate(45deg);
 }
 
-/* Optional subtle animation */
-@keyframes bounce {
+.ios-arrow {
+    width: 40px;
+    height: 40px;
+    opacity: 0.9;
+    animation: iosBounce 1.2s infinite;
+}
+
+@keyframes iosBounce {
     0%, 100% {
-        transform: translate(-50%, 0) rotate(45deg);
+        transform: translateY(0);
     }
     50% {
-        transform: translate(-50%, 5px) rotate(45deg);
+        transform: translateY(6px);
     }
-}
-
-.ios-arrow {
-    animation: bounce 1.5s infinite;
 }
