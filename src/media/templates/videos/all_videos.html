@@ -2,6 +2,28 @@
 {% load static %}
 {% load number_format %}
 {% block title %}All Videos{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ request.scheme }}://{{ request.get_host }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "All Videos",
+      "item": "{{ request.scheme }}://{{ request.get_host }}{{ request.path }}"
+    }
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
     <div class="blog-pagination section-padding">
@@ -14,7 +36,8 @@
                             <div class="iq-blog-image clearfix">
                                 <a href="{{ video.video_url }}">
                                     <img src="{{ video.thumbnail_large }}" alt="{{ video.main_title }}"
-                                         class="img-fluid w-100 rounded-3">
+                                         class="img-fluid w-100 rounded-3"
+                                         loading="lazy">
                                 </a>
                             </div>
                             <div class="iq-blog-detail">
