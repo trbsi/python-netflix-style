@@ -11,6 +11,9 @@
     <!-- Google Font Api KEY-->
     <meta name="description"
           content="{% block meta_description %}Watch premium adult videos online with unlimited streaming, fast performance, and high-quality porn. Enjoy a smooth and private viewing experience anytime.{% endblock %}">
+    {% block robots %}<meta name="robots" content="index, follow">{% endblock %}
+    {% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">{% endblock %}
+    {% block extra_head %}{% endblock %}
     <link rel="manifest" href="{% static 'manifest.json' %}">
     <meta name="theme-color" content="#000000">
 

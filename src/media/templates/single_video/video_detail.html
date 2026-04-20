@@ -2,12 +2,27 @@
 {% load static %}
 {% block title %}{{ video.main_title }} – Watch Online{% endblock %}
 {% block meta_description %}{{ video.main_description|truncatechars:155 }}{% endblock %}
+{% block canonical %}<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ video.video_url }}">{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "{{ video.main_title|escapejs }}",
+  "description": "{{ video.main_description|truncatechars:160|escapejs }}",
+  "thumbnailUrl": "{{ video.thumbnail_large }}",
+  "uploadDate": "{{ video.pub_date_formatted }}",
+  "duration": "{{ video.duration_formatted }}",
+  "embedUrl": "{{ video.video_play_full_url }}"
+}
+</script>
+{% endblock %}
 
 {% block content %}
     <!-- Banner Start -->
     <div class="position-relative">
         <div class="iq-main-slider site-video position-relative">
-            <video id="my-video" poster="{{ video.thumb_large }}" class="my-video vjs-big-play-centered w-100">
+            <video id="my-video" poster="{{ video.thumbnail_large }}" class="my-video vjs-big-play-centered w-100">
             </video>
         </div>
 
@@ -69,7 +84,7 @@
 
                     <div class="d-flex align-items-center flex-wrap gap-3 gap-md-4 my-5">
                         <div class="iq-play-button iq-button">
-                            <a href="{{ video.video_play_url }}"
+                            <a href="{{ video.video_play_full_url }}"
                                class="btn btn-primary w-100 rounded d-flex align-items-center justify-content-center gap-2 lh-1">
                                 <span><i class="ph-fill ph-play"></i></span>
                                 <span>Start Watching</span>
