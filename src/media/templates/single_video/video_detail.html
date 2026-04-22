@@ -53,7 +53,7 @@
                     <ul class="p-0 mb-2 list-inline d-flex flex-wrap movie-tag">
                         <li class="trending-list">
                             {% for category in video.categories_array %}
-                                <a href="{{ media.category_search_url }}"
+                                <a href="{{ category.category_search_url }}"
                                    tabindex="0"
                                    class="font-size-14 ">{{ category.title }}</a> |
                             {% endfor %}

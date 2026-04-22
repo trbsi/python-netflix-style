@@ -102,7 +102,12 @@ class VideoItem(models.Model):
         result = []
         for category in array:
             if category:
-                result.append({'title': category, 'slug': slugify(category)})
+                slug = slugify(category)
+                result.append({
+                    'title': category,
+                    'slug': slug,
+                    'category_search_url': reverse_lazy('media.categories_search', kwargs={'slug': slug}),
+                })
 
         return result
 
