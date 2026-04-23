@@ -4,6 +4,7 @@ import random
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.text import slugify
+from django.utils.timezone import localtime
 
 from src.core.utils import full_url_for_route
 
@@ -80,6 +81,27 @@ class VideoItem(models.Model):
         if h > 0:
             return f"{h:02}:{m:02}:{s:02}"
         return f"{m:02}:{s:02}"
+
+    @property
+    def duration_iso8601(self) -> str:
+        h = self.duration // 3600
+        m = (self.duration % 3600) // 60
+        s = self.duration % 60
+
+        parts = ["PT"]
+
+        if h:
+            parts.append(f"{h}H")
+        if m:
+            parts.append(f"{m}M")
+        if s or (h == 0 and m == 0):
+            parts.append(f"{s}S")
+
+        return "".join(parts)
+
+    @property
+    def upload_date_iso(self):
+        return localtime(self.created_at).isoformat()
 
     @property
     def rating(self):
