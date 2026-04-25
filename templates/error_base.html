@@ -2,35 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %} {% endblock title %}</title>
+    <title>{% block title %}{% endblock title %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Tailwind CDN (safe for simple pages) -->
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="min-h-screen bg-gray-50 flex items-center justify-center px-4">
 
-<div class="max-w-md w-full text-center bg-white rounded-2xl shadow-xl p-8">
-    <div class="text-6xl font-extrabold text-gray-300 mb-4">
-        {% block code %}
-        {% endblock code %}
+<body class="min-h-screen bg-gray-950 flex items-center justify-center px-4 text-white">
+
+<div class="max-w-md w-full text-center bg-gray-900 rounded-2xl shadow-2xl p-8 border border-gray-800">
+
+    <!-- Error code -->
+    <div class="text-7xl font-extrabold text-gray-700 mb-4 tracking-tight">
+        {% block code %}{% endblock code %}
     </div>
 
-    <h1 class="text-2xl font-bold text-gray-800 mb-2">
-        {% block heading %}
-        {% endblock heading %}
+    <!-- Heading -->
+    <h1 class="text-2xl font-bold text-white mb-2">
+        {% block heading %}{% endblock heading %}
     </h1>
 
-    <p class="text-gray-600 mb-6">
-        {% block message %}
-        {% endblock message %}
+    <!-- Message -->
+    <p class="text-gray-400 mb-6 leading-relaxed">
+        {% block message %}{% endblock message %}
     </p>
 
+    <!-- Button -->
     <a href="/"
        class="inline-block rounded-lg bg-indigo-600 px-5 py-2.5 text-white font-semibold
-                  hover:bg-indigo-700 transition">
+              hover:bg-indigo-500 active:bg-indigo-700 transition shadow-md">
         Go back home
     </a>
+
 </div>
 
 </body>
