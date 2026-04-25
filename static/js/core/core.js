@@ -13,6 +13,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
+/* ------------- 18+ POPUP -----------*/
 $(document).ready(function () {
     if (localStorage.getItem("peachka18") !== "true") {
         var ageModal = new bootstrap.Modal(document.getElementById('ageModal'));
@@ -29,7 +30,7 @@ $(document).ready(function () {
     });
 });
 
-/* SET LANGUAGE */
+/* ------------ SET LANGUAGE -------------- */
 
 // doing it via JS because frontpage is cached and csrf token is also cached
 function setLanguage(lang) {
@@ -43,7 +44,7 @@ function setLanguage(lang) {
     }).then(() => location.reload());
 }
 
-/* PAGINATION */
+/* ----------- PAGINATION ------------ */
 $(document).ready(function () {
     function goToPage() {
         let pageNumber = $("#pageInput").val().trim();
@@ -75,3 +76,12 @@ $(document).ready(function () {
 
 });
 
+/* ---------- Yandex.Metrika counter ---------- */
+(function(m,e,t,r,i,k,a){
+    m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();
+    for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+    k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+})(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108760122', 'ym');
+
+ym(108760122, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
