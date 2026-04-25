@@ -10,14 +10,24 @@ from django.utils import timezone
 from requests import Response
 
 from automationapp import settings
+from src.core.utils import get_ip_data
 from src.core.management.commands.base_command import BaseCommand
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument('--ip', type=str, help='Test IP address')
+
     def handle(self, *args, **options):
-        os.makedirs(settings.IP_DATABASE_PATH, exist_ok=True)
-        self._download_db_ip()
-        self.success('Done.')
+        ip = options['ip']
+
+        if ip:
+            result = get_ip_data(ip,None )
+            print(result.__dict__)
+        else:
+            os.makedirs(settings.IP_DATABASE_BASE_PATH, exist_ok=True)
+            self._download_db_ip()
+            self.success('Done.')
 
     def _download_maxmind(self):
         LICENSE_KEY = settings.MAX_MIND_LICENCE

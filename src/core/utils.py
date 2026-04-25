@@ -40,10 +40,14 @@ def get_ip_data(ip: str | None, request: HttpRequest | None) -> IpData:
     try:
         reader = geoip2.database.Reader(settings.IP_DATABASE_PATH)
         response = reader.city(ip)
+        state_name = response.subdivisions.most_specific.name
+        state_code = response.subdivisions.most_specific.iso_code
+
         data = IpData(
             timezone=response.location.time_zone,
             country_code=response.country.iso_code,
-            state_code=response.subdivisions.most_specific.iso_code
+            state_code=state_code,
+            state_name=state_name
         )
         reader.close()
 
