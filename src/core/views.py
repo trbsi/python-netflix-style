@@ -75,4 +75,4 @@ def contact(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def indexnow_key(request: HttpRequest) -> HttpResponse:
-    return HttpResponse(settings.INDEXNOW_KEY, content_type='text/plain')
+    return HttpResponse(settings.INDEXNOW_API_KEY, content_type='text/plain')
