@@ -25,7 +25,7 @@ class IndexNowService:
 
         host = (settings.APP_URL).replace('https://', '').replace('http://', '').replace('www.', '')
         body = {
-            "host": f"www.{host}",
+            "host": host,
             "key": settings.INDEXNOW_API_KEY,
             "keyLocation": full_url_for_route('indexnow_key'),
             "urlList": urls
