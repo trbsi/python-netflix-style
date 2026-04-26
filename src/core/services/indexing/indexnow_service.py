@@ -17,6 +17,7 @@ class IndexNowService:
         videos: QuerySet[VideoItem] = VideoItem.objects.order_by('id').filter(id__gt=last_id)[:self.BATCH]
 
         if not videos:
+            print(f"No videos found for last_id: {last_id}")
             return
 
         urls = [
