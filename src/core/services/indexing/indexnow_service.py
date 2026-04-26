@@ -1,5 +1,3 @@
-import json
-
 import bugsnag
 import requests
 from django.core.cache import cache
@@ -48,5 +46,7 @@ class IndexNowService:
             cache.set(self.CACHE_KEY, last_id, timeout=None)
             bugsnag.notify(Exception(f"URLs submitted. Last id is {last_id}"))
         else:
-            json_text = json.dumps(result.json())
-            bugsnag.notify(Exception(f"IndexNow Error: {json_text}"))
+            print(result.status_code)
+            print(result.headers.get("Content-Type"))
+            print(result.text)
+            bugsnag.notify(Exception(f"IndexNow Error: {result.text}"))
