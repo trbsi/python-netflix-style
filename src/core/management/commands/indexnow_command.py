@@ -1,5 +1,5 @@
-from core.services.indexing.indexnow_service import IndexNowService
 from src.core.management.commands.base_command import BaseCommand
+from src.core.services.indexing.indexnow_service import IndexNowService
 
 
 class Command(BaseCommand):

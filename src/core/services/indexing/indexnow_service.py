@@ -4,8 +4,8 @@ from django.core.cache import cache
 from django.db.models import QuerySet
 
 from automationapp import settings
-from core.utils import full_url_for_route
-from media.models import VideoItem
+from src.core.utils import full_url_for_route
+from src.media.models import VideoItem
 
 
 class IndexNowService:
