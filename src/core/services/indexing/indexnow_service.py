@@ -43,7 +43,7 @@ class IndexNowService:
         if result.status_code == 200:
             print(body)
             last_id = videos[-1].id
-            cache.set(self.CACHE_KEY, last_id)
+            cache.set(self.CACHE_KEY, last_id, timeout=None)
             bugsnag.notify(Exception(f"URLs submitted. Last id is {last_id}"))
         else:
             bugsnag.notify(Exception(f"IndexNow Error: {result.json()}"))
