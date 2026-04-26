@@ -71,3 +71,8 @@ def contact(request: HttpRequest) -> HttpResponse:
         )
         messages.success(request, 'We will get back to you soon!')
     return render(request, 'contact.html', {'company': settings.APP_NAME})
+
+
+@require_GET
+def indexnow_key(request: HttpRequest) -> HttpResponse:
+    return HttpResponse(settings.INDEXNOW_KEY, content_type='text/plain')

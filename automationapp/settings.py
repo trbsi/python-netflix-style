@@ -288,3 +288,6 @@ TELEGRAM_BOTS = {
 
 # Grok
 GROK_API_KEY = env('GROK_API_KEY')
+
+# IndexNow
+INDEXNOW_KEY = env('INDEXNOW_KEY')
