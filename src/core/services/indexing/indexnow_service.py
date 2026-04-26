@@ -36,7 +36,7 @@ class IndexNowService:
             return
 
         result = requests.post(
-            url='https://www.indexnow.com/api/v2/videos/',
+            url='https://api.indexnow.org/indexnow',
             json=body
         )
 
