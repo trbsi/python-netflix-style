@@ -14,7 +14,7 @@ class IndexNowService:
 
     def send_urls_to_indexnow(self, is_dry_run=False):
         last_id = int(cache.get(self.CACHE_KEY, 0))
-        videos: QuerySet[VideoItem] = VideoItem.objects.order_by('-id').filter(id__gt=last_id)[:self.BATCH]
+        videos: QuerySet[VideoItem] = VideoItem.objects.order_by('id').filter(id__gt=last_id)[:self.BATCH]
 
         if not videos:
             return
