@@ -56,7 +56,7 @@ restartall() {
 }
 
 cleardockerlogs() {
-  sudo find /var/lib/docker/containers/ -name "*.log" -type f -exec truncate -s 0 {} \;
+  sudo find /var/lib/docker/containers/ -name "*.log.*" -type f -exec truncate -s 0 {} \;
 }
 
 clearcache() {
