@@ -3,7 +3,6 @@ import json
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render, get_object_or_404
-from django.utils import translation
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -38,7 +37,18 @@ def media_home(request: HttpRequest) -> HttpResponse:
 
 @require_GET
 def single_video(request: HttpRequest, id: int, slug: str) -> HttpResponse:
-    video = get_object_or_404(VideoItem, pk=id)
+    try:
+        video = VideoItem.objects.get(pk=id)
+    except VideoItem.DoesNotExist:
+        response = render(request, "410.html")
+        response.status_code = 410
+        return response
+
+    if video.slug != slug:
+        response = render(request, "410.html")
+        response.status_code = 410
+        return response
+
     service = ListMediaService()
     videos = service.single_video_list()
     context = {'video': video} | videos
