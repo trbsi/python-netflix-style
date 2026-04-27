@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'src.age_verification.apps.AgeVerificationConfig',
     'src.chat.apps.ChatConfig',
     'src.inbox.apps.InboxConfig',
+    'src.events.apps.EventsConfig',
 
     'django.contrib.sitemaps',
     'django_celery_beat',
