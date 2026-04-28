@@ -56,13 +56,6 @@ def single_video(request: HttpRequest, id: int, slug: str) -> HttpResponse:
 
 
 @require_GET
-def play_video(request: HttpRequest, id: int) -> HttpResponse:
-    video = get_object_or_404(VideoItem, id=id)
-    context = {'video': video}
-    return render(request, 'single_video/video_player.html', context)
-
-
-@require_GET
 def categories(request: HttpRequest) -> HttpResponse:
     context = {'categories': VideoCategory.objects.all()}
     return render(request, 'categories/categories.html', context)

@@ -68,11 +68,6 @@ class VideoItem(models.Model):
         return full_url_for_route('media.single_video', kwargs=kwargs)
 
     @property
-    def video_play_full_url(self):
-        kwargs = {'id': self.id}
-        return full_url_for_route('media.play_video', kwargs=kwargs)
-
-    @property
     def duration_formatted(self) -> str:
         h = self.duration // 3600
         m = (self.duration % 3600) // 60

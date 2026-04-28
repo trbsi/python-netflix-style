@@ -14,7 +14,7 @@
         "thumbnailUrl": "{{ video.thumbnail_large }}",
         "uploadDate": "{{ video.upload_date_iso }}",
         "duration": "{{ video.duration_iso8601 }}",
-        "embedUrl": "{{ video.video_play_full_url }}"
+        "embedUrl": "{{ video.video_full_url }}"
     }
 </script>
 <script type="application/ld+json">
@@ -113,7 +113,7 @@
 
                     <div class="d-flex align-items-center flex-wrap gap-3 gap-md-4 my-5">
                         <div class="iq-play-button iq-button">
-                            <a href="{{ video.video_play_full_url }}"
+                            <a href="javascript:;"
                                class="btn btn-primary w-100 rounded d-flex align-items-center justify-content-center gap-2 lh-1"
                                id="start-watching">
                                 <span><i class="ph-fill ph-play"></i></span>
