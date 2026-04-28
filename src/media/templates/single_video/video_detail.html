@@ -40,167 +40,178 @@
 {% endblock %}
 
 {% block content %}
-<!-- Banner Start -->
-<div class="position-relative">
-    <div class="iq-main-slider site-video position-relative">
-        <video id="my-video" poster="{{ video.thumbnail_large }}" class="my-video vjs-big-play-centered w-100">
-        </video>
+<!-- Video Section Start -->
+<div class="position-relative" id="video-section">
+
+    <!-- Embed always rendered in DOM (SEO accessible), banner overlays it -->
+    <div id="video-embed-container" class="w-100">
+        {{ video.embed_code|safe }}
     </div>
 
-    <div class="movie-detail-part position-relative">
-        <div class="trending-info pt-0 pb-0">
-            <div class="details-parts">
-                <!-- Movie Description Start-->
-                <ul class="p-0 mb-2 list-inline d-flex flex-wrap movie-tag">
-                    <li class="trending-list">
-                        {% for category in video.categories_array %}
-                        <a href="{{ category.category_search_url }}"
-                           tabindex="0"
-                           class="font-size-14 ">{{ category.title }}</a> |
-                        {% endfor %}
-                    </li>
-                </ul>
-                <div class="d-block d-lg-flex align-items-center">
-                    <h1 class="fs-3 trending-text fw-bold texture-text text-uppercase my-0 fadeInLeft animated d-inline-block"
-                        data-animation-in="fadeInLeft" data-delay-in="0.6"
-                        style="opacity: 1; animation-delay: 0.6s">
-                        {{ video.main_title|safe }}
-                    </h1>
-                </div>
-                <div class="movie-description mt-3 mb-4" id="readmore-wrapper">
-                    <p class="line-count-3 RightAnimate-two mb-0">{{ video.main_description }}</p>
-                    {% comment %}
-                    <div class="iq-blog-meta-cat-tag iq-blogtag readmore-tags">
-                        <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewMoreDataModal"
-                           class="position-relative">Read More</a>
+    <!-- Banner Start -->
+    <div class="position-absolute top-0 start-0 w-100" id="video-banner" style="z-index: 10;">
+        <div class="iq-main-slider site-video position-relative">
+            <video id="my-video" poster="{{ video.thumbnail_large }}" class="my-video vjs-big-play-centered w-100">
+            </video>
+        </div>
+
+        <div class="movie-detail-part position-relative">
+            <div class="trending-info pt-0 pb-0">
+                <div class="details-parts">
+                    <!-- Movie Description Start-->
+                    <ul class="p-0 mb-2 list-inline d-flex flex-wrap movie-tag">
+                        <li class="trending-list">
+                            {% for category in video.categories_array %}
+                            <a href="{{ category.category_search_url }}"
+                               tabindex="0"
+                               class="font-size-14 ">{{ category.title }}</a> |
+                            {% endfor %}
+                        </li>
+                    </ul>
+                    <div class="d-block d-lg-flex align-items-center">
+                        <h1 class="fs-3 trending-text fw-bold texture-text text-uppercase my-0 fadeInLeft animated d-inline-block"
+                            data-animation-in="fadeInLeft" data-delay-in="0.6"
+                            style="opacity: 1; animation-delay: 0.6s">
+                            {{ video.main_title|safe }}
+                        </h1>
                     </div>
-                    {% endcomment %}
-                </div>
-
-                <ul class="list-inline mx-0 p-0 d-flex align-items-center flex-wrap gap-3 movie-metalist">
-                    <!-- Movie Views  -->
-                    <li>
-                        <div class="d-flex align-items-center gap-1">
-                            <i class="ph ph-eye"></i>
-                            <span class="">84 views</span>
+                    <div class="movie-description mt-3 mb-4" id="readmore-wrapper">
+                        <p class="line-count-3 RightAnimate-two mb-0">{{ video.main_description }}</p>
+                        {% comment %}
+                        <div class="iq-blog-meta-cat-tag iq-blogtag readmore-tags">
+                            <a href="javascript:void(0);" data-bs-toggle="modal" data-bs-target="#viewMoreDataModal"
+                               class="position-relative">Read More</a>
                         </div>
-                    </li>
+                        {% endcomment %}
+                    </div>
 
-                    <!-- Movie Runtime  -->
-                    <li>
+                    <ul class="list-inline mx-0 p-0 d-flex align-items-center flex-wrap gap-3 movie-metalist">
+                        <!-- Movie Views  -->
+                        <li>
+                            <div class="d-flex align-items-center gap-1">
+                                <i class="ph ph-eye"></i>
+                                <span class="">84 views</span>
+                            </div>
+                        </li>
+
+                        <!-- Movie Runtime  -->
+                        <li>
                         <span class="d-flex align-items-center gap-1">
                           <span class="d-flex align-items-center justify-content-center"><i
                                   class="ph ph-clock"></i></span>
                             {{ video.duration_formatted }}
                         </span>
-                    </li>
+                        </li>
 
-                    <!-- Movie Releas data  -->
-                    <li>
+                        <!-- Movie Releas data  -->
+                        <li>
                     <span class="d-flex align-items-center gap-1">
                       <span class="fw-medium">{{ video.pub_date_formatted }}  </span>
                     </span>
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
 
-                <div class="d-flex align-items-center flex-wrap gap-3 gap-md-4 my-5">
-                    <div class="iq-play-button iq-button">
-                        <a href="{{ video.video_play_full_url }}"
-                           class="btn btn-primary w-100 rounded d-flex align-items-center justify-content-center gap-2 lh-1">
-                            <span><i class="ph-fill ph-play"></i></span>
-                            <span>Start Watching</span>
-                        </a>
-                    </div>
+                    <div class="d-flex align-items-center flex-wrap gap-3 gap-md-4 my-5">
+                        <div class="iq-play-button iq-button">
+                            <a href="{{ video.video_play_full_url }}"
+                               class="btn btn-primary w-100 rounded d-flex align-items-center justify-content-center gap-2 lh-1"
+                               id="start-watching">
+                                <span><i class="ph-fill ph-play"></i></span>
+                                <span>Start Watching</span>
+                            </a>
+                        </div>
 
-                    <div class="d-flex align-items-center gap-3 flex-wrap">
-                        <button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal"
-                                data-bs-target="#likeModal"
-                                id="like-toggle">
+                        <div class="d-flex align-items-center gap-3 flex-wrap">
+                            <button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal"
+                                    data-bs-target="#likeModal"
+                                    id="like-toggle">
                                 <span id="like-movies">
                                     <span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top"
                                           data-bs-title="Like">
                                         <i class="ph ph-heart heart-icon"></i>
                                     </span>
                                 </span>
-                        </button>
-                        <button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal"
-                                data-bs-target="#shareModal">
+                            </button>
+                            <button type="button" class="action-btn btn btn-secondary border" data-bs-toggle="modal"
+                                    data-bs-target="#shareModal">
                                 <span class="h-100 w-100 d-block" data-bs-toggle="tooltip" data-bs-placement="top"
                                       data-bs-title="Share">
                                     <i class="ph ph-share-network"></i>
                                 </span>
-                        </button>
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <!-- Movie Description End -->
+                    <!-- Movie Description End -->
 
-                <!-- Modals -->
-                <div class="modal fade view-more-data-modal" id="shareModal" tabindex="-1" aria-modal="true"
-                     role="dialog">
-                    <div class="modal-dialog modal-dialog-centered share-modal">
-                        <div class="modal-content">
-                            <div class="modal-header pb-0">
-                                <h5 class="modal-title" id="exampleModalLabelshare">Share</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="share-media-box">
-                                    <div class="media-box">
-                                        <a href="https://www.facebook.com/" target="_blank">
+                    <!-- Modals -->
+                    <div class="modal fade view-more-data-modal" id="shareModal" tabindex="-1" aria-modal="true"
+                         role="dialog">
+                        <div class="modal-dialog modal-dialog-centered share-modal">
+                            <div class="modal-content">
+                                <div class="modal-header pb-0">
+                                    <h5 class="modal-title" id="exampleModalLabelshare">Share</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="share-media-box">
+                                        <div class="media-box">
+                                            <a href="https://www.facebook.com/" target="_blank">
                                             <span class="image-icon">
                                                 <i class="icon-facebook-icon"></i>
                                             </span>
-                                            <span class="titles">Facebook</span>
-                                        </a>
-                                    </div>
-                                    <div class="media-box">
-                                        <a href="https://twitter.com/" target="_blank">
+                                                <span class="titles">Facebook</span>
+                                            </a>
+                                        </div>
+                                        <div class="media-box">
+                                            <a href="https://twitter.com/" target="_blank">
                                             <span class="image-icon">
                                                 <i class="icon-twitter-icon"></i>
                                             </span>
-                                            <span class="titles text-center">Twitter</span>
-                                        </a>
-                                    </div>
-                                    <div class="media-box">
-                                        <a href="https://www.linkedin.com" target="_blank">
+                                                <span class="titles text-center">Twitter</span>
+                                            </a>
+                                        </div>
+                                        <div class="media-box">
+                                            <a href="https://www.linkedin.com" target="_blank">
                                             <span class="image-icon">
                                                 <i class="icon-instagram-icon"></i>
                                             </span>
-                                            <span class="titles">Instagram</span>
-                                        </a>
-                                    </div>
-                                    <div class="media-box">
-                                        <a href="https://api.whatsapp.com" target="_blank">
+                                                <span class="titles">Instagram</span>
+                                            </a>
+                                        </div>
+                                        <div class="media-box">
+                                            <a href="https://api.whatsapp.com" target="_blank">
                                             <span class="image-icon">
                                                 <i class="icon-whatsapp-icon"></i>
                                             </span>
-                                            <span class="titles">Whatsapp</span>
-                                        </a>
+                                                <span class="titles">Whatsapp</span>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="copy-link">
-                                    <h6 id="basic-addon1">Copy Link </h6>
-                                    <div class="input-group mb-0">
-                                        <input type="text" id="copyInput" class="form-control copy-post-url"
-                                               placeholder="Username"
-                                               value="{{ video.video_full_url }}"
-                                               aria-label="Username" readonly="">
-                                        <button class="input-group-text copy-url-btn" id="copyButton"><i
-                                                class="ph ph-copy-simple"
-                                                id="copyIcon"></i></button>
+                                    <div class="copy-link">
+                                        <h6 id="basic-addon1">Copy Link </h6>
+                                        <div class="input-group mb-0">
+                                            <input type="text" id="copyInput" class="form-control copy-post-url"
+                                                   placeholder="Username"
+                                                   value="{{ video.video_full_url }}"
+                                                   aria-label="Username" readonly="">
+                                            <button class="input-group-text copy-url-btn" id="copyButton"><i
+                                                    class="ph ph-copy-simple"
+                                                    id="copyIcon"></i></button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- Modals End -->
                 </div>
-                <!-- Modals End -->
             </div>
         </div>
     </div>
+    <!-- Banner End -->
 </div>
-<!-- Banner End -->
+<!-- Video Section End -->
 
 {% include "single_video/components/detail_recommendations.html" %}
 
@@ -285,3 +296,12 @@
 </div>
 {% endcomment %}
 {% endblock content %}
+
+{% block javascript_include %}
+<script>
+    document.getElementById('start-watching').addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('video-banner').style.visibility = 'hidden';
+    });
+</script>
+{% endblock javascript_include %}
