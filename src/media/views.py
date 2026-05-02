@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from automationapp import settings
-from src.core.utils import unslugify, get_language
+from src.core.utils import unslugify, get_language, get_or_create_session
 from src.media.models import VideoItem, VideoCategory
 from src.media.services.all_videos.all_videos_service import AllVideosService
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
@@ -102,6 +102,7 @@ def search_videos_api(request: HttpRequest) -> HttpResponse:
     scroll_cursor = request.GET.get('scroll_cursor')
 
     service = SearchFullTextService()
+    get_or_create_session(request)
     result = service.search_media(query, scroll_cursor, request.session.session_key)
 
     return JsonResponse({

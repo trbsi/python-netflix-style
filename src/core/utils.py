@@ -18,6 +18,12 @@ def get_language():
     return lang.split('-')[0]
 
 
+def get_or_create_session(request):
+    if not request.session.session_key:
+        request.session.create()
+    return request.session.session_key
+
+
 def get_client_ip(request) -> str:
     x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
