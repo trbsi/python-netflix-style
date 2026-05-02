@@ -15,7 +15,7 @@ from src.media.services.manticore.manticore_service import ManticoreService
 
 
 class DumpToDatabaseService:
-    HARD_LIMIT = 100
+    HARD_LIMIT = 150
 
     def __init__(self):
         self.search_index_service = ManticoreService()
