@@ -100,9 +100,9 @@ def all_videos(request: HttpRequest) -> HttpResponse:
 def search_videos_api(request: HttpRequest) -> HttpResponse:
     query = request.GET.get('query')
     scroll_cursor = request.GET.get('scroll_cursor')
+    get_or_create_session(request)
 
     service = SearchFullTextService()
-    get_or_create_session(request)
     result = service.search_media(query, scroll_cursor, request.session.session_key)
 
     return JsonResponse({
