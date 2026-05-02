@@ -9,7 +9,10 @@ class Events(models.Model):
     metadata = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    objects = models.Manager()
+    
     class Meta:
         indexes = [
             models.Index(fields=['event_type'], name='events_event_type_idx'),
+            models.Index(fields=['video_id'], name='events_video_id_idx'),
         ]

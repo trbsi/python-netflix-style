@@ -2,7 +2,7 @@ import json
 
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
@@ -102,7 +102,7 @@ def search_videos_api(request: HttpRequest) -> HttpResponse:
     scroll_cursor = request.GET.get('scroll_cursor')
 
     service = SearchFullTextService()
-    result = service.search_media(query, scroll_cursor)
+    result = service.search_media(query, scroll_cursor, request.session.session_key)
 
     return JsonResponse({
         "videos": result.to_array(),
