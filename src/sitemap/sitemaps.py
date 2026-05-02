@@ -28,4 +28,4 @@ class VideosSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return VideoItem.objects.order_by('-id')
+        return VideoItem.objects.filter(slug_rewritten__isnull=False).order_by('-id')

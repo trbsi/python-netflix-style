@@ -13,7 +13,9 @@ class IndexNowService:
 
     def send_urls_to_indexnow(self, is_dry_run=False):
         last_id = int(cache.get(self.CACHE_KEY, 0))
-        videos: list[VideoItem] = list(VideoItem.objects.order_by('id').filter(id__gt=last_id)[:self.BATCH])
+        videos: list[VideoItem] = list(VideoItem.objects.order_by('id')
+                                       .filter(slug_rewritten__isnull=False)
+                                       .filter(id__gt=last_id)[:self.BATCH])
 
         if not videos:
             print(f"No videos found for last_id: {last_id}")
