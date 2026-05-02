@@ -166,7 +166,7 @@ USE_TZ = True
 APP_URL = env('APP_URL')
 APP_ENV = env('APP_ENV')
 APP_NAME = env('APP_NAME')
-SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True if APP_ENV == 'production' else False
 IS_IN_BETA = True
 DATE_TIME_FORMAT = '%m/%d/%Y %I:%M%p'
 
