@@ -69,12 +69,13 @@ class LocalRewriteService:
         # ).update(slug_rewritten="__PROCESSING__")
 
         counter = VideoItem.objects.filter(slug_rewritten__isnull=False).count() if count else 0
+        videos_list = list(videos.values_list("id", flat=True))
 
         return {
             "info": {
                 "count": counter
             },
-            "last_id": list(videos.values_list("id", flat=True))[-1],
+            "last_id": videos_list[-1] if videos_list else 999_999_999,
             "items": [
                 {
                     "video_id": v.id,
