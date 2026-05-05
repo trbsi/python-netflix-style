@@ -12,7 +12,9 @@ class Command(BaseCommand):
 
         if action == 'create_index':
             service.create_index()
+            print('Indexes created')
 
         if action == 'reindex':
             service.create_index()
             service.reindex_all()
+            print('Reindexing done')
