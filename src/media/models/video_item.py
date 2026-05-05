@@ -6,6 +6,7 @@ from django.db import models
 from django.urls import reverse_lazy
 from django.utils.text import slugify
 
+from src.core.utils.lang import get_active_language
 from src.core.utils.utils import full_url_for_route
 
 
@@ -67,14 +68,12 @@ class VideoItem(models.Model):
 
     @property
     def video_url(self):
-        slug = self.slug_rewritten if self.slug_rewritten else self.slug
-        kwargs = {'id': self.id, 'slug': slug}
+        kwargs = {'id': self.id, 'slug': self.main_slug}
         return reverse_lazy('media.single_video', kwargs=kwargs)
 
     @property
     def video_full_url(self):
-        slug = self.slug_rewritten if self.slug_rewritten else self.slug
-        kwargs = {'id': self.id, 'slug': slug}
+        kwargs = {'id': self.id, 'slug': self.main_slug}
         return full_url_for_route('media.single_video', kwargs=kwargs)
 
     @property
@@ -155,8 +154,30 @@ class VideoItem(models.Model):
 
     @property
     def main_title(self):
+        lang = get_active_language()
+        if lang != 'en':
+            translation = self.translations_relation.filter(language_code=lang).first()
+            if translation:
+                return translation.title
+
         return self.title_rewritten if self.title_rewritten else self.title
 
     @property
     def main_description(self):
+        lang = get_active_language()
+        if lang != 'en':
+            translation = self.translations_relation.filter(language_code=lang).first()
+            if translation:
+                return translation.description
+
         return self.description if self.description else ''
+
+    @property
+    def main_slug(self):
+        lang = get_active_language()
+        if lang != 'en':
+            translation = self.translations_relation.filter(language_code=lang).first()
+            if translation:
+                return translation.slug
+
+        return self.slug_rewritten if self.slug_rewritten else self.slug
