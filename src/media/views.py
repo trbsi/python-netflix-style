@@ -7,7 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from automationapp import settings
-from src.core.utils import unslugify, get_language, get_or_create_session
+from src.core.utils.lang import get_active_language
+from src.core.utils.utils import unslugify, get_or_create_session
 from src.media.models import VideoItem, VideoCategory
 from src.media.services.all_videos.all_videos_service import AllVideosService
 from src.media.services.categories.search_by_category_service import SearchByCategoryService
@@ -18,7 +19,7 @@ from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
-    lang = get_language()
+    lang = get_active_language()
     if settings.APP_ENV != 'production':
         service = ListMediaService()
         videos = service.home_video_list()

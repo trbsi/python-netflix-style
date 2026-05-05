@@ -4,6 +4,7 @@ import manticoresearch
 from django.db.models import QuerySet
 from manticoresearch import SearchResponse, DeleteDocumentRequest
 
+from src.core.utils.lang import get_language_codes, get_active_language
 from src.media.models import VideoItem
 from src.media.value_objects.search.search_item import SearchItem
 from src.media.value_objects.search.search_result import SearchResult
@@ -22,8 +23,9 @@ class ManticoreService:
 
     # https://manual.manticoresearch.com/Data_creation_and_modification/Updating_documents/REPLACE?client=Python
     def index_single(self, video: VideoItem):
+        lang = get_active_language()
         doc = {
-            "table": self.VIDEOS_INDEX,
+            "table": f'{self.VIDEOS_INDEX}_{lang}',
             "id": video.id,
             "doc": {
                 "title": video.main_title,
@@ -37,7 +39,10 @@ class ManticoreService:
         self.indexApi.replace(doc)
 
     def reindex_all(self):
-        self.utils.sql(f"TRUNCATE TABLE {self.VIDEOS_INDEX}")
+        codes = get_language_codes()
+        for code in codes:
+            table = f'{self.VIDEOS_INDEX}_{code}'
+            self.utils.sql(f"TRUNCATE TABLE {table}")
 
         items = []
         batch = 10_000
@@ -53,24 +58,28 @@ class ManticoreService:
             items.clear()
 
     def create_index(self):
-        self.utils.sql(f"""
-            CREATE TABLE IF NOT EXISTS {self.VIDEOS_INDEX} (
-            id BIGINT, 
-            title TEXT, 
-            thumbnail STRING, 
-            slug STRING, 
-            duration INT, 
-            categories TEXT
-        )
-        """)
+        codes = get_language_codes()
+        for code in codes:
+            table = f'{self.VIDEOS_INDEX}_{code}'
+            self.utils.sql(f"""
+                CREATE TABLE IF NOT EXISTS {table} (
+                id BIGINT, 
+                title TEXT, 
+                thumbnail STRING, 
+                slug STRING, 
+                duration INT, 
+                categories TEXT
+            )
+            """)
 
     # https://manual.manticoresearch.com/Data_creation_and_modification/Adding_documents_to_a_table/Adding_documents_to_a_real-time_table?client=Python#Bulk-adding-documents
     # https://manual.manticoresearch.com/Data_creation_and_modification/Updating_documents/REPLACE?client=Python
     def index_batch(self, rows: list[VideoItem] | QuerySet[VideoItem]):
+        lang = get_active_language()
         docs = [
             {
                 "replace": {
-                    "table": self.VIDEOS_INDEX,
+                    "table": f'{self.VIDEOS_INDEX}_{lang}',
                     "id": v.id,
                     "doc": {
                         "title": v.main_title,
@@ -87,8 +96,9 @@ class ManticoreService:
 
     # https://manual.manticoresearch.com/Searching/Pagination#Scrolling-via-JSON
     def search_index(self, to_search: str, scroll: str | None) -> SearchResult:
+        lang = get_active_language()
         query = {
-            "table": self.VIDEOS_INDEX,
+            "table": f'{self.VIDEOS_INDEX}_{lang}',
             "options": {
                 "scroll": True if scroll is None else scroll,
             },
@@ -119,11 +129,13 @@ class ManticoreService:
         return SearchResult(result.scroll, items)
 
     def delete_by_id(self, id: int) -> None:
-        document = DeleteDocumentRequest(
-            table=self.VIDEOS_INDEX,
-            id=id
-        )
-        self.indexApi.delete(document)
+        codes = get_language_codes()
+        for code in codes:
+            document = DeleteDocumentRequest(
+                table=f'{self.VIDEOS_INDEX}_{code}',
+                id=id
+            )
+            self.indexApi.delete(document)
 
     def delete_by_ids(self, ids: list) -> None:
         for id in ids:

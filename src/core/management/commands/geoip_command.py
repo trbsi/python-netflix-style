@@ -10,8 +10,8 @@ from django.utils import timezone
 from requests import Response
 
 from automationapp import settings
-from src.core.utils import get_ip_data
 from src.core.management.commands.base_command import BaseCommand
+from src.core.utils.utils import get_ip_data
 
 
 class Command(BaseCommand):
@@ -22,7 +22,7 @@ class Command(BaseCommand):
         ip = options['ip']
 
         if ip:
-            result = get_ip_data(ip,None )
+            result = get_ip_data(ip, None)
             print(result.__dict__)
         else:
             os.makedirs(settings.IP_DATABASE_BASE_PATH, exist_ok=True)

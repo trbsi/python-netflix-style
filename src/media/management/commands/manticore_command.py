@@ -14,4 +14,5 @@ class Command(BaseCommand):
             service.create_index()
 
         if action == 'reindex':
+            service.create_index()
             service.reindex_all()

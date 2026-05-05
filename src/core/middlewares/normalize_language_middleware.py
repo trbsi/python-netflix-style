@@ -1,26 +1,30 @@
-from threading import settrace
-
+from django.conf import settings
 from django.utils import translation
 
-from automationapp import settings
-from src.core.utils import get_ip_data
+from src.core.utils.utils import get_ip_data
 
 
 class NormalizeLanguageMiddleware:
-    GEOIP_ENABLED=False
+    GEOIP_ENABLED = True
 
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        lang = translation.get_language_from_request(request)
+        # Respect explicit user choice (cookie)
+        lang = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
 
-        if lang and '-' in lang:
-            lang = lang.split('-')[0]  # en-gb → en
-        elif self.GEOIP_ENABLED:
-            ip_data = get_ip_data(None,request)
+        # GEOIP fallback
+        if not lang and self.GEOIP_ENABLED:
+            ip_data = get_ip_data(None, request)
             lang = ip_data.get_language()
-        else:
+
+        # Normalize
+        if lang and '-' in lang:
+            lang = lang.split('-')[0]
+
+        # Final fallback
+        if not lang:
             lang = settings.LANGUAGE_CODE
 
         translation.activate(lang)

@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.utils.text import slugify
 from django.utils.timezone import localtime
 
-from src.core.utils import full_url_for_route
+from src.core.utils.utils import full_url_for_route
 
 
 class VideoItem(models.Model):

@@ -2,7 +2,7 @@ from django.shortcuts import redirect
 from django.urls.base import reverse_lazy, resolve
 
 from src.age_verification.models import AgeVerificationCountry
-from src.core.utils import get_ip_data
+from src.core.utils.utils import get_ip_data
 
 
 class AgeVerificationMiddleware:

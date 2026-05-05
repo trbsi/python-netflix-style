@@ -1,6 +1,6 @@
 from django.core.paginator import Paginator
 
-from src.core.utils import format_datetime
+from src.core.utils.utils import format_datetime
 from src.inbox.models import Message
 
 

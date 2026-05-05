@@ -9,7 +9,7 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 from tqdm import tqdm
 
-from src.core.utils import safe_get
+from src.core.utils.utils import safe_get
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 from src.media.services.manticore.manticore_service import ManticoreService
 

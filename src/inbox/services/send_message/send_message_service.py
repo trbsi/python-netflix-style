@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from src.core.utils import format_datetime
+from src.core.utils.utils import format_datetime
 from src.inbox.models import Message, Conversation
 from src.user.models import User
 

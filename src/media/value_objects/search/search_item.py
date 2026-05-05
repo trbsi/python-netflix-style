@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 
-from src.core.utils import unslugify
+from src.core.utils.utils import unslugify
 
 
 class SearchItem:
