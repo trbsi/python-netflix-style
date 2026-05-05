@@ -133,12 +133,12 @@ def categories_search_api(request: HttpRequest) -> HttpResponse:
 def get_title_rewritten_api(request: HttpRequest) -> JsonResponse:
     get = request.GET
     limit = int(get.get("limit", 10))
+    last_id = int(get.get("last_id", 0))
+    lang = get.get("lang", "en")
     count = bool(get.get("count")) if get.get("count") else False
-    latest = bool(get.get("latest")) if get.get("latest") else False
-    category = bool(get.get("by_category")) if get.get("by_category") else False
 
     service = LocalRewriteService()
-    result = service.get_videos_for_rewrite(limit, count, latest, category)
+    result = service.get_videos_for_rewrite(limit, count, lang, last_id)
 
     return JsonResponse(result)
 

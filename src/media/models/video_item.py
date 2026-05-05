@@ -9,6 +9,16 @@ from django.utils.text import slugify
 from src.core.utils.utils import full_url_for_route
 
 
+class VideoItemQuerySet(models.QuerySet):
+    def with_relations(self):
+        return self.prefetch_related("translations_relation")
+
+
+class VideoItemManager(models.Manager):
+    def get_queryset(self):
+        return VideoItemQuerySet(self.model, using=self._db).with_relations()
+
+
 class VideoItem(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.TextField()
@@ -29,7 +39,7 @@ class VideoItem(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = models.Manager()
+    objects = VideoItemManager()
 
     class Meta:
         indexes = [
