@@ -46,7 +46,7 @@ class ManticoreService:
 
         items = []
         batch = 10_000
-        for item in VideoItem.objects.all().iterator(batch_size=batch):
+        for item in VideoItem.objects.all().iterator(chunk_size=batch):
             items.append(item)
 
             if len(items) >= batch:
