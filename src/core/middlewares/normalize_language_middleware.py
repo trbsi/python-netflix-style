@@ -1,4 +1,7 @@
+import re
+
 from django.conf import settings
+from django.http import HttpRequest
 from django.utils import translation
 
 from src.core.utils.utils import get_ip_data
@@ -7,10 +10,31 @@ from src.core.utils.utils import get_ip_data
 class NormalizeLanguageMiddleware:
     GEOIP_ENABLED = True
 
+    BOT_PATTERNS = [
+        r"bot",
+        r"crawl",
+        r"spider",
+        r"slurp",
+        r"facebookexternalhit",
+        r"twitterbot",
+        r"linkedinbot",
+        r"preview",
+        r"fetch",
+    ]
+
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
+
+        # FORCE ENGLISH FOR BOTS
+        if self.is_bot(request):
+            lang = "en"
+            translation.activate(lang)
+            request.LANGUAGE_CODE = lang
+            return self.get_response(request)
+
+        # Normal users
         # Respect explicit user choice (cookie)
         lang = request.COOKIES.get(settings.LANGUAGE_COOKIE_NAME)
 
@@ -31,3 +55,7 @@ class NormalizeLanguageMiddleware:
         request.LANGUAGE_CODE = lang
 
         return self.get_response(request)
+
+    def is_bot(self, request: HttpRequest):
+        user_agent = (request.META.get("HTTP_USER_AGENT") or "").lower()
+        return any(re.search(pattern, user_agent) for pattern in self.BOT_PATTERNS)
