@@ -1,10 +1,10 @@
 import hashlib
 import random
+from datetime import timezone
 
 from django.db import models
 from django.urls import reverse_lazy
 from django.utils.text import slugify
-from django.utils.timezone import localtime
 
 from src.core.utils.utils import full_url_for_route
 
@@ -96,7 +96,14 @@ class VideoItem(models.Model):
 
     @property
     def upload_date_iso(self):
-        return localtime(self.created_at).isoformat()
+        dt = self.created_at
+
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+
+        dt = dt.astimezone(timezone.utc).replace(microsecond=0)
+
+        return dt.isoformat()
 
     @property
     def rating(self):
