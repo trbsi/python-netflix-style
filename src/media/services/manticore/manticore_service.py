@@ -46,7 +46,8 @@ class ManticoreService:
 
         items = []
         batch = 10_000
-        for item in VideoItem.objects.all().iterator(chunk_size=batch):
+        videos = VideoItem.objects.prefetch_related('translations_relation').iterator(chunk_size=batch)
+        for item in videos:
             items.append(item)
 
             if len(items) >= batch:
@@ -76,22 +77,33 @@ class ManticoreService:
     # https://manual.manticoresearch.com/Data_creation_and_modification/Updating_documents/REPLACE?client=Python
     def index_batch(self, rows: list[VideoItem] | QuerySet[VideoItem]):
         lang = get_active_language()
-        docs = [
-            {
+        docs = []
+        for video in rows:
+            translation = None
+
+            if lang != "en":
+                translation = video.translations_relation.filter(language_code=lang).first()
+                if not translation:
+                    continue
+
+            title = video.main_title if lang == "en" else translation.title
+            slug = video.slug if lang == "en" else translation.slug
+
+            tmp = {
                 "replace": {
                     "table": f'{self.VIDEOS_INDEX}_{lang}',
-                    "id": v.id,
+                    "id": video.id,
                     "doc": {
-                        "title": v.main_title,
-                        "slug": v.slug,
-                        "thumbnail": v.thumb_large,
-                        "duration": v.duration,
-                        "categories": ', '.join(v.category_slugs()),
+                        "title": title,
+                        "slug": slug,
+                        "thumbnail": video.thumb_large,
+                        "duration": video.duration,
+                        "categories": ', '.join(video.category_slugs()),
                     }
                 }
             }
-            for v in rows
-        ]
+            docs.append(tmp)
+
         self.indexApi.bulk('\n'.join(map(json.dumps, docs)))
 
     # https://manual.manticoresearch.com/Searching/Pagination#Scrolling-via-JSON

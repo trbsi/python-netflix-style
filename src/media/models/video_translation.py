@@ -5,7 +5,7 @@ class VideoTranslation(models.Model):
     video = models.ForeignKey(
         'VideoItem',
         on_delete=models.CASCADE,
-        related_name='translations'
+        related_name='translations_relation'
     )
     # language code instead of FK (e.g. 'en', 'hr', 'es')
     language_code = models.CharField(max_length=10)

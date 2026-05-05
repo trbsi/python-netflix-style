@@ -161,6 +161,7 @@ SUPPORTED_LANGUAGES = [
     ('hr', 'Croatian'),
     ('sr', 'Serbian'),
     ('es', 'Spanish'),
+    ('ru', 'Russian'),
 ]
 TIME_ZONE = 'UTC'
 USE_I18N = True
