@@ -22,10 +22,10 @@ class ManticoreService:
         self.searchApi = manticoresearch.SearchApi(client)
 
     # https://manual.manticoresearch.com/Data_creation_and_modification/Updating_documents/REPLACE?client=Python
+    # NOT USED
     def index_single(self, video: VideoItem):
-        lang = get_active_language()
         doc = {
-            "table": f'{self.VIDEOS_INDEX}_{lang}',
+            "table": self._table(),
             "id": video.id,
             "doc": {
                 "title": video.main_title,
@@ -41,8 +41,7 @@ class ManticoreService:
     def reindex_all(self):
         codes = get_language_codes()
         for code in codes:
-            table = f'{self.VIDEOS_INDEX}_{code}'
-            self.utils.sql(f"TRUNCATE TABLE {table}")
+            self.utils.sql(f"TRUNCATE TABLE {self._table(code)}")
 
         items = []
         batch = 10_000
@@ -61,9 +60,8 @@ class ManticoreService:
     def create_index(self):
         codes = get_language_codes()
         for code in codes:
-            table = f'{self.VIDEOS_INDEX}_{code}'
             self.utils.sql(f"""
-                CREATE TABLE IF NOT EXISTS {table} (
+                CREATE TABLE IF NOT EXISTS {self._table(code)} (
                 id BIGINT, 
                 title TEXT, 
                 thumbnail STRING, 
@@ -91,7 +89,7 @@ class ManticoreService:
 
             tmp = {
                 "replace": {
-                    "table": f'{self.VIDEOS_INDEX}_{lang}',
+                    "table": self._table(lang),
                     "id": video.id,
                     "doc": {
                         "title": title,
@@ -108,9 +106,8 @@ class ManticoreService:
 
     # https://manual.manticoresearch.com/Searching/Pagination#Scrolling-via-JSON
     def search_index(self, to_search: str, scroll: str | None) -> SearchResult:
-        lang = get_active_language()
         query = {
-            "table": f'{self.VIDEOS_INDEX}_{lang}',
+            "table": self._table(),
             "options": {
                 "scroll": True if scroll is None else scroll,
             },
@@ -144,7 +141,7 @@ class ManticoreService:
         codes = get_language_codes()
         for code in codes:
             document = DeleteDocumentRequest(
-                table=f'{self.VIDEOS_INDEX}_{code}',
+                table=self._table(code),
                 id=id
             )
             self.indexApi.delete(document)
@@ -152,3 +149,9 @@ class ManticoreService:
     def delete_by_ids(self, ids: list) -> None:
         for id in ids:
             self.delete_by_id(id)
+
+    def _table(self, lang: str | None = None):
+        if not lang:
+            lang = get_active_language()
+
+        return f'{self.VIDEOS_INDEX}_{lang}'
