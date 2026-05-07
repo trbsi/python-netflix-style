@@ -29,6 +29,14 @@ class LocalRewriteService:
                 continue
 
             if lang is not None and lang != 'en':
+                if lang == 'hr':
+                    VideoTranslation.objects.create(
+                        video=video,
+                        language_code='sr',
+                        title=title,
+                        slug=slugify(title)[:slug_translation.max_length],
+                        description=description,
+                    )
                 VideoTranslation.objects.create(
                     video=video,
                     language_code=lang,
