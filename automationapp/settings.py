@@ -124,6 +124,14 @@ if env('DB_ENGINE') == 'mysql':
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             }
+        },
+        "postgresql": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.getenv("POSTGRES_DB"),
+            "USER": os.getenv("POSTGRES_USER"),
+            "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+            "HOST": os.getenv("DATABASE_HOST", "postgres"),
+            "PORT": os.getenv("DATABASE_PORT", "5432"),
         }
     }
 else:
@@ -133,6 +141,7 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+DATABASE_ROUTERS = ["src.core.database.database_router.DatabaseRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
