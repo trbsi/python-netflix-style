@@ -95,27 +95,12 @@ services:
       - automationapp-net
 
   postgres:
-    image: postgres:17
-    container_name: automationapp-postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    volumes:
-      - automationapp_postgres_data:/var/lib/postgresql/data
-    networks:
-      - automationapp-net
-
-  pgvector:
     image: pgvector/pgvector:pg16
     container_name: automationapp-pgvector
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    depends_on:
-      - postgres
     ports:
       - "5432:5432"
     volumes:

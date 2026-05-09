@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'src.chat.apps.ChatConfig',
     'src.inbox.apps.InboxConfig',
     'src.events.apps.EventsConfig',
+    'src.discovery.apps.DiscoveryConfig',
 
     'django.contrib.sitemaps',
     'django_celery_beat',
