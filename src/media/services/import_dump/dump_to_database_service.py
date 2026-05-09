@@ -75,8 +75,8 @@ class DumpToDatabaseService:
 
                     if db_category:
                         if db_category.id not in category_counts:
-                            category_counts[db_category.id] = VideoCategoryPivot.objects.filter(
-                                category=db_category).count()
+                            category_counts[db_category.id] = (VideoCategoryPivot.objects
+                                                               .filter(category=db_category).count())
 
                         if category_counts[db_category.id] >= self.HARD_LIMIT:
                             continue
@@ -289,7 +289,7 @@ class DumpToDatabaseService:
             return ''
         categories = categories.split(fields_map['categories_split_by'])
         categories = [cat for cat in categories if len(cat) < 20 and len(cat) > 0]
-        categories = categories[:4]
+        categories = categories[:4]  # take max 4 categories
         categories = [cat.replace('_', ' ').replace('-', ' ').title() for cat in categories]
         categories = ','.join(categories)
         return categories
