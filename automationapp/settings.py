@@ -58,8 +58,6 @@ INSTALLED_APPS = [
     'src.myadmin.apps.AdminConfig',
     'src.sitemap.apps.SitemapConfig',
     'src.age_verification.apps.AgeVerificationConfig',
-    'src.chat.apps.ChatConfig',
-    'src.inbox.apps.InboxConfig',
     'src.events.apps.EventsConfig',
     'src.discovery.apps.DiscoveryConfig',
 
@@ -284,22 +282,6 @@ SITEMAPS_DIR = os.path.join(BASE_DIR, 'sitemaps')
 
 # Sites
 ENABLED_SITES = env('ENABLED_SITES').split(',')
-
-# --------- CHAT -----------
-REMOTE_LLM = env.bool('REMOTE_LLM')
-DEFAULT_BOT = env('DEFAULT_BOT')
-TELEGRAM_BOTS = {
-    'female_1': {
-        'id': 'female_1',
-        'name': 'Female Svetlana',
-        'token': env('TELEGRAM_FEMALE_1_TOKEN')
-    },
-    'peachka': {
-        'id': 'peachka',
-        'name': 'Official Peachka',
-        'token': env('TELEGRAM_PEACHKA_TOKEN')
-    },
-}
 
 # Grok
 GROK_API_KEY = env('GROK_API_KEY')
