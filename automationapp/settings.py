@@ -129,8 +129,8 @@ if env('DB_ENGINE') == 'mysql':
             "NAME": os.getenv("POSTGRES_DB"),
             "USER": os.getenv("POSTGRES_USER"),
             "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-            "HOST": os.getenv("DATABASE_HOST", "postgres"),
-            "PORT": os.getenv("DATABASE_PORT", "5432"),
+            "HOST": os.getenv("POSTGRES_DATABASE_HOST", "postgres"),
+            "PORT": os.getenv("POSTGRES_DATABASE_PORT", "5432"),
         }
     }
 else:
