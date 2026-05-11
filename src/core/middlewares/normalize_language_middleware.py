@@ -9,7 +9,7 @@ from src.core.utils.utils import get_ip_data
 
 
 class NormalizeLanguageMiddleware:
-    GEOIP_ENABLED = True
+    GEOIP_ENABLED = False
 
     BOT_PATTERNS = [
         r"bot",
