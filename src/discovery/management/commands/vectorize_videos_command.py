@@ -3,7 +3,7 @@ from src.discovery.services.vectorization.vectorize_videos_service import Vector
 
 
 class Command(BaseCommand):
-    help = "Test pgvector similarity with sample embeddings"
+    help = "Transform videos to vectorize embeddings"
 
     def handle(self, *args, **options):
         service = VectorizeVideosService()
