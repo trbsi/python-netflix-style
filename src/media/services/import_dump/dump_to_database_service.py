@@ -291,7 +291,7 @@ class DumpToDatabaseService:
         categories = categories.split(fields_map['categories_split_by'])
         categories = [cat for cat in categories if len(cat) < 20 and len(cat) > 0]
         categories = categories[:4]  # take max 4 categories
-        categories = [cat.replace('_', ' ').replace('-', ' ').title() for cat in categories]
+        categories = [cat.strip().replace('_', ' ').replace('-', ' ').title() for cat in categories]
         categories = ','.join(categories)
         return categories
 
@@ -300,6 +300,7 @@ class DumpToDatabaseService:
         if not tags:
             return ''
         tags = tags.split(fields_map['tags_split_by'])
+        tags = [tmp_tag.strip() for tmp_tag in tags]
         tags = ','.join(tags)
         return tags
 
