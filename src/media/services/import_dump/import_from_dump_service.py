@@ -44,6 +44,7 @@ class ImportFromDumpService:
             self.fields_map = {
                 'fields_split_by': '|',
                 'categories_split_by': ';',
+                'tags_split_by': ';',
                 'categories': 5,
                 'title': 3,
                 'duration': 7,
@@ -61,6 +62,7 @@ class ImportFromDumpService:
             self.fields_map = {
                 'fields_split_by': '|',
                 'categories_split_by': ',',
+                'tags_split_by': ',',
                 'categories': 4,
                 'title': 3,
                 'duration': 2,
@@ -78,6 +80,7 @@ class ImportFromDumpService:
             self.fields_map = {
                 'fields_split_by': ';',
                 'categories_split_by': ',',
+                'tags_split_by': ',',
                 'categories': 8,
                 'title': 1,
                 'duration': 2,

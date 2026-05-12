@@ -52,6 +52,7 @@ class DumpToDatabaseService:
                 try:
                     embed_code = self._embed_code(site, fields, fields_map).strip()
                     categories = self._get_categories(fields, fields_map)
+                    tags = self._get_tags(fields, fields_map)
                     external_created_at = self._extract_created_at(site, fields, fields_map)
                     duration = self._duration(site, fields, fields_map)
                     external_id = self._get_external_id(site, fields, fields_map)
@@ -93,7 +94,7 @@ class DumpToDatabaseService:
                         thumb_small=fields[fields_map['thumb_small']],
                         thumb_large=fields[fields_map['thumb_large']],
                         embed_code=embed_code,
-                        tags=fields[fields_map['tags']],
+                        tags=tags,
                         categories=categories,
                         site=site,
                         external_id=external_id,
@@ -293,6 +294,14 @@ class DumpToDatabaseService:
         categories = [cat.replace('_', ' ').replace('-', ' ').title() for cat in categories]
         categories = ','.join(categories)
         return categories
+
+    def _get_tags(self, fields: list, fields_map: dict) -> str:
+        tags = safe_get(fields, fields_map['tags'])
+        if not tags:
+            return ''
+        tags = tags.split(fields_map['tags_split_by'])
+        tags = ','.join(tags)
+        return tags
 
     def _duration(self, site, fields: list, fields_map: dict) -> str:
         duration = safe_get(fields, fields_map['duration'])

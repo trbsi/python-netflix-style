@@ -78,36 +78,36 @@ services:
       - automationapp_mysql_data:/var/lib/mysql
     networks: [ automationapp-net ]
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: automationapp-pgadmin
-    restart: unless-stopped
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-
-      VIRTUAL_HOST: ${PGADMIN_HOST_DOMAIN}
-      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST_PGADMIN}
-      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
-    depends_on:
-      - postgres
-    networks:
-      - automationapp-net
-
-  postgres:
-    image: pgvector/pgvector:pg16
-    container_name: automationapp-pgvector
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
-    volumes:
-      - automationapp_postgres_data:/var/lib/postgresql/data
-      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - automationapp-net
+  #  pgadmin:
+  #    image: dpage/pgadmin4
+  #    container_name: automationapp-pgadmin
+  #    restart: unless-stopped
+  #    environment:
+  #      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #
+  #      VIRTUAL_HOST: ${PGADMIN_HOST_DOMAIN}
+  #      LETSENCRYPT_HOST: ${LETSENCRYPT_HOST_PGADMIN}
+  #      LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}
+  #    depends_on:
+  #      - postgres
+  #    networks:
+  #      - automationapp-net
+  #
+  #  postgres:
+  #    image: pgvector/pgvector:pg16
+  #    container_name: automationapp-pgvector
+  #    environment:
+  #      POSTGRES_USER: ${POSTGRES_USER}
+  #      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #      POSTGRES_DB: ${POSTGRES_DB}
+  #    ports:
+  #      - "5432:5432"
+  #    volumes:
+  #      - automationapp_postgres_data:/var/lib/postgresql/data
+  #      - ./postgresql/init.sql:/docker-entrypoint-initdb.d/init.sql
+  #    networks:
+  #      - automationapp-net
 
   redis:
     image: redis:8
@@ -184,5 +184,5 @@ volumes:
   automationapp_redis_data:
   automationapp_certs:
   automationapp_sitemaps:
-  automationapp_postgres_data:
+#  automationapp_postgres_data:
 

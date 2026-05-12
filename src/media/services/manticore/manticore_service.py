@@ -67,7 +67,8 @@ class ManticoreService:
                 thumbnail STRING, 
                 slug STRING, 
                 duration INT, 
-                categories TEXT
+                categories TEXT,
+                tags TEXT
             )
             """)
 
@@ -97,6 +98,7 @@ class ManticoreService:
                         "thumbnail": video.thumb_large,
                         "duration": video.duration,
                         "categories": ', '.join(video.category_slugs()),
+                        "tags": video.tags,
                     }
                 }
             }
@@ -105,21 +107,24 @@ class ManticoreService:
         self.indexApi.bulk('\n'.join(map(json.dumps, docs)))
 
     # https://manual.manticoresearch.com/Searching/Pagination#Scrolling-via-JSON
-    def search_index(self, to_search: str, scroll: str | None) -> SearchResult:
+    def search_index(self, to_search: str, scroll: str | None, limit: int = 50) -> SearchResult:
         query = {
             "table": self._table(),
             "options": {
                 "scroll": True if scroll is None else scroll,
             },
             "query": {
-                "match": {"title": to_search}
+                "match": {
+                    "query": to_search,
+                    "fields": ["tags", "categories"],
+                }
             },
             "sort": [
                 {"_score": {"order": "desc"}},
                 {"id": {"order": "asc"}}
             ],
             "track_scores": True,
-            "limit": 50
+            "limit": limit
         }
         result: SearchResponse = self.searchApi.search(query)
         hits = result.hits.hits

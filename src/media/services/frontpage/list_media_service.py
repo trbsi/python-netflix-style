@@ -1,6 +1,7 @@
 from django.core.cache import cache
 
 from src.media.models import VideoItem
+from src.media.services.manticore.manticore_service import ManticoreService
 
 
 class ListMediaService:
@@ -15,10 +16,12 @@ class ListMediaService:
         used_ids.update(v.id for v in videos)
         return videos
 
-    def home_video_list(self) -> dict:
+    def home_video_list(self, tags: str | None = None) -> dict:
         used_ids = set()
         cache_ids = cache.get('frontpage_ids')
-        if cache_ids:
+        if tags:
+            ManticoreService()
+        elif cache_ids:
             base_qs = VideoItem.objects.filter(id__in=cache_ids).order_by('?')
         else:
             base_qs = VideoItem.objects.order_by('-id')
@@ -79,9 +82,18 @@ class ListMediaService:
 
         return context
 
-    def single_video_list(self) -> dict:
+    def single_video_list(self, video: VideoItem) -> dict:
         used_ids = set()
-        base_qs = VideoItem.objects.order_by("-id").filter(slug_rewritten__isnull=False)
+        video_ids = (
+            video.video_category_links
+            .order_by('-video_id')
+            .values_list('video_id', flat=True)[:300]
+        )
+        base_qs = (
+            VideoItem.objects.order_by("-id")
+            .filter(slug_rewritten__isnull=False)
+            .filter(id__in=video_ids)
+        )
 
         context = {
             "recommended": self._get_videos(
