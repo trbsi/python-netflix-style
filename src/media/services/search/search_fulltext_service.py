@@ -9,4 +9,4 @@ class SearchFullTextService:
 
     def search_media(self, query: str, scroll: str | None, session_id: str | None) -> SearchResult:
         enqueue_search_event(session_id, query)
-        return self.search_index_service.search_index(query, scroll)
+        return self.search_index_service.search_videos(query, scroll)

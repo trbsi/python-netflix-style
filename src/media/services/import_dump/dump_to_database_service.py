@@ -299,8 +299,7 @@ class DumpToDatabaseService:
         if not tags:
             return ''
         tags = tags.split(fields_map['tags_split_by'])
-        tags = [tmp_tag.strip() for tmp_tag in tags]
-        tags = [slugify(tag) for tag in tags]
+        tags = [slugify(tmp_tag.strip()) for tmp_tag in tags]
         tags = ','.join(tags)
         return tags
 

@@ -24,6 +24,6 @@ class SearchItem:
                 {
                     "title": category.strip(),
                     "slug": unslugify(category.strip()),
-                } for category in self.categories.split(', ')
+                } for category in self.categories.split(',')
             ]
         }

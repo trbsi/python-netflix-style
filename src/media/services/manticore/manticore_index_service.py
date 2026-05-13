@@ -77,17 +77,18 @@ class ManticoreIndexService(ManticoreBaseService):
                 }
             })
 
-            doc_id = int(
-                hashlib.md5(
-                    f"{video.id}:{tag}".encode()
-                ).hexdigest()[:15],
-                16
-            )
-            docs.append({
-                "replace": {
-                    "id":
-                }
-            })
+            for tag in video.categories_and_tags():
+                doc_id = int(hashlib.md5(f"{video.id}:{tag}".encode()).hexdigest()[:15], 16)
+                docs.append({
+                    "replace": {
+                        "table": self._video_tag_table(lang),
+                        "id": doc_id,
+                        "doc": {
+                            "video_id": video.id,
+                            "tag": tag,
+                        }
+                    }
+                })
 
         self.indexApi.bulk('\n'.join(map(json.dumps, docs)))
 

@@ -7,7 +7,7 @@ from src.media.value_objects.search.search_result import SearchResult
 
 class ManticoreSearchService(ManticoreBaseService):
     # https://manual.manticoresearch.com/Searching/Pagination#Scrolling-via-JSON
-    def search_index(self, search_term: str, scroll: str | None, limit: int = 50) -> SearchResult:
+    def search_videos(self, search_term: str, scroll: str | None = None, limit: int = 50) -> SearchResult:
         query = {
             "table": self._video_table(),
             "options": {
@@ -41,3 +41,21 @@ class ManticoreSearchService(ManticoreBaseService):
             ))
 
         return SearchResult(result.scroll, items)
+
+    def search_tags(self, tags: list, limit: int = 300) -> list:
+        query = {
+            "table": self._video_tag_table(),
+            "query": {
+                "bool": {
+                    "should": [
+                        {"equals": {"tag": tag}} for tag in tags
+                    ]
+                }
+            },
+            "limit": limit
+        }
+
+        result: SearchResponse = self.searchApi.search(query)
+        hits = result.hits.hits
+        video_ids = list(set([hit.source['video_id'] for hit in hits]))
+        return video_ids

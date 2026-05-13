@@ -18,12 +18,13 @@ class ListMediaService:
 
     def home_video_list(self, tags: str | None = None) -> dict:
         used_ids = set()
-        cache_ids = cache.get('frontpage_ids')
+        video_ids = cache.get('frontpage_ids', None)
         if tags:
             service = ManticoreSearchService()
-            service.search_index(search_term=tags)
-        elif cache_ids:
-            base_qs = VideoItem.objects.filter(id__in=cache_ids).order_by('?')
+            video_ids = service.search_tags(tags=tags.split(','))
+
+        if video_ids:
+            base_qs = VideoItem.objects.filter(id__in=video_ids).order_by('?')
         else:
             base_qs = VideoItem.objects.order_by('-id')
 
