@@ -46,10 +46,8 @@ class ManticoreSearchService(ManticoreBaseService):
         query = {
             "table": self._video_tag_table(),
             "query": {
-                "bool": {
-                    "should": [
-                        {"equals": {"tag": tag}} for tag in tags
-                    ]
+                "in": {
+                    "tag": tags
                 }
             },
             "limit": limit
