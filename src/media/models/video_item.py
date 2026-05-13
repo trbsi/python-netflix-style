@@ -66,6 +66,11 @@ class VideoItem(models.Model):
     def get_absolute_url(self):
         return self.video_url
 
+    def categories_and_tags(self):
+        tags = self.tags.split(",")
+        categories = self.categories.split(",")
+        tags
+
     @property
     def video_url(self):
         kwargs = {'id': self.id, 'slug': self.main_slug}

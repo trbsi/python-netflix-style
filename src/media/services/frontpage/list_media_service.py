@@ -1,7 +1,7 @@
 from django.core.cache import cache
 
 from src.media.models import VideoItem
-from src.media.services.manticore.manticore_service import ManticoreService
+from src.media.services.manticore.manticore_search_service import ManticoreSearchService
 
 
 class ListMediaService:
@@ -20,7 +20,8 @@ class ListMediaService:
         used_ids = set()
         cache_ids = cache.get('frontpage_ids')
         if tags:
-            ManticoreService()
+            service = ManticoreSearchService()
+            service.search_index(search_term=tags)
         elif cache_ids:
             base_qs = VideoItem.objects.filter(id__in=cache_ids).order_by('?')
         else:

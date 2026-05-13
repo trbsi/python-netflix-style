@@ -5,12 +5,12 @@ from django.db.models import Max
 from src.media.models import VideoItem
 from src.media.services.import_dump.download_zip_service import DownloadZipService
 from src.media.services.import_dump.dump_to_database_service import DumpToDatabaseService
-from src.media.services.manticore.manticore_service import ManticoreService
+from src.media.services.manticore.manticore_schema_service import ManticoreSchemaService
 
 
 class ImportFromDumpService:
     def __init__(self):
-        self.search_index_service = ManticoreService()
+        self.search_index_service = ManticoreSchemaService()
         self.dump_to_database_service = DumpToDatabaseService()
         self.download_zip_service = DownloadZipService()
 
@@ -24,7 +24,7 @@ class ImportFromDumpService:
             import_all
         )
 
-        self.search_index_service.create_index()
+        self.search_index_service.create_indexes()
         total_imported = self.dump_to_database_service.save_to_database(
             site,
             self.fields_map,

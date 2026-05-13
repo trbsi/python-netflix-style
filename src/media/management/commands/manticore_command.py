@@ -1,5 +1,6 @@
 from src.core.management.commands.base_command import BaseCommand
-from src.media.services.manticore.manticore_service import ManticoreService
+from src.media.services.manticore.manticore_index_service import ManticoreIndexService
+from src.media.services.manticore.manticore_schema_service import ManticoreSchemaService
 
 
 class Command(BaseCommand):
@@ -8,13 +9,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         action = options['action']
-        service = ManticoreService()
+        schema_service = ManticoreSchemaService()
 
         if action == 'create_index':
-            service.create_index()
+            schema_service.create_indexes()
             print('Indexes created')
 
         if action == 'reindex':
-            service.create_index()
-            service.reindex_all()
+            schema_service.create_indexes()
+            ManticoreIndexService().reindex_all()
             print('Reindexing done')

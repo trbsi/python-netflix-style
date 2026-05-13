@@ -11,14 +11,14 @@ from tqdm import tqdm
 
 from src.core.utils.utils import safe_get
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
-from src.media.services.manticore.manticore_service import ManticoreService
+from src.media.services.manticore.manticore_index_service import ManticoreIndexService
 
 
 class DumpToDatabaseService:
     HARD_LIMIT = 150
 
     def __init__(self):
-        self.search_index_service = ManticoreService()
+        self.search_index_service = ManticoreIndexService()
         self.total_imported = 0
 
     def save_to_database(self, site: str, fields_map: dict, csv_file_path: str) -> int:
@@ -290,7 +290,6 @@ class DumpToDatabaseService:
             return ''
         categories = categories.split(fields_map['categories_split_by'])
         categories = [cat for cat in categories if len(cat) < 20 and len(cat) > 0]
-        categories = categories[:4]  # take max 4 categories
         categories = [cat.strip().replace('_', ' ').replace('-', ' ').title() for cat in categories]
         categories = ','.join(categories)
         return categories
@@ -301,6 +300,7 @@ class DumpToDatabaseService:
             return ''
         tags = tags.split(fields_map['tags_split_by'])
         tags = [tmp_tag.strip() for tmp_tag in tags]
+        tags = [slugify(tag) for tag in tags]
         tags = ','.join(tags)
         return tags
 

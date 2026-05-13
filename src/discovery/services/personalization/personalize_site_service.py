@@ -35,8 +35,9 @@ class PersonalizeSiteService():
             nlp = spacy.load(model_name)
 
         doc = nlp(text)
+        # lemma is basically singular form of word
         tokens = [
-            token.text
+            token.lemma_
             for token in doc
             if not token.is_stop
         ]

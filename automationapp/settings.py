@@ -166,10 +166,10 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en'
 SUPPORTED_LANGUAGES = [
     ('en', 'English'),
-    ('hr', 'Croatian'),
-    ('sr', 'Serbian'),
-    ('es', 'Spanish'),
-    ('ru', 'Russian'),
+    # ('hr', 'Croatian'),
+    # ('sr', 'Serbian'),
+    # ('es', 'Spanish'),
+    # ('ru', 'Russian'),
 ]
 TIME_ZONE = 'UTC'
 USE_I18N = True
