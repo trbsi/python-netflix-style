@@ -67,7 +67,9 @@ def single_video(request: HttpRequest, id: int, slug: str) -> HttpResponse:
 
 @require_GET
 def categories(request: HttpRequest) -> HttpResponse:
-    context = {'categories': VideoCategory.objects.all()}
+    context = {
+        'categories': VideoCategory.objects.filter(slug__in=settings.FIXED_CATEGORIES).all()
+    }
     return render(request, 'categories/categories.html', context)
 
 

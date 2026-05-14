@@ -288,3 +288,7 @@ GROK_API_KEY = env('GROK_API_KEY')
 
 # IndexNow
 INDEXNOW_API_KEY = env('INDEXNOW_KEY')
+
+# Fixed content
+FIXED_CATEGORIES = ['milf', 'teen', 'blowjob']
+FIXED_HARD_LIMIT_PER_CATEGORY = 150

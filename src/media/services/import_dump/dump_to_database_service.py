@@ -9,14 +9,13 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 from tqdm import tqdm
 
+from automationapp import settings
 from src.core.utils.utils import safe_get
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 from src.media.services.manticore.manticore_index_service import ManticoreIndexService
 
 
 class DumpToDatabaseService:
-    HARD_LIMIT = 150
-
     def __init__(self):
         self.search_index_service = ManticoreIndexService()
         self.total_imported = 0
@@ -61,10 +60,9 @@ class DumpToDatabaseService:
                     link = self._get_safe_by_size(fields, fields_map['url'], 'link')
 
                     # ----- HARD LIMIT -----
-                    keywords = ["milf", "blowjob", "teen"]
                     main_category = None
 
-                    for word in keywords:
+                    for word in settings.FIXED_CATEGORIES:
                         if re.search(rf'\b{re.escape(word)}\b', categories, re.IGNORECASE):
                             main_category = word
                             break
@@ -79,7 +77,7 @@ class DumpToDatabaseService:
                             category_counts[db_category.id] = (VideoCategoryPivot.objects
                                                                .filter(category=db_category).count())
 
-                        if category_counts[db_category.id] >= self.HARD_LIMIT:
+                        if category_counts[db_category.id] >= settings.FIXED_HARD_LIMIT_PER_CATEGORY:
                             continue
 
                         category_counts[db_category.id] += 1
