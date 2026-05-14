@@ -6,6 +6,6 @@ class DatabaseRouter:
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        if app_label == "discovery":
-            return db == "postgresql"
+        # if app_label == "discovery":
+        #     return db == "postgresql"
         return db == "default"

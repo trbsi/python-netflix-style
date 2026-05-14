@@ -139,6 +139,12 @@ def safe_get(lst: list, index: int | str, default=None) -> any:
         return default
 
 
+def debug_file(data):
+    with open('debug.txt', 'a') as f:
+        f.write(data)
+        f.write("\n")
+
+
 def get_pages_with_gaps(page_obj: Page):
     total = page_obj.paginator.num_pages
     current = page_obj.number

@@ -1,4 +1,4 @@
-FROM python:3.14-slim
+FROM python:3.13-slim
 
 # Environment variables for Poetry
 ENV POETRY_HOME="/opt/poetry"

@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import UniqueConstraint
 
 
 class VideoRelationship(models.Model):
@@ -9,6 +8,6 @@ class VideoRelationship(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_constraints = [
-            UniqueConstraint(fields=['video_id', 'related_video_id'])
+        constraints = [
+            models.UniqueConstraint(fields=['video_id', 'related_video_id'], name='uk_video_id_related_video_id')
         ]

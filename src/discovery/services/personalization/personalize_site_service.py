@@ -8,10 +8,13 @@ from src.discovery.models import TagAlias
 
 
 class PersonalizeSiteService():
-    def personalize_site(self, text: str) -> str:
+    def personalize_site(self, text: str) -> str | None:
         text = self.clean_query(text)
         text_array = self.to_tokens(text)
         tags = self.get_cannonical_tags(text_array)
+
+        if not tags:
+            return None
 
         signed_value = signing.dumps({
             "tags": ','.join(tags),
@@ -44,7 +47,11 @@ class PersonalizeSiteService():
 
         return tokens
 
-    def get_cannonical_tags(self, tags: list) -> list:
-        return (TagAlias.objects
+    def get_cannonical_tags(self, tags: list) -> list | None:
+        tags = (TagAlias.objects
                 .filter(raw_tag__in=tags)
                 .values_list('canonical_tag', flat=True))
+        if tags:
+            return tags
+
+        return None

@@ -22,7 +22,9 @@ from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 def media_home(request: HttpRequest) -> HttpResponse:
     USE_CACHE = False
     lang = get_active_language()
-    personalized_tags = signing.loads(request.COOKIES.get('personalized_tags', {}))
+    personalized_tags = request.COOKIES.get('personalized_tags')
+    if personalized_tags:
+        personalized_tags = signing.loads(personalized_tags).get('tags')
 
     if settings.APP_ENV != 'production':
         service = ListMediaService()
@@ -39,7 +41,7 @@ def media_home(request: HttpRequest) -> HttpResponse:
             cache.set(f'frontpage_html_{lang}', html, 60 * 60)
     else:
         service = ListMediaService()
-        videos = service.home_video_list(personalized_tags.get('tags'))
+        videos = service.home_video_list(personalized_tags)
         html = render(request, 'home/home.html', videos).content
 
     return HttpResponse(html)
