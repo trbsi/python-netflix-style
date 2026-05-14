@@ -1,13 +1,15 @@
 from manticoresearch import SearchResponse
 
 from src.media.services.manticore.manticore_base_service import ManticoreBaseService
-from src.media.value_objects.search.search_item import SearchItem
-from src.media.value_objects.search.search_result import SearchResult
+from src.media.value_objects.search.video_search_item import VideoSearchItem
+from src.media.value_objects.search.video_search_result import VideoSearchResult
+from src.media.value_objects.search.video_tag_search_item import VideoTagSearchItem
+from src.media.value_objects.search.video_tag_search_result import VideoTagSearchResult
 
 
 class ManticoreSearchService(ManticoreBaseService):
     # https://manual.manticoresearch.com/Searching/Pagination#Scrolling-via-JSON
-    def search_videos(self, search_term: str, scroll: str | None = None, limit: int = 50) -> SearchResult:
+    def search_videos(self, search_term: str, scroll: str | None = None, limit: int = 50) -> VideoSearchResult:
         query = {
             "table": self._video_table(),
             "options": {
@@ -31,7 +33,7 @@ class ManticoreSearchService(ManticoreBaseService):
 
         items = []
         for hit in hits:
-            items.append(SearchItem(
+            items.append(VideoSearchItem(
                 id=hit.id,
                 title=hit.source['title'],
                 slug=hit.source['slug'],
@@ -40,9 +42,9 @@ class ManticoreSearchService(ManticoreBaseService):
                 categories=hit.source['categories']
             ))
 
-        return SearchResult(result.scroll, items)
+        return VideoSearchResult(result.scroll, items)
 
-    def search_tags(self, tags: list, limit: int = 300) -> list:
+    def search_tags(self, tags: list, limit: int = 300) -> VideoTagSearchResult:
         query = {
             "table": self._video_tag_table(),
             "query": {
@@ -55,5 +57,14 @@ class ManticoreSearchService(ManticoreBaseService):
 
         result: SearchResponse = self.searchApi.search(query)
         hits = result.hits.hits
-        video_ids = list(set([hit.source['video_id'] for hit in hits]))
-        return video_ids
+
+        matches = []
+
+        for hit in hits:
+            video_id = hit.source['video_id']
+            tag = hit.source['tag']
+            if video_id not in matches:
+                matches[video_id]: VideoTagSearchItem = VideoTagSearchItem(video_id=video_id)
+            matches[video_id].add_tag(tag)
+
+        return VideoTagSearchResult(matches)

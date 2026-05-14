@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from src.core.utils.utils import unslugify
 
 
-class SearchItem:
+class VideoSearchItem:
     def __init__(self, id: int, title: str, slug: str, duration: int, thumbnail: str, categories: str):
         self.id = id
         self.title = title

@@ -1,8 +1,8 @@
-from src.media.value_objects.search.search_item import SearchItem
+from src.media.value_objects.search.video_search_item import VideoSearchItem
 
 
-class SearchResult:
-    def __init__(self, scroll_cursor: str, items: list[SearchItem]):
+class VideoSearchResult:
+    def __init__(self, scroll_cursor: str, items: list[VideoSearchItem]):
         self.scroll_cursor = scroll_cursor
         self.items = items
 
