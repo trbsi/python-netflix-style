@@ -15,7 +15,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--import-all",
             action="store_true",
-            help="Import full csv"
+            help="Import full csv, otherwise extract last 50k rows and import only them"
         )
 
     # https://www.eporner.com/api/v2/feeds/
