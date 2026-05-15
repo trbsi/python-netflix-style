@@ -28,7 +28,9 @@ class ListMediaService:
         # 1. tags take priority
         if tags:
             result = service.search_tags(tags=tags.split(','))
-            return result.get_sorted_video_ids_by_tag_frequency()
+            video_ids = result.get_sorted_video_ids_by_tag_frequency()
+            if video_ids:
+                return video_ids
 
         # 2. fallback cache
         cached = cache.get('frontpage_ids')
