@@ -6,7 +6,7 @@ from src.media.services.manticore.manticore_schema_service import ManticoreSchem
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('action', type=str)
-        parser.add_argument('--drop-indexes', type='store_true', default=False)
+        parser.add_argument('--drop-indexes', action='store_true', default=False)
 
     def handle(self, *args, **options):
         action = options['action']
