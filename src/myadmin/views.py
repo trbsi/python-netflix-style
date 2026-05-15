@@ -1,6 +1,7 @@
 from celery import chain
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpRequest, HttpResponse
+from django.core import signing
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from src.media.tasks import generate_frontpage_task, \
@@ -40,3 +41,8 @@ def trigger_generate_frontend(request: HttpRequest) -> HttpResponse:
 def trigger_sitemap_partial(request: HttpRequest) -> HttpResponse:
     generate_sitemap_partial_task.delay()
     return HttpResponse('generate_sitemap_partial_task is queued', status=200)
+
+
+@staff_member_required
+def dump_signing(request: HttpRequest) -> JsonResponse:
+    return JsonResponse({'signing': signing.loads(request.GET.get('signing'))})
