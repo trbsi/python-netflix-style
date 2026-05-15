@@ -127,7 +127,7 @@ class ListMediaService:
         base_qs = (
             VideoItem.objects.order_by("-id")
             .filter(slug_rewritten__isnull=False)
-            .filter(id__in=video_ids)
+            .filter(id__in=list(video_ids))
         )
 
         context = {
