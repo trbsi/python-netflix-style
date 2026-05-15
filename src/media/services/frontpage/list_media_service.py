@@ -1,7 +1,7 @@
 from django.core.cache import cache
 from django.db.models import Case, When, IntegerField
 
-from src.media.models import VideoItem
+from src.media.models import VideoItem, VideoCategoryPivot
 from src.media.services.manticore.manticore_search_service import ManticoreSearchService
 
 
@@ -119,10 +119,13 @@ class ListMediaService:
 
     def single_video_list(self, video: VideoItem) -> dict:
         used_ids = set()
-        video_ids = (
-            video.video_category_links
-            .order_by('-video_id')
-            .values_list('video_id', flat=True)[:300]
+        category_ids = list(video.video_category_links.values_list("category_id", flat=True))
+        video_ids = list(
+            VideoCategoryPivot.objects
+            .filter(category_id__in=category_ids)
+            .exclude(video_id=video.id)
+            .values_list('video_id', flat=True)
+            .distinct()[:300]
         )
         base_qs = (
             VideoItem.objects.order_by("-id")
