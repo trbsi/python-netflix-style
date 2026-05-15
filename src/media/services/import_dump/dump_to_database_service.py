@@ -74,8 +74,9 @@ class DumpToDatabaseService:
 
                     if db_category:
                         if db_category.id not in category_counts:
-                            category_counts[db_category.id] = (VideoCategoryPivot.objects
-                                                               .filter(category=db_category).count())
+                            category_counts[db_category.id] = (
+                                VideoCategoryPivot.objects.filter(category=db_category).count()
+                            )
 
                         if category_counts[db_category.id] >= settings.FIXED_HARD_LIMIT_PER_CATEGORY:
                             continue
