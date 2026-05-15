@@ -1,6 +1,8 @@
 from django.core.cache import cache
+from django.db.models import Case, When, IntegerField
 
 from src.media.models import VideoItem
+from src.media.services.manticore.manticore_search_service import ManticoreSearchService
 
 
 class ListMediaService:
@@ -15,13 +17,49 @@ class ListMediaService:
         used_ids.update(v.id for v in videos)
         return videos
 
-    def home_video_list(self) -> dict:
+    def get_frontpage_queryset(self, tags=None):
+        service = ManticoreSearchService()
+
+        video_ids = self._resolve_video_ids(service, tags)
+
+        return self._build_queryset(video_ids)
+
+    def _resolve_video_ids(self, service, tags):
+        # 1. tags take priority
+        if tags:
+            result = service.search_tags(tags=tags.split(','))
+            video_ids = result.get_sorted_video_ids_by_tag_frequency()
+            if video_ids:
+                return video_ids
+
+        # 2. fallback cache
+        cached = cache.get('frontpage_ids')
+        if cached:
+            return cached
+
+        return None
+
+    def _build_queryset(self, video_ids):
+        if video_ids:
+            # preserve custom ranking order
+            preserved_order = Case(
+                *[
+                    When(id=vid, then=pos)
+                    for pos, vid in enumerate(video_ids)
+                ],
+                output_field=IntegerField(),
+            )
+
+            return VideoItem.objects.filter(
+                id__in=video_ids
+            ).order_by(preserved_order)
+
+        # fallback default feed
+        return VideoItem.objects.order_by('-id')
+
+    def home_video_list(self, tags: str | None = None) -> dict:
         used_ids = set()
-        cache_ids = cache.get('frontpage_ids')
-        if cache_ids:
-            base_qs = VideoItem.objects.filter(id__in=cache_ids).order_by('?')
-        else:
-            base_qs = VideoItem.objects.order_by('-id')
+        base_qs = self.get_frontpage_queryset(tags)
 
         context = {
             "main_header": self._get_videos(
@@ -79,9 +117,18 @@ class ListMediaService:
 
         return context
 
-    def single_video_list(self) -> dict:
+    def single_video_list(self, video: VideoItem) -> dict:
         used_ids = set()
-        base_qs = VideoItem.objects.order_by("-id").filter(slug_rewritten__isnull=False)
+        video_ids = (
+            video.video_category_links
+            .order_by('-video_id')
+            .values_list('video_id', flat=True)[:300]
+        )
+        base_qs = (
+            VideoItem.objects.order_by("-id")
+            .filter(slug_rewritten__isnull=False)
+            .filter(id__in=video_ids)
+        )
 
         context = {
             "recommended": self._get_videos(

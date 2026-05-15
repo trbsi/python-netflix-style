@@ -55,16 +55,17 @@ class VideoItem(models.Model):
 
     def category_slugs(self):
         array = self.categories.split(",")
-        result = []
-        for category in array:
-            if category:
-                result.append(slugify(category))
-
+        result = [slugify(category.strip()) for category in array]
         return result
 
     # for sitemap
     def get_absolute_url(self):
         return self.video_url
+
+    def categories_and_tags(self) -> list:
+        tags = self.tags.split(",")
+        categories = [slugify(cat) for cat in self.categories.split(",")]
+        return list(set(tags + categories))
 
     @property
     def video_url(self):

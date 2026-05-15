@@ -58,9 +58,8 @@ INSTALLED_APPS = [
     'src.myadmin.apps.AdminConfig',
     'src.sitemap.apps.SitemapConfig',
     'src.age_verification.apps.AgeVerificationConfig',
-    'src.chat.apps.ChatConfig',
-    'src.inbox.apps.InboxConfig',
     'src.events.apps.EventsConfig',
+    'src.discovery.apps.DiscoveryConfig',
 
     'django.contrib.sitemaps',
     'django_celery_beat',
@@ -124,7 +123,15 @@ if env('DB_ENGINE') == 'mysql':
             'OPTIONS': {
                 'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             }
-        }
+        },
+        # "postgresql": {
+        #     "ENGINE": "django.db.backends.postgresql",
+        #     "NAME": os.getenv("POSTGRES_DB"),
+        #     "USER": os.getenv("POSTGRES_USER"),
+        #     "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        #     "HOST": os.getenv("POSTGRES_DATABASE_HOST", "postgres"),
+        #     "PORT": os.getenv("POSTGRES_DATABASE_PORT", "5432"),
+        # }
     }
 else:
     DATABASES = {
@@ -133,6 +140,7 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+DATABASE_ROUTERS = ["src.core.database.database_router.DatabaseRouter"]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -158,10 +166,10 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en'
 SUPPORTED_LANGUAGES = [
     ('en', 'English'),
-    ('hr', 'Croatian'),
-    ('sr', 'Serbian'),
-    ('es', 'Spanish'),
-    ('ru', 'Russian'),
+    # ('hr', 'Croatian'),
+    # ('sr', 'Serbian'),
+    # ('es', 'Spanish'),
+    # ('ru', 'Russian'),
 ]
 TIME_ZONE = 'UTC'
 USE_I18N = True
@@ -275,24 +283,12 @@ SITEMAPS_DIR = os.path.join(BASE_DIR, 'sitemaps')
 # Sites
 ENABLED_SITES = env('ENABLED_SITES').split(',')
 
-# --------- CHAT -----------
-REMOTE_LLM = env.bool('REMOTE_LLM')
-DEFAULT_BOT = env('DEFAULT_BOT')
-TELEGRAM_BOTS = {
-    'female_1': {
-        'id': 'female_1',
-        'name': 'Female Svetlana',
-        'token': env('TELEGRAM_FEMALE_1_TOKEN')
-    },
-    'peachka': {
-        'id': 'peachka',
-        'name': 'Official Peachka',
-        'token': env('TELEGRAM_PEACHKA_TOKEN')
-    },
-}
-
 # Grok
 GROK_API_KEY = env('GROK_API_KEY')
 
 # IndexNow
 INDEXNOW_API_KEY = env('INDEXNOW_KEY')
+
+# Fixed content
+FIXED_CATEGORIES = ['milf', 'teen', 'blowjob']
+FIXED_HARD_LIMIT_PER_CATEGORY = 150

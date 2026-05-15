@@ -9,16 +9,15 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 from tqdm import tqdm
 
+from automationapp import settings
 from src.core.utils.utils import safe_get
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
-from src.media.services.manticore.manticore_service import ManticoreService
+from src.media.services.manticore.manticore_index_service import ManticoreIndexService
 
 
 class DumpToDatabaseService:
-    HARD_LIMIT = 150
-
     def __init__(self):
-        self.search_index_service = ManticoreService()
+        self.search_index_service = ManticoreIndexService()
         self.total_imported = 0
 
     def save_to_database(self, site: str, fields_map: dict, csv_file_path: str) -> int:
@@ -52,6 +51,7 @@ class DumpToDatabaseService:
                 try:
                     embed_code = self._embed_code(site, fields, fields_map).strip()
                     categories = self._get_categories(fields, fields_map)
+                    tags = self._get_tags(fields, fields_map)
                     external_created_at = self._extract_created_at(site, fields, fields_map)
                     duration = self._duration(site, fields, fields_map)
                     external_id = self._get_external_id(site, fields, fields_map)
@@ -60,10 +60,9 @@ class DumpToDatabaseService:
                     link = self._get_safe_by_size(fields, fields_map['url'], 'link')
 
                     # ----- HARD LIMIT -----
-                    keywords = ["milf", "blowjob", "teen"]
                     main_category = None
 
-                    for word in keywords:
+                    for word in settings.FIXED_CATEGORIES:
                         if re.search(rf'\b{re.escape(word)}\b', categories, re.IGNORECASE):
                             main_category = word
                             break
@@ -75,10 +74,11 @@ class DumpToDatabaseService:
 
                     if db_category:
                         if db_category.id not in category_counts:
-                            category_counts[db_category.id] = VideoCategoryPivot.objects.filter(
-                                category=db_category).count()
+                            category_counts[db_category.id] = (
+                                VideoCategoryPivot.objects.filter(category=db_category).count()
+                            )
 
-                        if category_counts[db_category.id] >= self.HARD_LIMIT:
+                        if category_counts[db_category.id] >= settings.FIXED_HARD_LIMIT_PER_CATEGORY:
                             continue
 
                         category_counts[db_category.id] += 1
@@ -93,7 +93,7 @@ class DumpToDatabaseService:
                         thumb_small=fields[fields_map['thumb_small']],
                         thumb_large=fields[fields_map['thumb_large']],
                         embed_code=embed_code,
-                        tags=fields[fields_map['tags']],
+                        tags=tags,
                         categories=categories,
                         site=site,
                         external_id=external_id,
@@ -289,10 +289,18 @@ class DumpToDatabaseService:
             return ''
         categories = categories.split(fields_map['categories_split_by'])
         categories = [cat for cat in categories if len(cat) < 20 and len(cat) > 0]
-        categories = categories[:4]
-        categories = [cat.replace('_', ' ').replace('-', ' ').title() for cat in categories]
+        categories = [cat.strip().replace('_', ' ').replace('-', ' ').title() for cat in categories]
         categories = ','.join(categories)
         return categories
+
+    def _get_tags(self, fields: list, fields_map: dict) -> str:
+        tags = safe_get(fields, fields_map['tags'])
+        if not tags:
+            return ''
+        tags = tags.split(fields_map['tags_split_by'])
+        tags = [slugify(tmp_tag.strip()) for tmp_tag in tags]
+        tags = ','.join(tags)
+        return tags
 
     def _duration(self, site, fields: list, fields_map: dict) -> str:
         duration = safe_get(fields, fields_map['duration'])

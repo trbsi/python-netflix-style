@@ -1,5 +1,6 @@
 import json
 
+from django.core import signing
 from django.core.cache import cache
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
@@ -19,19 +20,29 @@ from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
+    USE_CACHE = False
     lang = get_active_language()
+    personalized_tags = request.COOKIES.get('personalized_tags')
+    if personalized_tags:
+        personalized_tags = signing.loads(personalized_tags).get('tags')
+
     if settings.APP_ENV != 'production':
         service = ListMediaService()
         videos = service.home_video_list()
         return render(request, 'home/home.html', videos)
 
-    html = cache.get(f'frontpage_html_{lang}')
+    if USE_CACHE:
+        html = cache.get(f'frontpage_html_{lang}')
 
-    if not html:
+        if not html:
+            service = ListMediaService()
+            videos = service.home_video_list()
+            html = render(request, 'home/home.html', videos).content
+            cache.set(f'frontpage_html_{lang}', html, 60 * 60)
+    else:
         service = ListMediaService()
-        videos = service.home_video_list()
+        videos = service.home_video_list(personalized_tags)
         html = render(request, 'home/home.html', videos).content
-        cache.set(f'frontpage_html_{lang}', html, 60 * 60)
 
     return HttpResponse(html)
 
@@ -51,14 +62,16 @@ def single_video(request: HttpRequest, id: int, slug: str) -> HttpResponse:
         return response
 
     service = ListMediaService()
-    videos = service.single_video_list()
+    videos = service.single_video_list(video)
     context = {'video': video} | videos
     return render(request, 'single_video/video_detail.html', context)
 
 
 @require_GET
 def categories(request: HttpRequest) -> HttpResponse:
-    context = {'categories': VideoCategory.objects.all()}
+    context = {
+        'categories': VideoCategory.objects.filter(slug__in=settings.FIXED_CATEGORIES).all()
+    }
     return render(request, 'categories/categories.html', context)
 
 

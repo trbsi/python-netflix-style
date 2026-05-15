@@ -1,20 +1,23 @@
 from src.core.management.commands.base_command import BaseCommand
-from src.media.services.manticore.manticore_service import ManticoreService
+from src.media.services.manticore.manticore_index_service import ManticoreIndexService
+from src.media.services.manticore.manticore_schema_service import ManticoreSchemaService
 
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        parser.add_argument('action', type=str, )
+        parser.add_argument('action', type=str)
+        parser.add_argument('--drop-indexes', type='store_true', default=False)
 
     def handle(self, *args, **options):
         action = options['action']
-        service = ManticoreService()
+        drop_indexes = options['drop_indexes']
+        schema_service = ManticoreSchemaService()
 
         if action == 'create_index':
-            service.create_index()
+            schema_service.create_indexes(drop_indexes)
             print('Indexes created')
 
         if action == 'reindex':
-            service.create_index()
-            service.reindex_all()
+            schema_service.create_indexes(drop_indexes)
+            ManticoreIndexService().reindex_all()
             print('Reindexing done')

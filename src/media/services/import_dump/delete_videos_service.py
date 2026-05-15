@@ -6,13 +6,13 @@ from tqdm import tqdm
 
 from src.media.models import VideoItem
 from src.media.services.import_dump.download_zip_service import DownloadZipService
-from src.media.services.manticore.manticore_service import ManticoreService
+from src.media.services.manticore.manticore_index_service import ManticoreIndexService
 
 
 class DeleteVideosService:
     def __init__(self):
         self.download_zip_service = DownloadZipService()
-        self.search_index_service = ManticoreService()
+        self.search_index_service = ManticoreIndexService()
         self.total_deleted = 0
 
     def remove_deleted_videos_from_database(self, site: str, zip_url: str | None = None) -> int:

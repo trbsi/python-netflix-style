@@ -1,0 +1,15 @@
+<form id="magicForm" class="position-relative my-4">
+    {% csrf_token %}
+    <div class="magic-input-wrapper position-relative">
+        <input
+                type="text"
+                class="form-control magic-input"
+                id="promptInput"
+                placeholder="What do you want to watch?"
+        >
+
+        <button type="submit" class="magic-submit-btn">
+            <i class="fa-regular fa-circle-right"></i>
+        </button>
+    </div>
+</form>
