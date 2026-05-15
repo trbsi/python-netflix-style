@@ -11,7 +11,7 @@ class PersonalizeSiteService():
     def personalize_site(self, text: str) -> str | None:
         text = self.clean_query(text)
         text_array = self.to_tokens(text)
-        tags = self.get_cannonical_tags(text_array)
+        tags = self.get_canonical_tags(text_array)
 
         if not tags:
             return None
@@ -47,11 +47,14 @@ class PersonalizeSiteService():
 
         return tokens
 
-    def get_cannonical_tags(self, tags: list) -> list | None:
-        tags = (TagAlias.objects
-                .filter(raw_tag__in=tags)
-                .values_list('canonical_tag', flat=True))
+    def get_canonical_tags(self, tags: list) -> list | None:
+        tags = (
+            TagAlias.objects
+            .filter(raw_tag__in=tags)
+            .values_list('canonical_tag', flat=True)
+        )
         if tags:
+            tags = list(set(tags))
             return tags
 
         return None
