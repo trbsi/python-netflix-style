@@ -45,26 +45,33 @@ class ManticoreSearchService(ManticoreBaseService):
         return VideoSearchResult(result.scroll, items)
 
     def search_tags(self, tags: list, limit: int = 300) -> VideoTagSearchResult:
-        query = {
-            "table": self._video_tag_table(),
-            "query": {
-                "in": {
-                    "tag": tags
-                }
-            },
-            "limit": limit
+        tags = list(dict.fromkeys(tag for tag in tags if tag))
+        if not tags:
+            return VideoTagSearchResult({})
+
+        tags_sql = ', '.join(
+            f"'{tag.replace('\\', '\\\\').replace('\'', '\\\'')}'"
+            for tag in tags
+        )
+        result = self.utils.sql(
+            f"""
+            SELECT video_id, COUNT(*) AS matched_tags
+            FROM {self._video_tag_table()}
+            WHERE tag IN ({tags_sql})
+            GROUP BY video_id
+            ORDER BY matched_tags DESC
+            LIMIT {int(limit)}
+            """,
+            raw_response=False,
+        )
+
+        hits = result.actual_instance.hits.get('hits', [])
+        matches = {
+            int(hit['_source']['video_id']): VideoTagSearchItem(
+                video_id=int(hit['_source']['video_id']),
+                tags=[None] * int(hit['_source']['matched_tags']),
+            )
+            for hit in hits
         }
-
-        result: SearchResponse = self.searchApi.search(query)
-        hits = result.hits.hits
-
-        matches = {}
-
-        for hit in hits:
-            video_id = hit.source['video_id']
-            tag = hit.source['tag']
-            if video_id not in matches:
-                matches[video_id] = VideoTagSearchItem(video_id=video_id)
-            matches[video_id].add_tag(tag)
 
         return VideoTagSearchResult(matches)

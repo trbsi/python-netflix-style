@@ -14,7 +14,7 @@ class CanonicalTagsService():
 
     def _extract_raw(self):
         videos: QuerySet[VideoItem] = VideoItem.objects.iterator(chunk_size=1000)
-        pattern = re.compile(r'^[a-z0-9]+$')
+        pattern = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
 
         all_tags = set()
 

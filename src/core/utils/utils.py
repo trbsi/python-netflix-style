@@ -139,7 +139,7 @@ def safe_get(lst: list, index: int | str, default=None) -> any:
         return default
 
 
-def debug_file(data):
+def dump_debug(data):
     with open('debug.txt', 'a') as f:
         f.write(str(data))
         f.write("\n")
