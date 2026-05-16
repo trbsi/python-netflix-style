@@ -1,6 +1,7 @@
 from django.core.cache import cache
 from django.db.models import Case, When, IntegerField
 
+from src.discovery.models import CanonicalTag, TagAlias
 from src.media.models import VideoItem, VideoCategoryPivot
 from src.media.services.manticore.manticore_search_service import ManticoreSearchService
 
@@ -17,17 +18,36 @@ class ListMediaService:
         used_ids.update(v.id for v in videos)
         return videos
 
-    def get_frontpage_queryset(self, tags=None):
+    def get_frontpage_queryset(self, tags: str | None = None):
         service = ManticoreSearchService()
 
         video_ids = self._resolve_video_ids(service, tags)
 
         return self._build_queryset(video_ids)
 
-    def _resolve_video_ids(self, service, tags):
+    def _resolve_video_ids(self, service, canonical_tags: str | None):
         # 1. tags take priority
-        if tags:
-            result = service.search_tags(tags=tags.split(','))
+        if canonical_tags:
+            canonical_tag_slugs = [
+                tag.strip()
+                for tag in canonical_tags.split(',')
+                if tag.strip()
+            ]
+            canonical_tag_ids = (
+                CanonicalTag.objects
+                .filter(slug__in=canonical_tag_slugs)
+                .values_list('id', flat=True)
+            )
+            raw_tags = list(
+                TagAlias.objects
+                .filter(canonical_tag_id__in=canonical_tag_ids)
+                .values_list('raw_tag', flat=True)
+                .distinct()
+            )
+            if not raw_tags:
+                return cache.get('frontpage_ids')
+
+            result = service.search_tags(tags=raw_tags)
             video_ids = result.get_sorted_video_ids_by_tag_frequency()
             if video_ids:
                 return video_ids
