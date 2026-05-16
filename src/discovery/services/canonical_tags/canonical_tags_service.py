@@ -45,11 +45,12 @@ class CanonicalTagsService():
         with open(file, 'r') as f:
             json = json.load(f)
 
-        for key, data in json.items():
-            for canonical, tags in data.items():
-                canonical_tag, created = CanonicalTag.objects.get_or_create(
-                    slug=canonical,
-                    defaults={'display_name': canonical.title()}
-                )
-                tags.append(canonical)
-                TagAlias.objects.filter(raw_tag__in=tags).update(canonical_tag=canonical_tag)
+        tags = json['canonical_tags']
+        for canonical, data in tags.items():
+            synonyms = data['synonyms']
+            canonical_tag, created = CanonicalTag.objects.get_or_create(
+                slug=canonical,
+                defaults={'display_name': canonical.title()}
+            )
+            synonyms.append(canonical)
+            TagAlias.objects.filter(raw_tag__in=synonyms).update(canonical_tag=canonical_tag)

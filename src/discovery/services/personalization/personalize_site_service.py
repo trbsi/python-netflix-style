@@ -4,7 +4,8 @@ import spacy
 from django.core import signing
 from spacy.cli import download
 
-from src.discovery.models import TagAlias
+from src.core.utils.utils import dump_debug
+from src.discovery.models import TagAlias, CanonicalTag
 
 
 class PersonalizeSiteService():
@@ -12,6 +13,8 @@ class PersonalizeSiteService():
         text = self.clean_query(text)
         text_array = self.to_tokens(text)
         tags = self.get_canonical_tags(text_array)
+        dump_debug(text_array)
+        dump_debug(tags)
 
         if not tags:
             return None
@@ -48,10 +51,12 @@ class PersonalizeSiteService():
         return tokens
 
     def get_canonical_tags(self, tags: list) -> list | None:
+        uncategorize = CanonicalTag.objects.filter(slug='uncategorized').first()
         tags = (
             TagAlias.objects
             .filter(raw_tag__in=tags)
             .filter(canonical_tag__isnull=False)
+            .exclude(canonical_tag=uncategorize)
             .values_list('canonical_tag__slug', flat=True)
         )
         if tags:
