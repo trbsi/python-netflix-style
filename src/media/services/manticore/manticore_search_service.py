@@ -58,13 +58,13 @@ class ManticoreSearchService(ManticoreBaseService):
         result: SearchResponse = self.searchApi.search(query)
         hits = result.hits.hits
 
-        matches = []
+        matches = {}
 
         for hit in hits:
             video_id = hit.source['video_id']
             tag = hit.source['tag']
             if video_id not in matches:
-                matches[video_id]: VideoTagSearchItem = VideoTagSearchItem(video_id=video_id)
+                matches[video_id] = VideoTagSearchItem(video_id=video_id)
             matches[video_id].add_tag(tag)
 
         return VideoTagSearchResult(matches)

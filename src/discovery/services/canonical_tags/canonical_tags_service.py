@@ -51,4 +51,5 @@ class CanonicalTagsService():
                     slug=canonical,
                     defaults={'display_name': canonical.title()}
                 )
+                tags.append(canonical)
                 TagAlias.objects.filter(raw_tag__in=tags).update(canonical_tag=canonical_tag)

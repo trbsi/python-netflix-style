@@ -26,11 +26,6 @@ def media_home(request: HttpRequest) -> HttpResponse:
     if personalized_tags:
         personalized_tags = signing.loads(personalized_tags).get('tags')
 
-    if settings.APP_ENV != 'production':
-        service = ListMediaService()
-        videos = service.home_video_list()
-        return render(request, 'home/home.html', videos)
-
     if USE_CACHE:
         html = cache.get(f'frontpage_html_{lang}')
 

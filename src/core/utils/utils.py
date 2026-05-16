@@ -141,7 +141,7 @@ def safe_get(lst: list, index: int | str, default=None) -> any:
 
 def debug_file(data):
     with open('debug.txt', 'a') as f:
-        f.write(data)
+        f.write(str(data))
         f.write("\n")
 
 

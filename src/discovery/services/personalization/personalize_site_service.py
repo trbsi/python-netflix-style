@@ -52,7 +52,7 @@ class PersonalizeSiteService():
             TagAlias.objects
             .filter(raw_tag__in=tags)
             .filter(canonical_tag__isnull=False)
-            .values_list('canonical_tag', flat=True)
+            .values_list('canonical_tag__slug', flat=True)
         )
         if tags:
             tags = list(set(tags))
