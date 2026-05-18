@@ -44,7 +44,7 @@ services:
       - automationapp_sitemaps:/app/sitemaps
     working_dir: /app
     depends_on: [ mysql, redis, manticore ]
-    command: poetry run gunicorn automationapp.wsgi:application -b 0.0.0.0:8000 --workers 5 --reload
+    command: poetry run gunicorn automationapp.wsgi:application -b 0.0.0.0:8000 --workers 3
     expose: [ "8000" ]
     networks: [ automationapp-net ]
     logging:
