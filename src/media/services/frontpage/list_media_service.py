@@ -31,7 +31,6 @@ class ListMediaService:
             canonical_tag_slugs = [
                 tag.strip()
                 for tag in canonical_tags.split(',')
-                if tag.strip()
             ]
             canonical_tag_ids = (
                 CanonicalTag.objects
