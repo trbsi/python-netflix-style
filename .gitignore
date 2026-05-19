@@ -8,6 +8,7 @@ __pycache__
 .env
 .idea
 debug.txt
+uncategorized_tags.json
 docker/.env
 celerybeat-schedule
 celerybeat-schedule-shm

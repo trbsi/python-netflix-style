@@ -1,8 +1,11 @@
+import json
 import re
+from collections import defaultdict
 from pathlib import Path
 
 from django.db.models import QuerySet
 
+from automationapp import settings
 from src.discovery.models import TagAlias, CanonicalTag
 from src.media.models import VideoItem
 
@@ -11,6 +14,8 @@ class CanonicalTagsService():
     def extract_tags(self):
         self._extract_raw()
         self._connect_canonical()
+        self._update_rarity_scores()
+        self._extract_uncategorized()
 
     def _extract_raw(self):
         videos: QuerySet[VideoItem] = VideoItem.objects.iterator(chunk_size=1000)
@@ -39,13 +44,11 @@ class CanonicalTagsService():
         TagAlias.objects.bulk_create(db_tags)
 
     def _connect_canonical(self):
-        import json
-
         file = Path(__file__).resolve().parent / 'canonical_tags.json'
         with open(file, 'r') as f:
-            json = json.load(f)
+            data = json.load(f)
 
-        tags = json['canonical_tags']
+        tags = data['canonical_tags']
         for canonical, data in tags.items():
             synonyms = data['synonyms']
             canonical_tag, created = CanonicalTag.objects.get_or_create(
@@ -54,3 +57,33 @@ class CanonicalTagsService():
             )
             synonyms.append(canonical)
             TagAlias.objects.filter(raw_tag__in=synonyms).update(canonical_tag=canonical_tag)
+
+    def _update_rarity_scores(self):
+        tag_counts: dict[str, int] = defaultdict(int)
+        total = 0
+
+        for video in VideoItem.objects.only('tags', 'categories').iterator(chunk_size=1000):
+            total += 1
+            seen: set[str] = set()
+            for raw in video.tags.split(',') + video.categories.split(','):
+                tag = raw.strip().lower()
+                if tag and tag not in seen:
+                    tag_counts[tag] += 1
+                    seen.add(tag)
+
+        if not total:
+            return
+
+        to_update = []
+        for alias in TagAlias.objects.all():
+            count = tag_counts.get(alias.raw_tag, 0)
+            alias.rarity_score = 1.0 - (count / total)
+            to_update.append(alias)
+
+        TagAlias.objects.bulk_update(to_update, ['rarity_score'], batch_size=1000)
+
+    def _extract_uncategorized(self):
+        tags = list(TagAlias.objects.filter(canonical_tag__isnull=True).values_list('raw_tag', flat=True))
+
+        with open(settings.BASE_DIR / 'uncategorized_tags.json', 'w') as outfile:
+            json.dump(tags, outfile)
