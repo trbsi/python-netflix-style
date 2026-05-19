@@ -45,10 +45,6 @@ class ManticoreSearchService(ManticoreBaseService):
         return VideoSearchResult(result.scroll, items)
 
     def search_tags(self, tags: list, limit: int = 300) -> VideoTagSearchResult:
-        tags = list(dict.fromkeys(tag for tag in tags if tag))
-        if not tags:
-            return VideoTagSearchResult({})
-
         tags_sql = ', '.join(
             f"'{tag.replace('\\', '\\\\').replace('\'', '\\\'')}'"
             for tag in tags

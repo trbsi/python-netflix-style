@@ -1,12 +1,14 @@
 from django.core.cache import cache
 from django.db.models import Case, When, IntegerField
 
-from src.discovery.models import CanonicalTag, TagAlias
+from src.discovery.services.video_discovery.tag_video_resolution_service import TagVideoResolutionService
 from src.media.models import VideoItem, VideoCategoryPivot
-from src.media.services.manticore.manticore_search_service import ManticoreSearchService
 
 
 class ListMediaService:
+    def __init__(self) -> None:
+        self.tag_video_resolution_service = TagVideoResolutionService()
+
     def _get_videos(self, qs, count, used_ids):
         """
         Helper:
@@ -19,44 +21,17 @@ class ListMediaService:
         return videos
 
     def get_frontpage_queryset(self, tags: str | None = None):
-        service = ManticoreSearchService()
-
-        video_ids = self._resolve_video_ids(service, tags)
-
+        video_ids = self._resolve_video_ids(tags)
         return self._build_queryset(video_ids)
 
-    def _resolve_video_ids(self, service, canonical_tags: str | None):
-        # 1. tags take priority
+    def _resolve_video_ids(self, canonical_tags: str | None):
         if canonical_tags:
-            canonical_tag_slugs = [
-                tag.strip()
-                for tag in canonical_tags.split(',')
-            ]
-            canonical_tag_ids = (
-                CanonicalTag.objects
-                .filter(slug__in=canonical_tag_slugs)
-                .values_list('id', flat=True)
-            )
-            raw_tags = list(
-                TagAlias.objects
-                .filter(canonical_tag_id__in=canonical_tag_ids)
-                .values_list('raw_tag', flat=True)
-                .distinct()
-            )
-            if not raw_tags:
-                return cache.get('frontpage_ids')
-
-            result = service.search_tags(tags=raw_tags)
-            video_ids = result.get_sorted_video_ids_by_tag_frequency()
+            slugs = [tag.strip() for tag in canonical_tags.split(',')]
+            video_ids = self.tag_video_resolution_service.resolve_video_ids_by_tag_slugs(slugs)
             if video_ids:
                 return video_ids
 
-        # 2. fallback cache
-        cached = cache.get('frontpage_ids')
-        if cached:
-            return cached
-
-        return None
+        return cache.get('frontpage_ids')
 
     def _build_queryset(self, video_ids):
         if video_ids:
