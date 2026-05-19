@@ -50,12 +50,13 @@ class CanonicalTagsService():
 
         tags = data['canonical_tags']
         for canonical, data in tags.items():
-            # if there is canonical tag among raw_tag then update canonical_tag to itself
-            TagAlias.objects.filter(raw_tag__in=canonical).update(canonical_tag=canonical)
             canonical_tag, created = CanonicalTag.objects.get_or_create(
                 slug=canonical,
                 defaults={'display_name': canonical.title()}
             )
+
+            # if there is canonical tag among raw_tag then update canonical_tag to itself
+            TagAlias.objects.filter(raw_tag__in=canonical).update(canonical_tag=canonical_tag)
             for synonym in data['synonyms']:
                 (TagAlias.objects
                  .filter(raw_tag__in=synonym['name'])
