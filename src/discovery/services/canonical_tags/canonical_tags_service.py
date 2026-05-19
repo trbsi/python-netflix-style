@@ -50,13 +50,16 @@ class CanonicalTagsService():
 
         tags = data['canonical_tags']
         for canonical, data in tags.items():
-            synonyms = data['synonyms']
+            # if there is canonical tag among raw_tag then update canonical_tag to itself
+            TagAlias.objects.filter(raw_tag__in=canonical).update(canonical_tag=canonical)
             canonical_tag, created = CanonicalTag.objects.get_or_create(
                 slug=canonical,
                 defaults={'display_name': canonical.title()}
             )
-            synonyms.append(canonical)
-            TagAlias.objects.filter(raw_tag__in=synonyms).update(canonical_tag=canonical_tag)
+            for synonym in data['synonyms']:
+                (TagAlias.objects
+                 .filter(raw_tag__in=synonym['name'])
+                 .update(canonical_tag=canonical_tag, tag_group=synonym['group']))
 
     def _update_rarity_scores(self):
         tag_counts: dict[str, int] = defaultdict(int)
