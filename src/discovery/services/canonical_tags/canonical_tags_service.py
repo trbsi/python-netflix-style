@@ -56,10 +56,10 @@ class CanonicalTagsService():
             )
 
             # if there is canonical tag among raw_tag then update canonical_tag to itself
-            TagAlias.objects.filter(raw_tag__in=canonical).update(canonical_tag=canonical_tag)
+            TagAlias.objects.filter(raw_tag=canonical).update(canonical_tag=canonical_tag)
             for synonym in data['synonyms']:
                 (TagAlias.objects
-                 .filter(raw_tag__in=synonym['name'])
+                 .filter(raw_tag=synonym['name'])
                  .update(canonical_tag=canonical_tag, tag_group=synonym['group']))
 
     def _update_rarity_scores(self):
