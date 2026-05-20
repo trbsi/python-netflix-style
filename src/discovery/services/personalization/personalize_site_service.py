@@ -4,8 +4,7 @@ import spacy
 from django.core import signing
 from spacy.cli import download
 
-from src.core.utils.utils import dump_debug
-from src.discovery.models import TagAlias, CanonicalTag
+from src.discovery.models import TagAlias
 
 
 class PersonalizeSiteService():
@@ -13,8 +12,6 @@ class PersonalizeSiteService():
         text = self.clean_query(text)
         text_array = self.to_tokens(text)
         tags = self.get_canonical_tags(text_array)
-        dump_debug(text_array)
-        dump_debug(tags)
 
         if not tags:
             return None
@@ -41,22 +38,32 @@ class PersonalizeSiteService():
             nlp = spacy.load(model_name)
 
         doc = nlp(text)
-        # lemma is basically singular form of word
-        tokens = [
-            token.lemma_
+
+        filtered = [
+            (token.text, token.lemma_)
             for token in doc
-            if not token.is_stop
+            if not token.is_stop and token.text.strip()
         ]
 
-        return tokens
+        original_words = [t[0] for t in filtered]
+        lemma_words = [t[1] for t in filtered]
+
+        def make_ngrams(words):
+            ngrams = []
+            for n in (1, 2, 3):
+                for i in range(len(words) - n + 1):
+                    ngrams.append('-'.join(words[i:i + n]))
+            return ngrams
+
+        tokens = make_ngrams(original_words) + make_ngrams(lemma_words)
+
+        return list(dict.fromkeys(tokens))
 
     def get_canonical_tags(self, tags: list) -> list | None:
-        uncategorize = CanonicalTag.objects.filter(slug='uncategorized').first()
         tags = (
             TagAlias.objects
             .filter(raw_tag__in=tags)
             .filter(canonical_tag__isnull=False)
-            .exclude(canonical_tag=uncategorize)
             .values_list('canonical_tag__slug', flat=True)
         )
         if tags:
