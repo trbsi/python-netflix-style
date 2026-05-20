@@ -49,25 +49,31 @@ class ManticoreSearchService(ManticoreBaseService):
             f"'{tag.replace('\\', '\\\\').replace('\'', '\\\'')}'"
             for tag in tags
         )
+        tag_set = set(tags)
         result = self.utils.sql(
             f"""
-            SELECT id, COUNT(*) AS matched_tags_count
+            SELECT id, tags
             FROM {self._video_tag_table()}
             WHERE tags IN ({tags_sql})
-            GROUP BY id
-            ORDER BY matched_tags_count DESC
-            LIMIT {limit}
+            LIMIT {limit * 200}
             """,
             raw_response=False,
         )
 
         hits = result.hits.hits
+        video_tags: dict[int, list[str]] = {}
+        for hit in hits:
+            video_id = int(hit.source['id'])
+            tag = hit.source['tags']
+            if tag in tag_set:
+                video_tags.setdefault(video_id, []).append(tag)
+
         matches = {
-            int(hit.source['id']): VideoTagSearchItem(
-                video_id=int(hit.source['id']),
-                matched_tags_count=int(hit.source['matched_tags_count']),
+            video_id: VideoTagSearchItem(
+                video_id=video_id,
+                matched_tags=matched_tags,
             )
-            for hit in hits
+            for video_id, matched_tags in video_tags.items()
         }
 
         return VideoTagSearchResult(matches)
