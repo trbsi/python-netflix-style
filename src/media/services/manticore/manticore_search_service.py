@@ -51,21 +51,21 @@ class ManticoreSearchService(ManticoreBaseService):
         )
         result = self.utils.sql(
             f"""
-            SELECT video_id, COUNT(*) AS matched_tags
+            SELECT id, COUNT(*) AS matched_tags_count
             FROM {self._video_tag_table()}
-            WHERE tag IN ({tags_sql})
-            GROUP BY video_id
-            ORDER BY matched_tags DESC
-            LIMIT {int(limit)}
+            WHERE tags IN ({tags_sql})
+            GROUP BY id
+            ORDER BY matched_tags_count DESC
+            LIMIT {limit}
             """,
             raw_response=False,
         )
 
-        hits = result.actual_instance.hits.get('hits', [])
+        hits = result.hits.hits
         matches = {
-            int(hit['_source']['video_id']): VideoTagSearchItem(
-                video_id=int(hit['_source']['video_id']),
-                tags=[None] * int(hit['_source']['matched_tags']),
+            int(hit.source['id']): VideoTagSearchItem(
+                video_id=int(hit.source['id']),
+                matched_tags_count=int(hit.source['matched_tags_count']),
             )
             for hit in hits
         }
