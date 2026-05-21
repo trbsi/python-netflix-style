@@ -1,7 +1,8 @@
 from django.db.models import QuerySet
 from django.utils.text import slugify
 
-from src.media.models import VideoItem, VideoTranslation
+from automationapp import settings
+from src.media.models import VideoItem, VideoTranslation, VideoCategory, VideoCategoryPivot
 
 
 class LocalRewriteService:
@@ -57,11 +58,21 @@ class LocalRewriteService:
         return updated
 
     def get_videos_for_rewrite(self, limit: int, count: bool, lang: str, last_id: int) -> dict:
-
         if lang == 'en':
+            category_ids = VideoCategory.objects.filter(slug__in=settings.FIXED_CATEGORIES).values_list('id', flat=True)
+            video_ids = []
+            for category_id in category_ids:
+                video_ids += (
+                    VideoCategoryPivot.objects
+                    .filter(category_id=category_id)
+                    .order_by('id')
+                    .values_list('video_id', flat=True)[:settings.FIXED_HARD_LIMIT_PER_CATEGORY]
+                )
+
             videos: QuerySet[VideoItem] = (
                 VideoItem.objects
                 .order_by("id")
+                .filter(id__in=video_ids)
                 .filter(slug_rewritten__isnull=True)[:limit]
             )
         else:
@@ -70,11 +81,6 @@ class LocalRewriteService:
                 .order_by("id")
                 .filter(id__gt=last_id)[:limit]
             )
-
-        # VideoItem.objects.filter(
-        #     id__in=list(videos.values_list('id', flat=True)),
-        #     slug_rewritten__isnull=True
-        # ).update(slug_rewritten="__PROCESSING__")
 
         counter = VideoItem.objects.filter(slug_rewritten__isnull=False).count() if count else 0
         videos_list = list(videos.values_list("id", flat=True))
@@ -88,6 +94,7 @@ class LocalRewriteService:
                 {
                     "video_id": v.id,
                     "title": v.title_rewritten if v.title_rewritten else v.title,
+                    "tags": v.tags,
                 }
                 for v in videos
             ]
