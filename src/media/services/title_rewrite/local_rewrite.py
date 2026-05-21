@@ -2,7 +2,7 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 
 from automationapp import settings
-from src.media.models import VideoItem, VideoTranslation, VideoCategory, VideoCategoryPivot
+from src.media.models import VideoItem, VideoTranslation, VideoCategory
 
 
 class LocalRewriteService:
@@ -60,19 +60,10 @@ class LocalRewriteService:
     def get_videos_for_rewrite(self, limit: int, count: bool, lang: str, last_id: int) -> dict:
         if lang == 'en':
             category_ids = VideoCategory.objects.filter(slug__in=settings.FIXED_CATEGORIES).values_list('id', flat=True)
-            video_ids = []
-            for category_id in category_ids:
-                video_ids += (
-                    VideoCategoryPivot.objects
-                    .filter(category_id=category_id)
-                    .order_by('id')
-                    .values_list('video_id', flat=True)[:settings.FIXED_HARD_LIMIT_PER_CATEGORY]
-                )
-
             videos: QuerySet[VideoItem] = (
                 VideoItem.objects
                 .order_by("id")
-                .filter(id__in=video_ids)
+                .filter(video_category_links__category_id__in=category_ids)
                 .filter(slug_rewritten__isnull=True)[:limit]
             )
         else:
