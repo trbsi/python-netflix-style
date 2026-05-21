@@ -1,4 +1,5 @@
 import time
+import traceback
 
 import bugsnag
 
@@ -40,6 +41,7 @@ class Command(BaseCommand):
             [total_imported, count_today] = dump_service.import_from_dump(site, import_all, zip_url)
         except Exception as e:
             self.error('Failed to import dump: {}'.format(e))
+            self.error(traceback.format_exc())
             bugsnag.notify(e)
 
         end = time.time()
