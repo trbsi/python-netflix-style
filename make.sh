@@ -55,6 +55,10 @@ restartall() {
   docker restart $NGINX
 }
 
+restartdjango() {
+  docker restart $DJANGO_CONTAINER
+}
+
 cleardockerlogs() {
   sudo find /var/lib/docker/containers/ -name "*.log.*" -type f -exec truncate -s 0 {} \;
 }
@@ -103,6 +107,9 @@ case "$1" in
         ;;
     restartall)
         restartall
+        ;;
+    restartdjango)
+        restartdjango
         ;;
     cleardockerlogs)
         cleardockerlogs
