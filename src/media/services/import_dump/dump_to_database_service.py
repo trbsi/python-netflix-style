@@ -10,7 +10,6 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 from tqdm import tqdm
 
-from automationapp import settings
 from src.core.utils.utils import safe_get
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 from src.media.services.manticore.manticore_index_service import ManticoreIndexService
@@ -59,31 +58,6 @@ class DumpToDatabaseService:
                     title = self._get_safe_by_size(fields, fields_map['title'], 'title')
                     slug = self._slug(fields, fields_map)
                     link = self._get_safe_by_size(fields, fields_map['url'], 'link')
-
-                    # ----- HARD LIMIT -----
-                    main_category = None
-
-                    for word in settings.FIXED_CATEGORIES:
-                        if re.search(rf'\b{re.escape(word)}\b', categories, re.IGNORECASE):
-                            main_category = word
-                            break
-
-                    if not main_category:
-                        continue
-
-                    db_category = VideoCategory.objects.filter(slug=slugify(main_category)).first()
-
-                    if db_category:
-                        if db_category.id not in category_counts:
-                            category_counts[db_category.id] = (
-                                VideoCategoryPivot.objects.filter(category=db_category).count()
-                            )
-
-                        if category_counts[db_category.id] >= settings.FIXED_HARD_LIMIT_PER_CATEGORY:
-                            continue
-
-                        category_counts[db_category.id] += 1
-                    # ----- HARD LIMIT -----
 
                     # VIDEOS
                     video = VideoItem(

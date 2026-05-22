@@ -1,4 +1,4 @@
-from manticoresearch import SearchResponse
+from manticoresearch import SearchResponse, SqlResponse
 
 from src.media.services.manticore.manticore_base_service import ManticoreBaseService
 from src.media.value_objects.search.video_search_item import VideoSearchItem
@@ -44,26 +44,27 @@ class ManticoreSearchService(ManticoreBaseService):
         return VideoSearchResult(result.scroll, items)
 
     def search_tags(self, tags: list, limit: int = 300) -> VideoTagSearchResult:
-        tags_sql = ', '.join(
+        tags_sql = ','.join(
             f"'{tag.replace('\\', '\\\\').replace('\'', '\\\'')}'"
             for tag in tags
         )
         tag_set = set(tags)
-        result = self.utils.sql(
+
+        result: SqlResponse = self.utils.sql(
             f"""
-            SELECT id, tags
+            SELECT video_id, tag
             FROM {self._video_tag_table()}
-            WHERE tags IN ({tags_sql})
+            WHERE tag IN ({tags_sql})
             LIMIT {limit * 200}
             """,
             raw_response=False,
         )
 
-        hits = result.hits.hits
+        hits: list = result.actual_instance.hits['hits']
         video_tags: dict[int, list[str]] = {}
         for hit in hits:
-            video_id = int(hit.source['id'])
-            tag = hit.source['tags']
+            video_id = int(hit['_source']['video_id'])
+            tag = hit['_source']['tag']
             if tag in tag_set:
                 video_tags.setdefault(video_id, []).append(tag)
 
