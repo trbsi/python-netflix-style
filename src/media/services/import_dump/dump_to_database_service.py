@@ -5,6 +5,7 @@ import sys
 from datetime import datetime
 
 import bugsnag
+from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.utils.text import slugify
 from tqdm import tqdm
@@ -202,6 +203,7 @@ class DumpToDatabaseService:
         )
 
     def _insert_batch_videos(self, items: list[VideoItem]) -> QuerySet[VideoItem]:
+        """
         VideoItem.objects.bulk_create(
             items,
             update_conflicts=True,
@@ -215,6 +217,21 @@ class DumpToDatabaseService:
         self.total_imported += items.count()
 
         return items
+        """
+        # Inserting 1 by 1 because when I do real bulk then auto increment "id" skips values
+        # Mysql reserve values before insert and then skips them if there are duplicates
+        inserted_external_ids = []
+        for video in items:
+            try:
+                video.save()
+                inserted_external_ids.append(video.external_id)
+            except IntegrityError:
+                continue
+
+        result = VideoItem.objects.filter(external_id__in=inserted_external_ids)
+        self.total_imported += result.count()
+
+        return result
 
     def _get_external_id(self, site: str, fields: list, fields_map: dict) -> str:
         external_id = fields[fields_map['external_id']]
