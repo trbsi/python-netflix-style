@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from django.db.models import QuerySet
 
 from src.discovery.enums.tag_group_enum import TagGroupEnum
@@ -11,68 +13,66 @@ class TagVideoResolutionService:
         self._manticore = ManticoreSearchService()
 
     def resolve_video_ids_by_tag_slugs(self, canonical_tag_slugs: list[str], limit: int = 300) -> list[int]:
-        # Resolve canonical tag slugs to their DB primary keys
         canonical_tag_ids = list(
             CanonicalTag.objects
             .filter(slug__in=canonical_tag_slugs)
             .values_list('id', flat=True)
         )
 
-        # Fetch all raw tag aliases that belong to the resolved canonical tags
-        tag_aliases: QuerySet[TagAlias] = TagAlias.objects.filter(canonical_tag_id__in=canonical_tag_ids)
+        tag_aliases: QuerySet[TagAlias] = (
+            TagAlias.objects
+            .filter(canonical_tag_id__in=canonical_tag_ids)
+            .filter(tag_group__isnull=False)
+        )
+
         if not tag_aliases:
             return []
 
-        # Build a lookup: raw_tag → TagAliasMeta(group_weight, rarity_score)
-        # group_weight comes from TagGroupEnum using the alias's tag_group name;
-        # defaults to 1.0 when tag_group is unset or not in the enum
+        # Build raw_tag → TagAliasMeta and group → [TagAliasMeta] lookups simultaneously
         raw_tag_metadata: dict[str, TagAliasMeta] = {}
+        query_groups: dict[str, list[TagAliasMeta]] = defaultdict(list)
         for alias in tag_aliases:
-            average_group_weight = 1.0
-            if alias.tag_group:
-                average_group_weight = TagGroupEnum[alias.tag_group].value
-
-            raw_tag_metadata[alias.raw_tag] = TagAliasMeta(
-                group_weight=average_group_weight,
+            group_name: str = alias.tag_group
+            group_weight = TagGroupEnum[group_name].value
+            meta = TagAliasMeta(
+                group_weight=group_weight,
                 rarity_score=alias.rarity_score,
+                tag_group=group_name,
             )
+            raw_tag_metadata[alias.raw_tag] = meta
+            query_groups[group_name].append(meta)
 
         raw_tags = list(raw_tag_metadata.keys())
-        # Total number of raw tags sent to Manticore — denominator for coverage
-        raw_tags_count = len(raw_tags)
 
-        # Sum of all tag group weights in the query — denominator for match_quality
-        total_raw_tags_weight = sum(m.group_weight for m in raw_tag_metadata.values())
-
-        # e.g. 2 "roles" tags + 1 "setting" + 1 "acts" → roles * 2/4 + setting * 1/4 + acts * 1/4
-        # equivalent to total_query_weight / total_raw_tags since each tag contributes its group weight once
-        average_group_weight = total_raw_tags_weight / raw_tags_count
-
-        # Query Manticore to find which videos contain any of the raw tags,
-        # and get the specific matched tags per video
         result = self._manticore.search_tags(tags=raw_tags, limit=limit)
 
-        # Score each video using:
-        #   video_score = group_weight * coverage * match_quality * rarity_score
+        # Score each video by summing per-group contributions:
+        #   score = Σ_g  group_weight_g * (matched_g / query_g) * avg_rarity_g
+        #
+        # This ensures a high-weight group (e.g. roles=4.5) always outweighs many
+        # low-weight group matches regardless of tag count per group.
         scored_videos = []
         for video_id, item in result.items.items():
-            matched_tags = []
+            matched_by_group: dict[str, list[TagAliasMeta]] = defaultdict(list)
             for tag in item.matched_tags:
                 if tag in raw_tag_metadata:
-                    matched_tags.append(raw_tag_metadata[tag])
+                    meta = raw_tag_metadata[tag]
+                    matched_by_group[meta.tag_group].append(meta)
 
-            if not matched_tags:
+            if not matched_by_group:
                 continue
 
-            # coverage = matched tags / raw tags count
-            coverage = len(item.matched_tags) / raw_tags_count
-            # match_quality = sum(matched tag weights) / sum(all query tag weights)
-            match_quality = sum(m.group_weight for m in matched_tags) / total_raw_tags_weight
-            # rarity_score = avg(rarity score of each matched tag)
-            rarity_score = sum(m.rarity_score for m in matched_tags) / len(matched_tags)
+            score = 0.0
+            for group_name, tag_alias_meta in query_groups.items():
+                matched_metas = matched_by_group.get(group_name)
+                if not matched_metas:
+                    continue
+                group_weight = tag_alias_meta[0].group_weight
+                group_coverage = len(matched_metas) / len(tag_alias_meta)
+                avg_rarity = sum(m.rarity_score for m in matched_metas) / len(matched_metas)
+                score += group_weight * group_coverage * avg_rarity
 
-            score = average_group_weight * coverage * match_quality * rarity_score
             scored_videos.append((video_id, score))
 
-        scored_videos.sort(key=lambda item: item[1], reverse=True)
+        scored_videos.sort(key=lambda x: x[1], reverse=True)
         return [video_id for video_id, _ in scored_videos[:limit]]

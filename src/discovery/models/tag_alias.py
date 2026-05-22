@@ -11,3 +11,8 @@ class TagAlias(models.Model):
     tag_group = models.CharField(max_length=50, null=True)
 
     objects = models.Manager()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['canonical_tag', 'tag_group'], name='canonical_tag_tag_group_idx'),
+        ]
