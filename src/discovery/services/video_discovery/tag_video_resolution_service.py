@@ -20,6 +20,8 @@ class TagVideoResolutionService:
             .values_list('id', flat=True)
         )
 
+        # Only aliases with a known group are scored; ungrouped aliases have no
+        # weight to contribute so they are excluded entirely.
         tag_aliases: QuerySet[TagAlias] = (
             TagAlias.objects
             .filter(canonical_tag_id__in=canonical_tag_ids)
@@ -29,7 +31,10 @@ class TagVideoResolutionService:
         if not tag_aliases:
             return []
 
-        # Build raw_tag → TagAliasMeta and group → TagGroupMeta lookups simultaneously
+        # raw_tag_metadata — fast lookup when checking which Manticore-returned tags
+        #   are part of this query and what their rarity/group is.
+        # query_groups — the expected set of tags per group; used as the denominator
+        #   when computing how much of a group a video covered.
         raw_tag_metadata: dict[str, TagAliasMeta] = {}
         query_groups: dict[str, TagGroupMeta] = {}
         for alias in tag_aliases:
@@ -44,13 +49,14 @@ class TagVideoResolutionService:
 
         result = self._manticore.search_tags(tags=raw_tags, limit=limit)
 
-        # Score each video by summing per-group contributions:
-        #   score = Σ_g  group_weight_g * (matched_g / query_g) * avg_rarity_g
+        # Final score is the sum of per-group contributions:
+        #   score = Σ_g  weight_g × coverage_g × avg_rarity_g
         #
-        # This ensures a high-weight group (e.g. roles=4.5) always outweighs many
-        # low-weight group matches regardless of tag count per group.
+        # Scoring per group rather than across all tags prevents a large number of
+        # low-weight group tags from outscoring a single high-weight group match.
         scored_videos = []
         for video_id, item in result.items.items():
+            # Bucket each matched tag into its group so coverage can be computed per group.
             matched_by_group: dict[str, list[TagAliasMeta]] = defaultdict(list)
             for tag in item.matched_tags:
                 if tag in raw_tag_metadata:
@@ -65,7 +71,10 @@ class TagVideoResolutionService:
                 matched_metas = matched_by_group.get(group_name)
                 if not matched_metas:
                     continue
+                # Fraction of this group's query tags the video actually contains.
                 group_coverage = len(matched_metas) / len(query_group.tag_aliases)
+                # Rarity rewards uncommon tag combinations; averaged so tag count
+                # within the group doesn't inflate the score.
                 avg_rarity = sum(m.rarity_score for m in matched_metas) / len(matched_metas)
                 score += query_group.weight * group_coverage * avg_rarity
 
