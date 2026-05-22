@@ -17,8 +17,7 @@ class ManticoreSearchService(ManticoreBaseService):
             },
             "query": {
                 "match": {
-                    "query": search_term,
-                    "fields": ["tags", "categories"],
+                    "tags,categories": search_term
                 }
             },
             "sort": [
