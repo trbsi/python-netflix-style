@@ -5,6 +5,7 @@ from django.db.models import QuerySet
 from src.discovery.enums.tag_group_enum import TagGroupEnum
 from src.discovery.models import CanonicalTag, TagAlias
 from src.discovery.services.video_discovery.tag_alias_meta import TagAliasMeta
+from src.discovery.services.video_discovery.tag_group_meta import TagGroupMeta
 from src.media.services.manticore.manticore_search_service import ManticoreSearchService
 
 
@@ -28,19 +29,16 @@ class TagVideoResolutionService:
         if not tag_aliases:
             return []
 
-        # Build raw_tag → TagAliasMeta and group → [TagAliasMeta] lookups simultaneously
+        # Build raw_tag → TagAliasMeta and group → TagGroupMeta lookups simultaneously
         raw_tag_metadata: dict[str, TagAliasMeta] = {}
-        query_groups: dict[str, list[TagAliasMeta]] = defaultdict(list)
+        query_groups: dict[str, TagGroupMeta] = {}
         for alias in tag_aliases:
             group_name: str = alias.tag_group
-            group_weight = TagGroupEnum[group_name].value
-            meta = TagAliasMeta(
-                group_weight=group_weight,
-                rarity_score=alias.rarity_score,
-                tag_group=group_name,
-            )
+            meta = TagAliasMeta(rarity_score=alias.rarity_score, tag_group=group_name)
             raw_tag_metadata[alias.raw_tag] = meta
-            query_groups[group_name].append(meta)
+            if group_name not in query_groups:
+                query_groups[group_name] = TagGroupMeta(weight=TagGroupEnum[group_name].value)
+            query_groups[group_name].tag_aliases.append(meta)
 
         raw_tags = list(raw_tag_metadata.keys())
 
@@ -63,14 +61,13 @@ class TagVideoResolutionService:
                 continue
 
             score = 0.0
-            for group_name, tag_alias_meta in query_groups.items():
+            for group_name, query_group in query_groups.items():
                 matched_metas = matched_by_group.get(group_name)
                 if not matched_metas:
                     continue
-                group_weight = tag_alias_meta[0].group_weight
-                group_coverage = len(matched_metas) / len(tag_alias_meta)
+                group_coverage = len(matched_metas) / len(query_group.tag_aliases)
                 avg_rarity = sum(m.rarity_score for m in matched_metas) / len(matched_metas)
-                score += group_weight * group_coverage * avg_rarity
+                score += query_group.weight * group_coverage * avg_rarity
 
             scored_videos.append((video_id, score))
 
