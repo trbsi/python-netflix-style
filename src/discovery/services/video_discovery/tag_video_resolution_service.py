@@ -1,9 +1,8 @@
 from collections import defaultdict
 
-from django.db.models import QuerySet
-
+from src.core.utils.utils import dump_debug
 from src.discovery.enums.tag_group_enum import TagGroupEnum
-from src.discovery.models import CanonicalTag, TagAlias
+from src.discovery.models import TagAlias
 from src.discovery.services.video_discovery.tag_alias_meta import TagAliasMeta
 from src.discovery.services.video_discovery.tag_group_meta import TagGroupMeta
 from src.media.services.manticore.manticore_search_service import ManticoreSearchService
@@ -13,23 +12,24 @@ class TagVideoResolutionService:
     def __init__(self):
         self._manticore = ManticoreSearchService()
 
-    def resolve_video_ids_by_tag_slugs(self, canonical_tag_slugs: list[str], limit: int = 300) -> list[int]:
-        canonical_tag_ids = list(
-            CanonicalTag.objects
-            .filter(slug__in=canonical_tag_slugs)
-            .values_list('id', flat=True)
-        )
+    def resolve_video_ids_by_tag_slugs(self, tag_aliases_grouped: dict, limit: int = 300) -> list[int]:
+        raw_tags = [
+            raw_tag
+            for tag_group, raw_tags in tag_aliases_grouped.items()
+            for raw_tag in raw_tags
+        ]
 
-        # Only aliases with a known group are scored; ungrouped aliases have no
-        # weight to contribute so they are excluded entirely.
-        tag_aliases: QuerySet[TagAlias] = (
-            TagAlias.objects
-            .filter(canonical_tag_id__in=canonical_tag_ids)
-            .filter(tag_group__isnull=False)
-        )
-
-        if not tag_aliases:
+        dump_debug(tag_aliases_grouped)
+        if not raw_tags:
             return []
+
+        tag_aliases_by_raw_tag = {
+            alias.raw_tag: alias
+            for alias in TagAlias.objects.filter(raw_tag__in=raw_tags).only(
+                "raw_tag",
+                "rarity_score",
+            )
+        }
 
         # raw_tag_metadata — fast lookup when checking which Manticore-returned tags
         #   are part of this query and what their rarity/group is.
@@ -37,15 +37,26 @@ class TagVideoResolutionService:
         #   when computing how much of a group a video covered.
         raw_tag_metadata: dict[str, TagAliasMeta] = {}
         query_groups: dict[str, TagGroupMeta] = {}
-        for alias in tag_aliases:
-            group_name: str = alias.tag_group
-            meta = TagAliasMeta(rarity_score=alias.rarity_score, tag_group=group_name)
-            raw_tag_metadata[alias.raw_tag] = meta
+        for group_name, group_raw_tags in tag_aliases_grouped.items():
+            if group_name not in TagGroupEnum.__members__:
+                continue
+
             if group_name not in query_groups:
                 query_groups[group_name] = TagGroupMeta(weight=TagGroupEnum[group_name].value)
-            query_groups[group_name].tag_aliases.append(meta)
+
+            for raw_tag in group_raw_tags:
+                alias = tag_aliases_by_raw_tag.get(raw_tag)
+                if not alias:
+                    continue
+
+                meta = TagAliasMeta(rarity_score=alias.rarity_score, tag_group=group_name)
+                raw_tag_metadata[raw_tag] = meta
+                query_groups[group_name].tag_aliases.append(meta)
 
         raw_tags = list(raw_tag_metadata.keys())
+
+        if not raw_tags:
+            return []
 
         result = self._manticore.search_tags(tags=raw_tags, limit=limit)
 

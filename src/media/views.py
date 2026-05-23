@@ -21,12 +21,12 @@ from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
     USE_CACHE = False
-    lang = get_active_language()
     personalized_tags = request.COOKIES.get('personalized_tags')
     if personalized_tags:
         personalized_tags = signing.loads(personalized_tags).get('tags')
 
     if USE_CACHE:
+        lang = get_active_language()
         html = cache.get(f'frontpage_html_{lang}')
 
         if not html:
