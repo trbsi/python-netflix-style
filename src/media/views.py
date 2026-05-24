@@ -23,7 +23,8 @@ def media_home(request: HttpRequest) -> HttpResponse:
     USE_CACHE = False
     personalized_tags = request.COOKIES.get('personalized_tags')
     if personalized_tags:
-        personalized_tags = signing.loads(personalized_tags).get('tags')
+        personalized_tags = signing.loads(personalized_tags)
+        personalized_tags = personalized_tags.get('tags', personalized_tags)
 
     if USE_CACHE:
         lang = get_active_language()

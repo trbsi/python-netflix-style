@@ -1,5 +1,4 @@
 import re
-from collections import defaultdict
 
 import spacy
 from django.core import signing
@@ -16,13 +15,13 @@ class PersonalizeSiteService():
 
         text = self.clean_query(text)
         text_array = self.to_tokens(text)
-        tags = self.get_tag_groups(text_array)
-
-        if not tags:
-            return None
+        canonical_tags = self.get_canonical_tags(text_array)
+        extra_tags = [tag for tag in text_array if tag not in canonical_tags]
 
         signed_value = signing.dumps({
-            "tags": tags,
+            "query": text,
+            "canonical_tags": canonical_tags,
+            "extra_tags": extra_tags,
         })
 
         return signed_value
@@ -93,17 +92,15 @@ class PersonalizeSiteService():
 
         return ngrams
 
-    def get_tag_groups(self, query_tags: list) -> dict | None:
+    def get_canonical_tags(self, query_tags: list) -> list:
         tags: QuerySet[TagAlias] = (
             TagAlias.objects
             .filter(raw_tag__in=list(query_tags))
             .filter(canonical_tag__isnull=False)
+            .values_list('canonical_tag__slug', flat=True)
         )
 
         if tags:
-            result = defaultdict(list)
-            for tag in tags:
-                result[tag.tag_group].append(tag.raw_tag)
-            return dict(result)
+            return list(tags)
 
-        return None
+        return []

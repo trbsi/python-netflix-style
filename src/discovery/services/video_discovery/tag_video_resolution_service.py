@@ -1,6 +1,5 @@
 from collections import defaultdict
 
-from src.core.utils.utils import dump_debug
 from src.discovery.enums.tag_group_enum import TagGroupEnum
 from src.discovery.models import TagAlias
 from src.discovery.services.video_discovery.tag_alias_meta import TagAliasMeta
@@ -12,14 +11,14 @@ class TagVideoResolutionService:
     def __init__(self):
         self._manticore = ManticoreSearchService()
 
-    def resolve_video_ids_by_tag_slugs(self, tag_aliases_grouped: dict, limit: int = 300) -> list[int]:
+    def resolve_video_ids_by_tag_slugs(self, tags: dict, limit: int = 300) -> list[int]:
+        tags = self._resolve_tag_groups(tags)
         raw_tags = [
             raw_tag
-            for tag_group, raw_tags in tag_aliases_grouped.items()
+            for tag_group, raw_tags in tags.items()
             for raw_tag in raw_tags
         ]
 
-        dump_debug(tag_aliases_grouped)
         if not raw_tags:
             return []
 
@@ -37,7 +36,7 @@ class TagVideoResolutionService:
         #   when computing how much of a group a video covered.
         raw_tag_metadata: dict[str, TagAliasMeta] = {}
         query_groups: dict[str, TagGroupMeta] = {}
-        for group_name, group_raw_tags in tag_aliases_grouped.items():
+        for group_name, group_raw_tags in tags.items():
             if group_name not in TagGroupEnum.__members__:
                 continue
 
@@ -93,3 +92,34 @@ class TagVideoResolutionService:
 
         scored_videos.sort(key=lambda x: x[1], reverse=True)
         return [video_id for video_id, _ in scored_videos[:limit]]
+
+    def _resolve_tag_groups(self, tags: dict) -> dict[str, list[str]]:
+        if not tags:
+            return {}
+
+        canonical_tags = tags.get("canonical_tags", [])
+
+        if not canonical_tags:
+            return {}
+
+        aliases = (
+            TagAlias.objects
+            .filter(canonical_tag__slug__in=canonical_tags)
+            .exclude(tag_group__isnull=True)
+            .only("raw_tag", "tag_group")
+        )
+
+        grouped_tags: dict[str, list[str]] = defaultdict(list)
+        seen_tags: set[str] = set()
+
+        for alias in aliases:
+            if alias.tag_group not in TagGroupEnum.__members__:
+                continue
+
+            if alias.raw_tag in seen_tags:
+                continue
+
+            grouped_tags[alias.tag_group].append(alias.raw_tag)
+            seen_tags.add(alias.raw_tag)
+
+        return dict(grouped_tags)
