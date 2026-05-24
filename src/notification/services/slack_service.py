@@ -7,6 +7,7 @@ from src.notification.value_objects.push_notification_value_object import PushNo
 
 
 class SlackService:
+    # https://medium.com/@sizanmahmud08/how-to-integrate-slack-with-your-django-project-a-complete-step-by-step-guide-a7b1253cdcc3
     @staticmethod
     def send(notification: PushNotificationValueObject) -> None:
         client = WebClient(token=settings.SLACK_BOT_TOKEN)
