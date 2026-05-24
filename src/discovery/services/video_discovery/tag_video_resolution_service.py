@@ -2,16 +2,34 @@ from collections import defaultdict
 
 from src.discovery.enums.tag_group_enum import TagGroupEnum
 from src.discovery.models import TagAlias
-from src.discovery.services.video_discovery.tag_alias_meta import TagAliasMeta
-from src.discovery.services.video_discovery.tag_group_meta import TagGroupMeta
+from src.discovery.services.video_discovery.related_tag_expansion_service import RelatedTagExpansionService
+from src.discovery.services.video_discovery.value_objects import (
+    ExpandedRelatedTags,
+    VideoRankingResult,
+    VideoRankingScore,
+    TagAliasMeta,
+    TagGroupMeta
+)
+from src.discovery.services.video_discovery.video_semantic_scoring_service import (
+    VideoSemanticScoringService,
+)
 from src.media.services.manticore.manticore_search_service import ManticoreSearchService
 
 
 class TagVideoResolutionService:
     def __init__(self):
         self._manticore = ManticoreSearchService()
+        self._related_expansion = RelatedTagExpansionService()
+        self._semantic_scoring = VideoSemanticScoringService()
 
     def resolve_video_ids_by_tag_slugs(self, tags: dict, limit: int = 300) -> list[int]:
+        return self.resolve_scored_videos_by_tag_slugs(tags, limit).get_video_ids()
+
+    def resolve_scored_videos_by_tag_slugs(self, tags: dict, limit: int = 300) -> VideoRankingResult:
+        expanded_tags = self._related_expansion.expand(
+            canonical_tags=tags.get("canonical_tags", []),
+        )
+
         tags = self._resolve_tag_groups(tags)
         raw_tags = [
             raw_tag
@@ -20,7 +38,7 @@ class TagVideoResolutionService:
         ]
 
         if not raw_tags:
-            return []
+            return VideoRankingResult(items=[], expanded_related_tags=expanded_tags.expansions_by_query_slug)
 
         tag_aliases_by_raw_tag = {
             alias.raw_tag: alias
@@ -55,17 +73,18 @@ class TagVideoResolutionService:
         raw_tags = list(raw_tag_metadata.keys())
 
         if not raw_tags:
-            return []
+            return VideoRankingResult(items=[], expanded_related_tags=expanded_tags.expansions_by_query_slug)
 
-        result = self._manticore.search_tags(tags=raw_tags, limit=limit)
+        direct_result = self._manticore.search_tags(tags=raw_tags, limit=limit)
 
         # Final score is the sum of per-group contributions:
         #   score = Σ_g  weight_g × coverage_g × avg_rarity_g
         #
         # Scoring per group rather than across all tags prevents a large number of
         # low-weight group tags from outscoring a single high-weight group match.
-        scored_videos = []
-        for video_id, item in result.items.items():
+        direct_scores_by_video_id: dict[int, float] = {}
+        direct_matched_tags_by_video_id: dict[int, list[str]] = {}
+        for video_id, item in direct_result.items.items():
             # Bucket each matched tag into its group so coverage can be computed per group.
             matched_by_group: dict[str, list[TagAliasMeta]] = defaultdict(list)
             for tag in item.matched_tags:
@@ -88,10 +107,93 @@ class TagVideoResolutionService:
                 avg_rarity = sum(m.rarity_score for m in matched_metas) / len(matched_metas)
                 score += query_group.weight * group_coverage * avg_rarity
 
-            scored_videos.append((video_id, score))
+            direct_scores_by_video_id[video_id] = score
+            direct_matched_tags_by_video_id[video_id] = item.matched_tags
 
-        scored_videos.sort(key=lambda x: x[1], reverse=True)
-        return [video_id for video_id, _ in scored_videos[:limit]]
+        related_result = self._search_related_tags(expanded_tags, raw_tags, limit)
+        related_scores_by_video_id: dict[int, float] = {}
+        related_matched_tags_by_video_id: dict[int, list[str]] = {}
+
+        if related_result:
+            related_raw_tags = {
+                tag
+                for item in related_result.items.values()
+                for tag in item.matched_tags
+            }
+            canonical_ids_by_raw_tag = self._canonical_ids_by_raw_tag(related_raw_tags)
+
+            for video_id, item in related_result.items.items():
+                video_canonical_tag_ids = {
+                    canonical_ids_by_raw_tag[tag]
+                    for tag in item.matched_tags
+                    if tag in canonical_ids_by_raw_tag
+                }
+                semantic_score = self._semantic_scoring.score_semantic(
+                    video_canonical_tag_ids=video_canonical_tag_ids,
+                    expanded_tags=expanded_tags,
+                )
+
+                if semantic_score.related_score <= 0:
+                    continue
+
+                related_scores_by_video_id[video_id] = semantic_score.related_score
+                related_matched_tags_by_video_id[video_id] = [
+                    tag
+                    for tag in item.matched_tags
+                    if canonical_ids_by_raw_tag.get(tag) in semantic_score.related_tag_ids
+                ]
+
+        video_ids = set(direct_scores_by_video_id) | set(related_scores_by_video_id)
+        scored_videos = [
+            VideoRankingScore(
+                video_id=video_id,
+                direct_score=direct_scores_by_video_id.get(video_id, 0.0),
+                related_score=related_scores_by_video_id.get(video_id, 0.0),
+                final_score=(
+                        direct_scores_by_video_id.get(video_id, 0.0)
+                        + related_scores_by_video_id.get(video_id, 0.0)
+                ),
+                direct_matched_tags=direct_matched_tags_by_video_id.get(video_id, []),
+                related_matched_tags=related_matched_tags_by_video_id.get(video_id, []),
+            )
+            for video_id in video_ids
+        ]
+
+        scored_videos.sort(key=lambda item: item.final_score, reverse=True)
+
+        return VideoRankingResult(
+            items=scored_videos[:limit],
+            expanded_related_tags=expanded_tags.expansions_by_query_slug,
+        )
+
+    def _search_related_tags(self, expanded_tags: ExpandedRelatedTags, direct_raw_tags: list[str], limit: int):
+        if not expanded_tags.related_tag_ids:
+            return None
+
+        related_raw_tags = list(
+            TagAlias.objects
+            .filter(canonical_tag_id__in=expanded_tags.related_tag_ids)
+            .exclude(raw_tag__in=direct_raw_tags)
+            .values_list('raw_tag', flat=True)
+        )
+
+        if not related_raw_tags:
+            return None
+
+        return self._manticore.search_tags(tags=related_raw_tags, limit=limit)
+
+    def _canonical_ids_by_raw_tag(self, raw_tags: set[str]) -> dict[str, int]:
+        if not raw_tags:
+            return {}
+
+        return {
+            raw_tag: canonical_tag_id
+            for raw_tag, canonical_tag_id in (
+                TagAlias.objects
+                .filter(raw_tag__in=raw_tags, canonical_tag__isnull=False)
+                .values_list('raw_tag', 'canonical_tag_id')
+            )
+        }
 
     def _resolve_tag_groups(self, tags: dict) -> dict[str, list[str]]:
         if not tags:
