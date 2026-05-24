@@ -5,6 +5,9 @@ from django.core.cache import cache
 from automationapp import settings
 from src.core.utils.utils import full_url_for_route
 from src.media.models import VideoItem
+from src.media.utils.utils import limited_video_ids
+from src.notification.services.notification_service import NotificationService
+from src.notification.value_objects.push_notification_value_object import PushNotificationValueObject
 
 
 class IndexNowService:
@@ -15,8 +18,9 @@ class IndexNowService:
         last_id = int(cache.get(self.CACHE_KEY, 0))
         videos: list[VideoItem] = list(
             VideoItem.objects.order_by('id')
-            .filter(slug_rewritten__isnull=False)
-            .filter(id__gt=last_id)[:self.BATCH]
+            .filter(id__in=limited_video_ids())
+            # .filter(id__gt=last_id)
+            .filter(slug_rewritten__isnull=False)[:self.BATCH]
         )
 
         if not videos:
@@ -48,7 +52,9 @@ class IndexNowService:
             print(body)
             last_id = videos[-1].id
             cache.set(self.CACHE_KEY, last_id, timeout=None)
-            bugsnag.notify(Exception(f"URLs submitted. Last id is {last_id}"))
+            message = (f"URLs submitted. Last id is {last_id}")
+            push = PushNotificationValueObject(body=message)
+            NotificationService.send_notification(push)
         else:
             print(result.status_code)
             print(result.headers.get("Content-Type"))
