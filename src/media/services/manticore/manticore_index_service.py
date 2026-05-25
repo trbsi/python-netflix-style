@@ -50,7 +50,9 @@ class ManticoreIndexService(ManticoreBaseService):
     # https://manual.manticoresearch.com/Data_creation_and_modification/Updating_documents/REPLACE?client=Python
     def index_batch(self, rows: list[VideoItem] | QuerySet[VideoItem]):
         lang = get_active_language()
-        docs = []
+        video_docs = []
+        video_tag_docs = []
+
         for video in rows:
             translation = None
 
@@ -62,7 +64,7 @@ class ManticoreIndexService(ManticoreBaseService):
             title = video.main_title if lang == "en" else translation.title
             slug = video.slug if lang == "en" else translation.slug
 
-            docs.append({
+            video_docs.append({
                 "replace": {
                     "table": self._video_table(lang),
                     "id": video.id,
@@ -79,7 +81,7 @@ class ManticoreIndexService(ManticoreBaseService):
 
             for tag in video.categories_and_tags():
                 doc_id = int(hashlib.md5(f"{video.id}:{tag}".encode()).hexdigest()[:15], 16)
-                docs.append({
+                video_tag_docs.append({
                     "replace": {
                         "table": self._video_tag_table(lang),
                         "id": doc_id,
@@ -90,7 +92,8 @@ class ManticoreIndexService(ManticoreBaseService):
                     }
                 })
 
-        self.indexApi.bulk('\n'.join(map(json.dumps, docs)))
+        self.indexApi.bulk('\n'.join(map(json.dumps, video_docs)))
+        self.indexApi.bulk('\n'.join(map(json.dumps, video_tag_docs)))
 
     def delete_by_id(self, id: int) -> None:
         codes = get_language_codes()
