@@ -1,5 +1,5 @@
-import hashlib
 import json
+import zlib
 
 from django.db.models import QuerySet
 from manticoresearch import DeleteDocumentRequest
@@ -80,7 +80,7 @@ class ManticoreIndexService(ManticoreBaseService):
             })
 
             for tag in video.categories_and_tags():
-                doc_id = int(hashlib.md5(f"{video.id}:{tag}".encode()).hexdigest()[:15], 16)
+                doc_id = zlib.crc32(f"{video.id}:{tag}".encode())
                 video_tag_docs.append({
                     "replace": {
                         "table": self._video_tag_table(lang),
