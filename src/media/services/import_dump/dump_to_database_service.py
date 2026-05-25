@@ -15,6 +15,8 @@ from src.media.services.manticore.manticore_index_service import ManticoreIndexS
 
 
 class DumpToDatabaseService:
+    MAX_VIDEOS_IN_DATABASE = 100_000
+
     def __init__(self):
         self.search_index_service = ManticoreIndexService()
         self.total_imported = 0
@@ -24,6 +26,13 @@ class DumpToDatabaseService:
         print("Reading CSV for database insert...")
         csv.field_size_limit(sys.maxsize)
 
+        current_count = VideoItem.objects.count()
+        if current_count >= self.MAX_VIDEOS_IN_DATABASE:
+            print(
+                f"Database already contains {current_count} videos (limit: {self.MAX_VIDEOS_IN_DATABASE}). Skipping import.")
+            return 0
+
+        import_limit = self.MAX_VIDEOS_IN_DATABASE - current_count
         self.site = site
         videos_batch = 10_000
         categories_batch = 1000
@@ -37,10 +46,13 @@ class DumpToDatabaseService:
             total_rows = sum(1 for row in reader)
             print("Total rows:", total_rows)
             pbar = tqdm(total=total_rows)
-            category_counts = {}
 
             f.seek(0)  # reset to first line
             for index, line in enumerate(f):
+                if self.total_imported >= import_limit:
+                    print(f"Import limit of {import_limit} videos reached. Stopping.")
+                    break
+
                 line = line.strip()
 
                 # eporner iframe is created manually
