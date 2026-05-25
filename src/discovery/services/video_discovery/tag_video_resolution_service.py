@@ -8,7 +8,7 @@ from src.discovery.services.video_discovery.value_objects import (
     VideoRankingResult,
     VideoRankingScore,
     TagAliasMeta,
-    TagGroupMeta
+    TagGroupMeta,
 )
 from src.discovery.services.video_discovery.video_semantic_scoring_service import (
     VideoSemanticScoringService,
@@ -33,14 +33,14 @@ class TagVideoResolutionService:
         )
 
         tag_groups = self._resolve_tag_groups(tags)
-        raw_tag_metadata, query_groups = self._build_tag_metadata(tag_groups)
+        query_groups = self._build_query_groups(tag_groups)
+        direct_raw_tags = [m.raw_tag for g in query_groups.values() for m in g.tag_aliases]
 
-        if not raw_tag_metadata:
+        if not direct_raw_tags:
             return VideoRankingResult(items=[])
 
-        direct_raw_tags = list(raw_tag_metadata)
         direct_scores, direct_matched = self._score_direct_results(
-            direct_raw_tags, raw_tag_metadata, query_groups, limit
+            direct_raw_tags, query_groups, limit
         )
         related_scores, related_matched = self._score_related_results(
             expanded_tags, direct_raw_tags, limit
@@ -65,25 +65,19 @@ class TagVideoResolutionService:
 
         return VideoRankingResult(items=scored_videos[:limit])
 
-    def _build_tag_metadata(
-            self, tag_groups: dict[str, list[str]]
-    ) -> tuple[dict[str, TagAliasMeta], dict[str, TagGroupMeta]]:
-        """Build per-tag and per-group lookup structures needed for direct scoring.
+    def _build_query_groups(self, tag_groups: dict[str, list[str]]) -> dict[str, TagGroupMeta]:
+        """Build per-group metadata needed for direct scoring.
 
-        Returns raw_tag_metadata (rarity + group per raw tag) and query_groups
-        (weight + full tag list per group, used as the coverage denominator).
+        Each group holds its weight and the full list of TagAliasMeta (raw_tag + rarity),
+        which serves as the coverage denominator and the set to match against.
         Tags with no alias in the DB are silently dropped.
         """
-        # raw_tag_metadata — fast lookup: is this Manticore-returned tag part of the query,
-        #   and what is its rarity/group?
-        # query_groups — the full set of tags per group; denominator for coverage per group.
         all_raw_tags = [tag for group_tags in tag_groups.values() for tag in group_tags]
         rarity_by_raw_tag = {
             alias.raw_tag: alias.rarity_score
             for alias in TagAlias.objects.filter(raw_tag__in=all_raw_tags).only("raw_tag", "rarity_score")
         }
 
-        raw_tag_metadata: dict[str, TagAliasMeta] = {}
         query_groups: dict[str, TagGroupMeta] = {}
 
         for group_name, group_raw_tags in tag_groups.items():
@@ -98,53 +92,44 @@ class TagVideoResolutionService:
                 rarity = rarity_by_raw_tag.get(raw_tag)
                 if rarity is None:
                     continue
-                meta = TagAliasMeta(rarity_score=rarity, tag_group=group_name)
-                raw_tag_metadata[raw_tag] = meta
-                query_group.tag_aliases.append(meta)
+                query_group.tag_aliases.append(TagAliasMeta(raw_tag=raw_tag, rarity_score=rarity))
 
-        return raw_tag_metadata, query_groups
+        return query_groups
 
     def _score_direct_results(
             self,
             raw_tags: list[str],
-            raw_tag_metadata: dict[str, TagAliasMeta],
             query_groups: dict[str, TagGroupMeta],
             limit: int,
     ) -> tuple[dict[int, float], dict[int, list[str]]]:
         """Search Manticore for videos matching raw_tags and score each by group coverage × rarity.
 
+        Final score is the sum of per-group contributions:
+          score = Σ_g  weight_g × coverage_g × avg_rarity_g
+
+        Scoring per group rather than across all tags prevents a large number of
+        low-weight group tags from outscoring a single high-weight group match.
         Returns (scores_by_video_id, matched_tags_by_video_id).
         """
-        # Final score is the sum of per-group contributions:
-        #   score = Σ_g  weight_g × coverage_g × avg_rarity_g
-        #
-        # Scoring per group rather than across all tags prevents a large number of
-        # low-weight group tags from outscoring a single high-weight group match.
         result = self._manticore.search_tags(tags=raw_tags, limit=limit)
         scores: dict[int, float] = {}
         matched_tags: dict[int, list[str]] = {}
 
         for video_id, item in result.items.items():
-            matched_by_group: dict[str, list[TagAliasMeta]] = defaultdict(list)
-            for tag in item.matched_tags:
-                if tag in raw_tag_metadata:
-                    meta = raw_tag_metadata[tag]
-                    matched_by_group[meta.tag_group].append(meta)
-
-            if not matched_by_group:
-                continue
-
+            matched_set = set(item.matched_tags)
             score = 0.0
-            for group_name, query_group in query_groups.items():
-                matched_metas = matched_by_group.get(group_name)
+
+            for query_group in query_groups.values():
+                matched_metas = [m for m in query_group.tag_aliases if m.raw_tag in matched_set]
                 if not matched_metas:
                     continue
                 group_coverage = len(matched_metas) / len(query_group.tag_aliases)
                 avg_rarity = sum(m.rarity_score for m in matched_metas) / len(matched_metas)
                 score += query_group.weight * group_coverage * avg_rarity
 
-            scores[video_id] = score
-            matched_tags[video_id] = item.matched_tags
+            if score > 0:
+                scores[video_id] = score
+                matched_tags[video_id] = item.matched_tags
 
         return scores, matched_tags
 
