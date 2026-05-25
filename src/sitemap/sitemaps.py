@@ -1,6 +1,7 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
+from automationapp import settings
 from src.media.models import VideoCategory, VideoItem
 from src.media.utils.utils import limited_video_ids
 
@@ -10,7 +11,7 @@ class CategorySitemap(Sitemap):
     priority = 0.7
 
     def items(self):
-        return VideoCategory.objects.order_by('id')
+        return VideoCategory.objects.filter(slug__in=settings.FIXED_CATEGORIES).order_by('id')
 
 
 class StaticViewSitemap(Sitemap):
