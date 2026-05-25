@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator, Page
 from django.shortcuts import get_object_or_404
 
+from automationapp import settings
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 
 
@@ -39,51 +40,31 @@ class SearchByCategoryService:
 
         return result, has_next
 
-    def get_category_videos(self, slug, last_id=0):
-        """
-        Cursor-based pagination for category videos.
-        Fast, scalable, no JOIN/DISTINCT issues.
-        """
-
-        # 1. Get category
+    def get_category_videos(self, slug: str, last_id: int = 0):
+        """Cursor-based pagination for category videos, capped at settings.FIXED_HARD_LIMIT_PER_CATEGORY total results."""
         category = get_object_or_404(VideoCategory, slug=slug)
+        base_query = VideoCategoryPivot.objects.filter(category=category)
 
-        # 2. Base pivot query (only pivot table)
-        query = VideoCategoryPivot.objects.filter(category=category)
+        already_served = base_query.filter(video_id__gt=last_id).count() if last_id else 0
+        remaining = settings.FIXED_HARD_LIMIT_PER_CATEGORY - already_served
+        if remaining <= 0:
+            return {"results": [], "has_next": False, "next_last_id": None}
 
-        # 3. Apply cursor (keyset pagination)
-        if last_id and last_id > 0:
-            query = query.filter(video_id__lt=last_id)
-
-        # 4. Fetch one extra item to detect next page
+        fetch_size = min(self.PAGE_SIZE, remaining)
+        query = base_query.filter(video_id__lt=last_id) if last_id else base_query
         video_ids = list(
             query.order_by('-video_id')
-            .values_list('video_id', flat=True)[:self.PAGE_SIZE + 1]
+            .values_list('video_id', flat=True)[:fetch_size + 1]
         )
 
-        # 5. Determine if next page exists
-        has_next = len(video_ids) > self.PAGE_SIZE
+        has_next = len(video_ids) > fetch_size and already_served + fetch_size < settings.FIXED_HARD_LIMIT_PER_CATEGORY
+        video_ids = video_ids[:fetch_size]
 
-        # 6. Keep only current page
-        video_ids = video_ids[:self.PAGE_SIZE]
-
-        # 7. Fetch real objects
-        videos = list(
-            VideoItem.objects.filter(id__in=video_ids)
-        )
-
-        # 8. Preserve ordering (important because IN() is unordered)
+        videos = list(VideoItem.objects.filter(id__in=video_ids))
         videos.sort(key=lambda x: x.id, reverse=True)
-
-        # 9. Next cursor (IMPORTANT for frontend)
         next_last_id = videos[-1].id if videos else None
 
-        # 10. Return clean cursor response (NO paginator, NO Page)
-        return {
-            "results": videos,
-            "has_next": has_next,
-            "next_last_id": next_last_id,
-        }
+        return {"results": videos, "has_next": has_next, "next_last_id": next_last_id}
 
     def get_category_videos_paginator(self, slug, page=1) -> Page:
         category = get_object_or_404(VideoCategory, slug=slug)
