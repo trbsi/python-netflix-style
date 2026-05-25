@@ -46,7 +46,7 @@ class SearchByCategoryService:
         HARD_LIMIT = settings.FIXED_HARD_LIMIT_PER_CATEGORY
         PAGE_SIZE = self.PAGE_SIZE
 
-        base_query = VideoCategoryPivot.objects.filter(category=category).order_by("-video_id")
+        base_query = VideoCategoryPivot.objects.filter(category=category).order_by("video_id")
 
         # Step 1: freeze the universe to HARD_LIMIT items
         limited_ids = list(
@@ -55,12 +55,12 @@ class SearchByCategoryService:
 
         # Step 2: apply cursor inside that frozen set
         if last_id:
-            limited_ids = [vid for vid in limited_ids if vid < last_id]
+            limited_ids = [vid for vid in limited_ids if vid > last_id]
 
         # Step 3: paginate
         page_ids = limited_ids[:PAGE_SIZE]
 
-        videos = list(VideoItem.objects.filter(id__in=page_ids))
+        videos = list(VideoItem.objects.filter(id__in=page_ids).filter(slug_rewritten__isnull=False))
         videos.sort(key=lambda x: x.id, reverse=True)
 
         next_last_id = videos[-1].id if videos else None
@@ -86,11 +86,11 @@ class SearchByCategoryService:
 
         # 3. Apply cursor (keyset pagination)
         if last_id and last_id > 0:
-            query = query.filter(video_id__lt=last_id)
+            query = query.filter(video_id__gt=last_id)
 
         # 4. Fetch one extra item to detect next page
         video_ids = list(
-            query.order_by('-video_id')
+            query.order_by('video_id')
             .values_list('video_id', flat=True)[:self.PAGE_SIZE + 1]
         )
 
@@ -102,7 +102,7 @@ class SearchByCategoryService:
 
         # 7. Fetch real objects
         videos = list(
-            VideoItem.objects.filter(id__in=video_ids)
+            VideoItem.objects.filter(id__in=video_ids).filter(slug_rewritten__isnull=False)
         )
 
         # 8. Preserve ordering (important because IN() is unordered)
@@ -120,6 +120,11 @@ class SearchByCategoryService:
 
     def get_category_videos_paginator(self, slug, page=1) -> Page:
         category = get_object_or_404(VideoCategory, slug=slug)
-        videos = VideoItem.objects.filter(video_category_links__category_id=category.id).order_by('-id')
+        videos = (
+            VideoItem.objects
+            .filter(video_category_links__category_id=category.id)
+            .filter(slug_rewritten__isnull=False)
+            .order_by('-id')[:settings.FIXED_HARD_LIMIT_PER_CATEGORY]
+        )
         paginator = Paginator(object_list=videos, per_page=self.PAGE_SIZE)
         return paginator.page(page)
