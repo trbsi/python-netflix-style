@@ -92,8 +92,11 @@ class ManticoreIndexService(ManticoreBaseService):
                     }
                 })
 
-        self.indexApi.bulk('\n'.join(map(json.dumps, video_docs)))
-        self.indexApi.bulk('\n'.join(map(json.dumps, video_tag_docs)))
+        payload = '\n'.join(map(json.dumps, video_docs)) + '\n'
+        self.indexApi.bulk(payload)
+
+        payload = '\n'.join(map(json.dumps, video_tag_docs)) + '\n'
+        self.indexApi.bulk(payload)
 
     def delete_by_id(self, id: int) -> None:
         codes = get_language_codes()
