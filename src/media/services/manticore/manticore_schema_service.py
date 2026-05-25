@@ -22,6 +22,7 @@ class ManticoreSchemaService(ManticoreBaseService):
             )""")
             self.utils.sql(f"""
                 CREATE TABLE IF NOT EXISTS {self._video_tag_table(code)} (
+                id BIGINT,
                 video_id BIGINT,
                 tag STRING
             )""")
