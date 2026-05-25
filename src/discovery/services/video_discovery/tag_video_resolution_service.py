@@ -26,7 +26,7 @@ class TagVideoResolutionService:
         return self.resolve_scored_videos_by_tag_slugs(tags, limit).get_video_ids()
 
     def resolve_scored_videos_by_tag_slugs(self, tags: dict, limit: int = 300) -> VideoRankingResult:
-        expanded_tags = self._related_expansion.expand(
+        expanded_tags = self._related_expansion.expand_tags(
             canonical_tags=tags.get("canonical_tags", []),
         )
 
@@ -38,7 +38,7 @@ class TagVideoResolutionService:
         ]
 
         if not raw_tags:
-            return VideoRankingResult(items=[], expanded_related_tags=expanded_tags.expansions_by_query_slug)
+            return VideoRankingResult(items=[])
 
         tag_aliases_by_raw_tag = {
             alias.raw_tag: alias
@@ -73,7 +73,7 @@ class TagVideoResolutionService:
         raw_tags = list(raw_tag_metadata.keys())
 
         if not raw_tags:
-            return VideoRankingResult(items=[], expanded_related_tags=expanded_tags.expansions_by_query_slug)
+            return VideoRankingResult(items=[])
 
         direct_result = self._manticore.search_tags(tags=raw_tags, limit=limit)
 
@@ -161,10 +161,7 @@ class TagVideoResolutionService:
 
         scored_videos.sort(key=lambda item: item.final_score, reverse=True)
 
-        return VideoRankingResult(
-            items=scored_videos[:limit],
-            expanded_related_tags=expanded_tags.expansions_by_query_slug,
-        )
+        return VideoRankingResult(items=scored_videos[:limit])
 
     def _search_related_tags(self, expanded_tags: ExpandedRelatedTags, direct_raw_tags: list[str], limit: int):
         if not expanded_tags.related_tag_ids:

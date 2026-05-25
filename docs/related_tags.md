@@ -8,9 +8,9 @@ They are not synonyms — they are “frequently co-existing concepts”.
 
 # cooccurrence_count
 
-This means:
+This means: how many videos contain BOTH tag A and tag B together.
 
-how many videos contain BOTH tag A and tag B together
+A higher related-tag score means: the relationship between two tags is stronger and more meaningful.
 
 Example
 

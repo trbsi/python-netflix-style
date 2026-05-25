@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from src.discovery.models import CanonicalTag, RelatedTag
-from src.discovery.services.video_discovery.value_objects import ExpandedRelatedTags, RelatedTagExpansion
+from src.discovery.services.video_discovery.value_objects import ExpandedRelatedTags
 
 
 class RelatedTagExpansionService:
@@ -14,11 +14,7 @@ class RelatedTagExpansionService:
     small, fixed number of database queries instead of one query per tag.
     """
 
-    def expand(
-            self,
-            canonical_tags: list[str],
-            max_related_per_tag: int = 50,
-    ) -> ExpandedRelatedTags:
+    def expand_tags(self, canonical_tags: list[str], max_related_per_tag: int = 50) -> ExpandedRelatedTags:
         canonical_tags = list(
             CanonicalTag.objects
             .filter(slug__in=canonical_tags)
@@ -52,8 +48,8 @@ class RelatedTagExpansionService:
 
         related_tag_ids: set[int] = set()
         related_scores_by_tag_id: dict[int, float] = {}
-        expansions_by_query_slug: dict[str, list[RelatedTagExpansion]] = {
-            slug: []
+        expansion_count_by_query_slug: dict[str, int] = {
+            slug: 0
             for slug in query_tag_slugs_by_id.values()
         }
 
@@ -82,17 +78,10 @@ class RelatedTagExpansionService:
                 if related_tag_id in query_tag_ids:
                     continue
 
-                query_expansions = expansions_by_query_slug[query_slug]
-                if len(query_expansions) >= max_related_per_tag:
+                if expansion_count_by_query_slug[query_slug] >= max_related_per_tag:
                     continue
 
-                query_expansions.append(RelatedTagExpansion(
-                    query_tag_id=query_tag_id,
-                    query_tag_slug=query_slug,
-                    related_tag_id=related_tag_id,
-                    related_tag_slug=related_slug,
-                    score=edge.score,
-                ))
+                expansion_count_by_query_slug[query_slug] += 1
 
                 related_tag_ids.add(related_tag_id)
                 # If several query tags point at the same related canonical tag,
@@ -107,5 +96,4 @@ class RelatedTagExpansionService:
             query_tag_slugs_by_id=query_tag_slugs_by_id,
             related_tag_ids=related_tag_ids,
             related_scores_by_tag_id=related_scores_by_tag_id,
-            expansions_by_query_slug=expansions_by_query_slug,
         )
