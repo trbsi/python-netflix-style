@@ -53,6 +53,10 @@ class ManticoreIndexService(ManticoreBaseService):
         video_docs = []
         video_tag_docs = []
 
+        if not rows:
+            print('No videos to import to manticore')
+            return
+
         for video in rows:
             translation = None
 
