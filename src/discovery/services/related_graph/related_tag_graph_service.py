@@ -3,7 +3,6 @@ from itertools import combinations
 from typing import Iterable
 
 from django.db import transaction
-from django.db.models import Case, CharField, F, IntegerField, Q, When
 
 from src.discovery.models import RelatedTag, TagAlias
 from src.media.models import VideoItem
@@ -151,37 +150,3 @@ class RelatedTagGraphService:
 
             if batch:
                 RelatedTag.objects.bulk_create(batch, batch_size=self.bulk_batch_size)
-
-
-def get_top_related_tags(canonical_tag_id: int, limit: int = 20):
-    # Edges are stored once, so the requested tag can be on either side of the row.
-    return (
-        RelatedTag.objects
-        .filter(Q(source_tag_id=canonical_tag_id) | Q(target_tag_id=canonical_tag_id))
-        .annotate(
-            # Project the opposite side of the edge into stable related_tag_* fields.
-            related_tag_id=Case(
-                When(source_tag_id=canonical_tag_id, then=F('target_tag_id')),
-                default=F('source_tag_id'),
-                output_field=IntegerField(),
-            ),
-            related_tag_slug=Case(
-                When(source_tag_id=canonical_tag_id, then=F('target_tag__slug')),
-                default=F('source_tag__slug'),
-                output_field=CharField(),
-            ),
-            related_tag_display_name=Case(
-                When(source_tag_id=canonical_tag_id, then=F('target_tag__display_name')),
-                default=F('source_tag__display_name'),
-                output_field=CharField(),
-            ),
-        )
-        .values(
-            'related_tag_id',
-            'related_tag_slug',
-            'related_tag_display_name',
-            'cooccurrence_count',
-            'score',
-        )
-        .order_by('-score', '-cooccurrence_count')[:limit]
-    )

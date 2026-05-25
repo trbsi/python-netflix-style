@@ -91,9 +91,11 @@ class RelatedTagExpansionService:
                     edge.score,
                 )
 
+        related_tag_slugs = list(CanonicalTag.objects.filter(id__in=related_tag_ids).values_list('slug', flat=True))
         return ExpandedRelatedTags(
             query_tag_ids=query_tag_ids,
             query_tag_slugs_by_id=query_tag_slugs_by_id,
             related_tag_ids=related_tag_ids,
+            related_tag_slugs=related_tag_slugs,
             related_scores_by_tag_id=related_scores_by_tag_id,
         )
