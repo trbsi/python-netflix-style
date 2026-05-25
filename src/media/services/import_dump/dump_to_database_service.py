@@ -5,7 +5,6 @@ import sys
 from datetime import datetime
 
 import bugsnag
-from django.db import IntegrityError
 from django.db.models import QuerySet
 from django.utils.text import slugify
 from tqdm import tqdm
@@ -19,10 +18,13 @@ class DumpToDatabaseService:
     def __init__(self):
         self.search_index_service = ManticoreIndexService()
         self.total_imported = 0
+        self.site = ''
 
     def save_to_database(self, site: str, fields_map: dict, csv_file_path: str) -> int:
         print("Reading CSV for database insert...")
         csv.field_size_limit(sys.maxsize)
+
+        self.site = site
         videos_batch = 10_000
         categories_batch = 1000
         videos_array = []
@@ -196,11 +198,10 @@ class DumpToDatabaseService:
         # Mysql reserve values before insert and then skips them if there are duplicates
         inserted_external_ids = []
         for video in items:
-            try:
+            exists = VideoItem.objects.filter(external_id=video.external_id).filter(site=self.site).exists()
+            if not exists:
                 video.save()
                 inserted_external_ids.append(video.external_id)
-            except IntegrityError:
-                continue
 
         result = VideoItem.objects.filter(external_id__in=inserted_external_ids)
         self.total_imported += result.count()
