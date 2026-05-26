@@ -36,6 +36,7 @@ class RelatedTagExpansionService:
         edges = (
             RelatedTag.objects
             .filter(Q(source_tag_id__in=query_tag_ids) | Q(target_tag_id__in=query_tag_ids))
+            .filter(score__gte=0.7)
             .select_related('source_tag', 'target_tag')
             .only(
                 'source_tag_id',
