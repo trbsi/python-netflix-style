@@ -50,11 +50,16 @@ class ManticoreSearchService(ManticoreBaseService):
         )
         tag_set = set(tags)
 
+        if 'gay' in tags:
+            category_sql = 'category = "gay"'
+        else:
+            category_sql = 'category != "gay"'
+
         result: SqlResponse = self.utils.sql(
             f"""
             SELECT video_id, tag
             FROM {self._video_tag_table()}
-            WHERE tag IN ({tags_sql})
+            WHERE tag IN ({tags_sql}) AND {category_sql}
             LIMIT {limit * 200}
             """,
             raw_response=False,

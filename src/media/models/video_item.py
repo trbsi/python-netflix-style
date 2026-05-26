@@ -53,9 +53,9 @@ class VideoItem(models.Model):
             models.UniqueConstraint(fields=['external_id', 'site'], name='unique_videoitem_external_id_site'),
         ]
 
-    def category_slugs(self):
+    def category_slugs(self) -> list:
         array = self.categories.split(",")
-        result = [slugify(category.strip()) for category in array]
+        result = [slugify(category.strip().lower()) for category in array]
         return result
 
     # for sitemap
@@ -66,6 +66,9 @@ class VideoItem(models.Model):
         tags = self.tags.split(",")
         categories = [slugify(cat) for cat in self.categories.split(",")]
         return list(set(tags + categories))
+
+    def has_gay_category(self) -> bool:
+        return 'gay' in self.categories.lower()
 
     @property
     def video_url(self):

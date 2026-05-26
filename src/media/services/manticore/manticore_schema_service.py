@@ -24,5 +24,6 @@ class ManticoreSchemaService(ManticoreBaseService):
                 CREATE TABLE IF NOT EXISTS {self._video_tag_table(code)} (
                 id BIGINT,
                 video_id BIGINT,
+                category STRING,
                 tag STRING
             )""")

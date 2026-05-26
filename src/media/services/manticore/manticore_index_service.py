@@ -84,6 +84,7 @@ class ManticoreIndexService(ManticoreBaseService):
             })
 
             for tag in video.categories_and_tags():
+                category = "gay" if video.has_gay_category() else video.category_slugs()[0]
                 doc_id = zlib.crc32(f"{video.id}:{tag}".encode())
                 video_tag_docs.append({
                     "replace": {
@@ -91,6 +92,7 @@ class ManticoreIndexService(ManticoreBaseService):
                         "id": doc_id,
                         "doc": {
                             "video_id": video.id,
+                            "category": category,
                             "tag": tag,
                         }
                     }
