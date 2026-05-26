@@ -24,10 +24,6 @@ class RelatedTag(models.Model):
 
     class Meta:
         constraints = [
-            models.CheckConstraint(
-                condition=models.Q(source_tag_id__lt=models.F('target_tag_id')),
-                name='related_tag_source_lt_target',
-            ),
             models.UniqueConstraint(
                 fields=['source_tag', 'target_tag'],
                 name='uk_related_tag_source_target',
