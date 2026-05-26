@@ -20,14 +20,13 @@ class ListMediaService:
         used_ids.update(v.id for v in videos)
         return videos
 
-    def get_frontpage_queryset(self, tags: str | None = None):
+    def get_frontpage_queryset(self, tags: dict | None = None):
         video_ids = self._resolve_video_ids(tags)
         return self._build_queryset(video_ids)
 
-    def _resolve_video_ids(self, canonical_tags: str | None):
-        if canonical_tags:
-            slugs = [tag.strip() for tag in canonical_tags.split(',')]
-            video_ids = self.tag_video_resolution_service.resolve_video_ids_by_tag_slugs(slugs)
+    def _resolve_video_ids(self, tags: dict | None):
+        if tags:
+            video_ids = self.tag_video_resolution_service.resolve_video_ids_by_tag_slugs(tags)
             if video_ids:
                 return video_ids
 
@@ -51,7 +50,7 @@ class ListMediaService:
         # fallback default feed
         return VideoItem.objects.order_by('-id')
 
-    def home_video_list(self, tags: str | None = None) -> dict:
+    def home_video_list(self, tags: dict | None = None) -> dict:
         used_ids = set()
         base_qs = self.get_frontpage_queryset(tags)
 

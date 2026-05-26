@@ -8,7 +8,7 @@ from django.db.models import QuerySet
 from django.utils import timezone
 
 from automationapp import settings
-from src.discovery.models import TagAlias, CanonicalTag
+from src.discovery.models import TagAlias, CanonicalTag, RelatedTag
 from src.media.models import VideoItem
 
 
@@ -20,6 +20,8 @@ class CanonicalTagsService():
         self._connect_canonical()
         print('Updating rarity scores')
         self._update_rarity_scores()
+        print('Insert related tags')
+        self._insert_related_tags()
         print('Extracted uncategorized tags')
         self._extract_uncategorized()
 
@@ -103,3 +105,21 @@ class CanonicalTagsService():
 
         with open(settings.BASE_DIR / 'uncategorized_tags.json', 'w') as outfile:
             json.dump(tags, outfile)
+
+    def _insert_related_tags(self):
+        RelatedTag.objects.all().delete()
+
+        path = Path(__file__).resolve().parent / 'related_tags.json'
+        with open(path, 'r') as outfile:
+            data = json.load(outfile)
+
+        for canonical_tag, related_tags in data['related_tags'].items():
+            canonical = CanonicalTag.objects.get(slug=canonical_tag)
+            for tag in related_tags:
+                score = tag['score']
+                db_tag = CanonicalTag.objects.get(slug=tag['tag'])
+                RelatedTag.objects.create(
+                    source_tag=canonical,
+                    target_tag=db_tag,
+                    score=score,
+                )

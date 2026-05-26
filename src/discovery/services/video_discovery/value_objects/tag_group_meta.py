@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from src.discovery.services.video_discovery.tag_alias_meta import TagAliasMeta
+from src.discovery.services.video_discovery.value_objects.tag_alias_meta import TagAliasMeta
 
 
 @dataclass

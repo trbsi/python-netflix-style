@@ -182,7 +182,7 @@ Example:
 ### 3. Rarity Score
 
 How informative matched tags are:
-**rarity_score = average(tag rarity)**
+**rarity_score = total video count / total tag count**
 
 Example:
 
