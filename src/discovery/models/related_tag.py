@@ -15,8 +15,9 @@ class RelatedTag(models.Model):
         on_delete=models.CASCADE,
         related_name='related_tag_targets',
     )
-    cooccurrence_count = models.PositiveIntegerField()
+    cooccurrence_count = models.PositiveIntegerField(default=0)
     score = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = models.Manager()
