@@ -29,6 +29,7 @@ class RelatedTagExpansionService:
                 query_tag_ids=set(),
                 query_tag_slugs_by_id={},
                 related_tag_ids=set(),
+                related_tag_slugs=list(),
                 related_scores_by_tag_id={},
             )
 
@@ -43,7 +44,7 @@ class RelatedTagExpansionService:
                 'target_tag__slug',
                 'score',
             )
-            .order_by('-score', '-cooccurrence_count')
+            .order_by('-score')
         )
 
         related_tag_ids: set[int] = set()
