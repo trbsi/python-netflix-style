@@ -43,7 +43,7 @@ class ManticoreSearchService(ManticoreBaseService):
 
         return VideoSearchResult(result.scroll, items)
 
-    def search_tags(self, tags: list, limit: int = 300) -> VideoTagSearchResult:
+    def search_tags(self, tags: list, limit: int = 1000) -> VideoTagSearchResult:
         tags_sql = ','.join(
             f"'{tag.replace('\\', '\\\\').replace('\'', '\\\'')}'"
             for tag in tags
@@ -51,16 +51,16 @@ class ManticoreSearchService(ManticoreBaseService):
         tag_set = set(tags)
 
         if 'gay' in tags:
-            category_sql = 'category = "gay"'
+            category_sql = "category = 'gay'"
         else:
-            category_sql = 'category != "gay"'
+            category_sql = "category != 'gay'"
 
         result: SqlResponse = self.utils.sql(
             f"""
             SELECT video_id, tag
             FROM {self._video_tag_table()}
             WHERE tag IN ({tags_sql}) AND {category_sql}
-            LIMIT {limit * 200}
+            LIMIT {limit}
             """,
             raw_response=False,
         )
