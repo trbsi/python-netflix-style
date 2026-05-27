@@ -1,5 +1,6 @@
 from manticoresearch import SearchResponse, SqlResponse
 
+from src.core.utils.utils import dump_debug
 from src.media.services.manticore.manticore_base_service import ManticoreBaseService
 from src.media.value_objects.search.video_search_item import VideoSearchItem
 from src.media.value_objects.search.video_search_result import VideoSearchResult
@@ -50,7 +51,7 @@ class ManticoreSearchService(ManticoreBaseService):
         )
         tag_set = set(tags)
 
-        if 'gay' in tags:
+        if 'gay' in tags_sql:
             category_sql = "category = 'gay'"
         else:
             category_sql = "category != 'gay'"
@@ -64,6 +65,13 @@ class ManticoreSearchService(ManticoreBaseService):
             """,
             raw_response=False,
         )
+
+        dump_debug(f"""
+            SELECT video_id, tag
+            FROM {self._video_tag_table()}
+            WHERE tag IN ({tags_sql}) AND {category_sql}
+            LIMIT {limit}
+            """)
 
         hits: list = result.actual_instance.hits['hits']
         video_tags: dict[int, list[str]] = {}
