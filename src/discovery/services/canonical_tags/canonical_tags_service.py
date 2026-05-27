@@ -1,11 +1,9 @@
 import json
 import re
 from collections import defaultdict
-from datetime import timedelta
 from pathlib import Path
 
 from django.db.models import QuerySet
-from django.utils import timezone
 
 from automationapp import settings
 from src.discovery.models import TagAlias, CanonicalTag, RelatedTag
@@ -95,11 +93,13 @@ class CanonicalTagsService():
         TagAlias.objects.bulk_update(to_update, ['rarity_score'], batch_size=1000)
 
     def _extract_uncategorized(self):
-        days = timezone.now() - timedelta(days=3)
+        id = TagAlias.objects.filter(canonical_tag__isnull=False).order_by('-id').first().id
+
         tags = list(
             TagAlias.objects
+            .filter(id__gte=id)
             .filter(canonical_tag__isnull=True)
-            .filter(created_at__gte=days)
+            .order_by('id')
             .values_list('raw_tag', flat=True)
         )
 
