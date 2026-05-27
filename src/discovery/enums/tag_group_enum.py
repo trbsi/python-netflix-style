@@ -8,7 +8,7 @@ class TagGroupEnum(Enum):
     appearance = 3
     positions = 2.5
     acts = 2
-    category = 1.5
+    categories = 1.5
     """
     roles           → who
     kinks/dynamics  → relational structure
@@ -17,5 +17,5 @@ class TagGroupEnum(Enum):
     positions       → sex positions
     acts            → what happens
     scenario        → how it is presented (NEW, optional)
-    category        → weak fallback label
+    categories      → weak fallback label
     """
