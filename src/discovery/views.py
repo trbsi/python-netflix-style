@@ -1,6 +1,8 @@
+import datetime
 import json
 
 from django.http import HttpRequest, JsonResponse
+from django.utils import timezone
 
 from src.core.utils.utils import get_or_create_session
 from src.discovery.services.personalization.personalize_site_service import PersonalizeSiteService
@@ -16,6 +18,7 @@ def discover_videos_api(request: HttpRequest) -> JsonResponse:
 
     response = JsonResponse({})
     if tags:
-        response.set_cookie(key='personalized_tags', value=tags, expires=None)
+        expires = timezone.now() + datetime.timedelta(days=90)
+        response.set_cookie(key='personalized_tags', value=tags, expires=expires)
 
     return response
