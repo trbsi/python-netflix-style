@@ -35274,14 +35274,6 @@
           "group": "roles"
         },
         {
-          "name": "grandfather",
-          "group": "roles"
-        },
-        {
-          "name": "grandpop",
-          "group": "roles"
-        },
-        {
           "name": "gaydaddy",
           "group": "acts"
         },
@@ -36252,6 +36244,14 @@
         {
           "name": "bangedbygrandpa",
           "group": "categories"
+        },
+        {
+          "name": "grandfather",
+          "group": "roles"
+        },
+        {
+          "name": "grandpop",
+          "group": "roles"
         }
       ]
     },

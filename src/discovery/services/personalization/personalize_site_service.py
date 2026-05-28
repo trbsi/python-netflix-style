@@ -101,6 +101,6 @@ class PersonalizeSiteService():
         )
 
         if tags:
-            return list(tags)
+            return list(set(tags))
 
         return []
