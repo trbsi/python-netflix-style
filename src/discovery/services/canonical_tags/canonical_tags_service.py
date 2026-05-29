@@ -19,14 +19,15 @@ class CanonicalTagsService():
 
     def extract_tags(self, steps=None):
         step_map = {
-            'extract_raw': self._extract_raw,
-            'connect_canonical': self._connect_canonical,
-            'update_rarity_scores': self._update_rarity_scores,
-            'insert_related_tags': self._insert_related_tags,
-            'extract_uncategorized': self._extract_uncategorized,
+            'extract_raw': (self._extract_raw, 'Extract raw tags'),
+            'connect_canonical': (self._connect_canonical, 'Connecting canonicals'),
+            'update_rarity_scores': (self._update_rarity_scores, 'Updating rarity scores'),
+            'insert_related_tags': (self._insert_related_tags, 'Inserting related tags'),
+            'extract_uncategorized': (self._extract_uncategorized, 'Extracting uncategorized'),
         }
-        for step in (steps or self.STEPS):
-            fn = step_map[step]
+        for key in (steps or self.STEPS):
+            fn, title = step_map[key]
+            print(title)
             fn()
 
     def _extract_raw(self):
