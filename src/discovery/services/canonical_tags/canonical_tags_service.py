@@ -24,30 +24,28 @@ class CanonicalTagsService():
         self._extract_uncategorized()
 
     def _extract_raw(self):
-        videos: QuerySet[VideoItem] = VideoItem.objects.iterator(chunk_size=1000)
         pattern = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
+        BATCH_SIZE = 1000
+        batch: set[str] = set()
 
-        all_tags = set()
+        def _flush(tags: set[str]) -> None:
+            existing = set(TagAlias.objects.filter(raw_tag__in=tags).values_list('raw_tag', flat=True))
+            new = tags - existing
+            if new:
+                TagAlias.objects.bulk_create([TagAlias(raw_tag=t) for t in new], batch_size=BATCH_SIZE)
 
-        for video in videos:
-            tags = video.tags.split(',')
-            categories = video.categories.split(',')
-            total = tags + categories
-            for tag in total:
-                tag = tag.strip().lower()
+        for video in VideoItem.objects.only('tags', 'categories').iterator(chunk_size=BATCH_SIZE):
+            for raw in video.tags.split(',') + video.categories.split(','):
+                tag = raw.strip().lower()
                 if pattern.fullmatch(tag):
-                    all_tags.add(tag)
+                    batch.add(tag)
 
-        # fetch existing tags from DB
-        existing = set(TagAlias.objects.values_list('raw_tag', flat=True))
+            if len(batch) >= BATCH_SIZE:
+                _flush(batch)
+                batch.clear()
 
-        # only new tags
-        new_tags = all_tags - existing
-        db_tags = [
-            TagAlias(raw_tag=tag)
-            for tag in new_tags
-        ]
-        TagAlias.objects.bulk_create(db_tags)
+        if batch:
+            _flush(batch)
 
     def _connect_canonical(self):
         file = Path(__file__).resolve().parent / 'canonical_tags.json'
