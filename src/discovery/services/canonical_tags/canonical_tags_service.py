@@ -3,25 +3,31 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
-from django.db.models import QuerySet
-
 from automationapp import settings
 from src.discovery.models import TagAlias, CanonicalTag, RelatedTag
 from src.media.models import VideoItem
 
 
 class CanonicalTagsService():
-    def extract_tags(self):
-        print('Extracting tags')
-        self._extract_raw()
-        print('Connecting canonical')
-        self._connect_canonical()
-        print('Updating rarity scores')
-        self._update_rarity_scores()
-        print('Insert related tags')
-        self._insert_related_tags()
-        print('Extracted uncategorized tags')
-        self._extract_uncategorized()
+    STEPS = [
+        'extract_raw',
+        'connect_canonical',
+        'update_rarity_scores',
+        'insert_related_tags',
+        'extract_uncategorized',
+    ]
+
+    def extract_tags(self, steps=None):
+        step_map = {
+            'extract_raw': self._extract_raw,
+            'connect_canonical': self._connect_canonical,
+            'update_rarity_scores': self._update_rarity_scores,
+            'insert_related_tags': self._insert_related_tags,
+            'extract_uncategorized': self._extract_uncategorized,
+        }
+        for step in (steps or self.STEPS):
+            fn = step_map[step]
+            fn()
 
     def _extract_raw(self):
         pattern = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
