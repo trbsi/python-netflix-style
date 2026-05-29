@@ -1,6 +1,7 @@
 import json
 import re
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 
 from automationapp import settings
@@ -98,11 +99,13 @@ class CanonicalTagsService():
         TagAlias.objects.bulk_update(to_update, ['rarity_score'], batch_size=1000)
 
     def _extract_uncategorized(self):
+        time = datetime(2026, 5, 28, 0, 0, 0)
         id = TagAlias.objects.filter(canonical_tag__isnull=False).order_by('-id').first().id
 
         tags = list(
             TagAlias.objects
-            .filter(id__gte=id)
+            # .filter(id__gte=id)
+            .filter(created_at__gte=time)
             .filter(canonical_tag__isnull=True)
             .order_by('id')
             .values_list('raw_tag', flat=True)
