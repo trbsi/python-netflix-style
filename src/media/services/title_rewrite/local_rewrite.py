@@ -2,8 +2,7 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 
 from automationapp import settings
-from src.core.utils.utils import dump_debug
-from src.media.models import VideoItem, VideoTranslation, VideoCategory, VideoCategoryPivot
+from src.media.models import VideoItem, VideoTranslation, VideoCategory
 
 
 class LocalRewriteService:
@@ -60,53 +59,21 @@ class LocalRewriteService:
 
     def get_videos_for_rewrite(self, limit: int, count: bool, lang: str, last_id: int) -> dict:
         if lang == 'en':
-            if last_id == 0:
-                last_id = (
-                    VideoItem.objects
-                    .filter(slug_rewritten__isnull=True)
-                    .order_by("id")
-                    .first()
-                    .id
+            category_ids = VideoCategory.objects.filter(
+                slug__in=settings.FIXED_CATEGORIES
+            ).values_list("id", flat=True)
+
+            videos = (
+                VideoItem.objects
+                .filter(
+                    video_category_links__category_id__in=list(category_ids),
+                    slug_rewritten__isnull=True,
                 )
-                dump_debug('Last id slug_rewritten is null')
-                dump_debug(last_id)
+                .order_by('id')
+                .distinct()
+                [:limit]
+            )
 
-            search_videos = True
-            while search_videos:
-                category_ids = VideoCategory.objects.filter(
-                    slug__in=settings.FIXED_CATEGORIES
-                ).values_list("id", flat=True)
-
-                video_ids = list(
-                    VideoCategoryPivot.objects
-                    .filter(
-                        category_id__in=category_ids,
-                        video_id__gt=last_id,
-                    )
-                    .order_by("video_id")
-                    .values_list("video_id", flat=True)
-                    .distinct()[:limit]
-                )
-
-                if not video_ids:
-                    break
-
-                videos = (
-                    VideoItem.objects
-                    .filter(
-                        id__in=video_ids,
-                        slug_rewritten__isnull=True,
-                    )
-                    .order_by("id")
-                )
-
-                if videos.exists():
-                    search_videos = False
-                else:
-                    last_id = video_ids[-1]
-
-                dump_debug('Last id')
-                dump_debug(last_id)
         else:
             videos: QuerySet[VideoItem] = (
                 VideoItem.objects
