@@ -56,23 +56,27 @@ class CanonicalTagsService():
             _flush(batch)
 
     def _connect_canonical(self):
-        file = Path(__file__).resolve().parent / 'canonical_tags.json'
-        with open(file, 'r') as f:
-            data = json.load(f)
+        files = ['canonical_tags.json', 'canonical_tags_gay.json']
+        for name in files:
+            file = Path(__file__).resolve().parent / name
+            with open(file, 'r') as f:
+                data = json.load(f)
 
-        tags = data['canonical_tags']
-        for canonical, data in tags.items():
-            canonical_tag, created = CanonicalTag.objects.get_or_create(
-                slug=canonical,
-                defaults={'display_name': canonical.title()}
-            )
+            tags = data['canonical_tags']
+            for canonical, data in tags.items():
+                group = data['group']
+                canonical_tag, created = CanonicalTag.objects.update_or_create(
+                    slug=canonical,
+                    defaults={'display_name': canonical.title(), 'group': group}
+                )
 
-            # if there is canonical tag among raw_tag then update canonical_tag to itself
-            TagAlias.objects.filter(raw_tag=canonical).update(canonical_tag=canonical_tag)
-            for synonym in data['synonyms']:
-                (TagAlias.objects
-                 .filter(raw_tag=synonym['name'])
-                 .update(canonical_tag=canonical_tag, tag_group=synonym['group']))
+                # if there is canonical tag among raw_tag then update canonical_tag to itself
+                TagAlias.objects.filter(raw_tag=canonical).update(canonical_tag=canonical_tag)
+
+                for synonym in data['synonyms']:
+                    (TagAlias.objects
+                     .filter(raw_tag=synonym['name'])
+                     .update(canonical_tag=canonical_tag))
 
     def _update_rarity_scores(self):
         tag_counts: dict[str, int] = defaultdict(int)
