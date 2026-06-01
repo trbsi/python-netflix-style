@@ -2,6 +2,7 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 
 from automationapp import settings
+from src.core.utils.utils import dump_debug
 from src.media.models import VideoItem, VideoTranslation, VideoCategory, VideoCategoryPivot
 
 
@@ -76,8 +77,11 @@ class LocalRewriteService:
                     id__in=video_ids,
                     slug_rewritten__isnull=True,
                 )
-                .order_by("id")[:limit]
+                .order_by("id")
             )
+
+            dump_debug('Video ids')
+            dump_debug(video_ids)
         else:
             videos: QuerySet[VideoItem] = (
                 VideoItem.objects
