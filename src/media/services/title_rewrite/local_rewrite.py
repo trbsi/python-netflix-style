@@ -67,10 +67,17 @@ class LocalRewriteService:
 
                 video_ids = list(
                     VideoCategoryPivot.objects
-                    .filter(category_id__in=list(category_ids))
-                    .filter(video_id__gt=last_id)
-                    .values_list("video_id", flat=True)[:limit]
+                    .filter(
+                        category_id__in=category_ids,
+                        video_id__gt=last_id,
+                    )
+                    .order_by("video_id")
+                    .values_list("video_id", flat=True)
+                    .distinct()[:limit]
                 )
+
+                if not video_ids:
+                    break
 
                 videos = (
                     VideoItem.objects
@@ -81,8 +88,10 @@ class LocalRewriteService:
                     .order_by("id")
                 )
 
-                if videos:
+                if videos.exists():
                     search_videos = False
+                else:
+                    last_id = video_ids[-1]
         else:
             videos: QuerySet[VideoItem] = (
                 VideoItem.objects
