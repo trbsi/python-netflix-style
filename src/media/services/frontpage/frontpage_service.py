@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from automationapp import settings
 from src.media.models import VideoItem
+from src.media.utils.utils import limited_video_ids
 
 
 class FrontpageService:
@@ -19,6 +20,7 @@ class FrontpageService:
         candidates = list(
             VideoItem.objects
             # .filter(external_created_at__gte=week)
+            .filter(id__in=limited_video_ids())
             .order_by('-id')
             .values_list('id', flat=True)[:total_videos]
         )

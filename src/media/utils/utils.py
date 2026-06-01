@@ -19,5 +19,5 @@ def limited_video_ids():
             .values_list('video_id', flat=True)[:settings.FIXED_HARD_LIMIT_PER_CATEGORY]
         )
 
-    cache.set('fixed_video_ids_v2', video_ids, 60 * 60)
+    cache.set('fixed_video_ids_v2', list(video_ids), 60 * 60)
     return video_ids
