@@ -67,7 +67,7 @@ class LocalRewriteService:
                 VideoCategoryPivot.objects
                 .filter(category_id__in=list(category_ids))
                 .filter(video_id__gt=last_id)
-                .values_list("video_id", flat=True)
+                .values_list("video_id", flat=True)[:limit]
             )
 
             videos = (
