@@ -2,6 +2,7 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 
 from automationapp import settings
+from src.core.utils.utils import dump_debug
 from src.media.models import VideoItem, VideoTranslation, VideoCategory, VideoCategoryPivot
 
 
@@ -92,6 +93,9 @@ class LocalRewriteService:
                     search_videos = False
                 else:
                     last_id = video_ids[-1]
+
+                dump_debug('Last id')
+                dump_debug(last_id)
         else:
             videos: QuerySet[VideoItem] = (
                 VideoItem.objects
