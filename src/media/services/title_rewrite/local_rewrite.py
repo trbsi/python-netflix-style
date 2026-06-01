@@ -60,6 +60,17 @@ class LocalRewriteService:
 
     def get_videos_for_rewrite(self, limit: int, count: bool, lang: str, last_id: int) -> dict:
         if lang == 'en':
+            if last_id == 0:
+                last_id = (
+                    VideoItem.objects
+                    .filter(slug_rewritten__isnull=True)
+                    .order_by("id")
+                    .first()
+                    .id
+                )
+                dump_debug('Last id slug_rewritten is null')
+                dump_debug(last_id)
+
             search_videos = True
             while search_videos:
                 category_ids = VideoCategory.objects.filter(
