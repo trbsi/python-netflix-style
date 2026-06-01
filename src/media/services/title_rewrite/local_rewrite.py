@@ -2,7 +2,6 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 
 from automationapp import settings
-from src.core.utils.utils import dump_debug
 from src.media.models import VideoItem, VideoTranslation, VideoCategory, VideoCategoryPivot
 
 
@@ -60,28 +59,30 @@ class LocalRewriteService:
 
     def get_videos_for_rewrite(self, limit: int, count: bool, lang: str, last_id: int) -> dict:
         if lang == 'en':
-            category_ids = VideoCategory.objects.filter(
-                slug__in=settings.FIXED_CATEGORIES
-            ).values_list("id", flat=True)
+            search_videos = True
+            while search_videos:
+                category_ids = VideoCategory.objects.filter(
+                    slug__in=settings.FIXED_CATEGORIES
+                ).values_list("id", flat=True)
 
-            video_ids = list(
-                VideoCategoryPivot.objects
-                .filter(category_id__in=list(category_ids))
-                .filter(video_id__gt=last_id)
-                .values_list("video_id", flat=True)[:limit]
-            )
-
-            videos = (
-                VideoItem.objects
-                .filter(
-                    id__in=video_ids,
-                    slug_rewritten__isnull=True,
+                video_ids = list(
+                    VideoCategoryPivot.objects
+                    .filter(category_id__in=list(category_ids))
+                    .filter(video_id__gt=last_id)
+                    .values_list("video_id", flat=True)[:limit]
                 )
-                .order_by("id")
-            )
 
-            dump_debug('Video ids')
-            dump_debug(video_ids)
+                videos = (
+                    VideoItem.objects
+                    .filter(
+                        id__in=video_ids,
+                        slug_rewritten__isnull=True,
+                    )
+                    .order_by("id")
+                )
+
+                if videos:
+                    search_videos = False
         else:
             videos: QuerySet[VideoItem] = (
                 VideoItem.objects
