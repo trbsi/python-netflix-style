@@ -64,7 +64,11 @@ class CanonicalTagsService():
 
             tags = data['canonical_tags']
             for canonical, data in tags.items():
-                group = data['group']
+                if 'group' not in data:
+                    print(f'Group does not exist for {canonical}')
+                    group = None
+                else:
+                    group = data['group']
                 canonical_tag, created = CanonicalTag.objects.update_or_create(
                     slug=canonical,
                     defaults={'display_name': canonical.title(), 'group': group}
