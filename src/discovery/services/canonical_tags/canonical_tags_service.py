@@ -57,8 +57,8 @@ class CanonicalTagsService():
 
     def _connect_canonical(self):
         files = ['canonical_tags.json', 'canonical_tags_gay.json']
-        for name in files:
-            file = Path(__file__).resolve().parent / name
+        for file_name in files:
+            file = Path(__file__).resolve().parent / file_name
             with open(file, 'r') as f:
                 data = json.load(f)
 
@@ -71,7 +71,11 @@ class CanonicalTagsService():
                     group = data['group']
                 canonical_tag, created = CanonicalTag.objects.update_or_create(
                     slug=canonical,
-                    defaults={'display_name': canonical.title(), 'group': group}
+                    defaults={
+                        'display_name': canonical.title(),
+                        'group': group,
+                        'is_gay': True if file_name == 'canonical_tags_gay.json' else False,
+                    }
                 )
 
                 # if there is canonical tag among raw_tag then update canonical_tag to itself
