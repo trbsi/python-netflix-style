@@ -75,7 +75,7 @@ class CanonicalTagsService():
 
                 for synonym in data['synonyms']:
                     (TagAlias.objects
-                     .filter(raw_tag=synonym['name'])
+                     .filter(raw_tag=synonym)
                      .update(canonical_tag=canonical_tag))
 
     def _update_rarity_scores(self):
