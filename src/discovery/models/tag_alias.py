@@ -11,8 +11,3 @@ class TagAlias(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     objects = models.Manager()
-
-    class Meta:
-        indexes = [
-            models.Index(fields=['canonical_tag', 'tag_group'], name='canonical_tag_tag_group_idx'),
-        ]

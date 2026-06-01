@@ -226,7 +226,6 @@ class TagVideoResolutionService:
         aliases = (
             TagAlias.objects
             .filter(canonical_tag__slug__in=canonical_tags)
-            .exclude(tag_group__isnull=True)
             .only("raw_tag", "tag_group")
         )
 
