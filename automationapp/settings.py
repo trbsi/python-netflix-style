@@ -283,8 +283,9 @@ SITEMAPS_DIR = os.path.join(BASE_DIR, 'sitemaps')
 # Sites
 ENABLED_SITES = env('ENABLED_SITES').split(',')
 
-# Grok
+# AI
 GROK_API_KEY = env('GROK_API_KEY')
+GROQ_API_KEY = env('GROQ_API_KEY')
 
 # IndexNow
 INDEXNOW_API_KEY = env('INDEXNOW_KEY')

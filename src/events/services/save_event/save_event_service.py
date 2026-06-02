@@ -57,3 +57,14 @@ class SaveEventService:
             event.session_id = session_id
             event.metadata = metadata_obj
             event.save(update_fields=["metadata", "session_id"])
+
+    @staticmethod
+    def _handle_default(session_id: str | None, event_type: str, metadata: dict):
+        if not session_id:
+            return
+
+        Events.objects.create(
+            session_id=session_id,
+            event_type=event_type,
+            metadata=metadata,
+        )
