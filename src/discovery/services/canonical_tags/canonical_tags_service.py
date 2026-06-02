@@ -73,7 +73,7 @@ class CanonicalTagsService():
                     slug=canonical,
                     defaults={
                         'display_name': canonical.title(),
-                        'group': group,
+                        'tag_group': group,
                         'is_gay': True if file_name == 'canonical_tags_gay.json' else False,
                     }
                 )

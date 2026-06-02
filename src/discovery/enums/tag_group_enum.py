@@ -11,11 +11,10 @@ class TagGroupEnum(Enum):
     categories = 1.5
     """
     roles           → who,
-    kinks/dynamics  → relational structure,
+    kinks           → relational structure,
     setting         → where,
     appearance      → what they are,
     positions       → sex positions,
     acts            → what happens,
-    scenario        → how it is presented (NEW, optional),
     categories      → weak fallback label
     """

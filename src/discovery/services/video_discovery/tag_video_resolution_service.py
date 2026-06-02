@@ -225,21 +225,18 @@ class TagVideoResolutionService:
 
         aliases = (
             TagAlias.objects
+            .select_related("canonical_tag")
             .filter(canonical_tag__slug__in=canonical_tags)
-            .only("raw_tag", "tag_group")
         )
 
         grouped_tags: dict[str, list[str]] = defaultdict(list)
         seen_tags: set[str] = set()
 
         for alias in aliases:
-            if alias.tag_group not in TagGroupEnum.__members__:
-                continue
-
             if alias.raw_tag in seen_tags:
                 continue
 
-            grouped_tags[alias.tag_group].append(alias.raw_tag)
+            grouped_tags[alias.canonical_tag.tag_group].append(alias.raw_tag)
             seen_tags.add(alias.raw_tag)
 
         return dict(grouped_tags)
