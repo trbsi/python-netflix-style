@@ -54,7 +54,7 @@ class PersonalizeSiteService():
 
         tokens = self.make_ngrams(original_words) + self.make_ngrams(lemma_words)
 
-        return list(dict.fromkeys(tokens))
+        return tokens
 
     def make_ngrams(self, words: list) -> list:
         # This function generates all forward-combination n-grams (not just adjacent ones)

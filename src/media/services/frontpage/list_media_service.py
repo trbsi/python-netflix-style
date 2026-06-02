@@ -1,7 +1,7 @@
 from django.core.cache import cache
 from django.db.models import Case, When, IntegerField
 
-from src.discovery.services.video_discovery.tag_video_resolution_service import TagVideoResolutionService
+from src.discovery.services.video_discovery.legacy.tag_video_resolution_service import TagVideoResolutionService
 from src.media.models import VideoItem, VideoCategoryPivot
 
 

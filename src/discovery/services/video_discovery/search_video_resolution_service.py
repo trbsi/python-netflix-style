@@ -1,8 +1,12 @@
+import json
 from collections import defaultdict
 
 from src.discovery.enums.tag_group_enum import TagGroupEnum
-from src.discovery.models import TagAlias
-from src.discovery.services.video_discovery.related_tag_expansion_service import RelatedTagExpansionService
+from src.discovery.models import TagAlias, SearchQuery
+from src.discovery.services.video_discovery.legacy.related_tag_expansion_service import RelatedTagExpansionService
+from src.discovery.services.video_discovery.legacy.video_semantic_scoring_service import (
+    VideoSemanticScoringService,
+)
 from src.discovery.services.video_discovery.value_objects import (
     ExpandedRelatedTags,
     VideoRankingResult,
@@ -10,43 +14,35 @@ from src.discovery.services.video_discovery.value_objects import (
     TagAliasMeta,
     TagGroupMeta,
 )
-from src.discovery.services.video_discovery.video_semantic_scoring_service import (
-    VideoSemanticScoringService,
-)
 from src.media.services.manticore.manticore_search_service import ManticoreSearchService
 
 
-class TagVideoResolutionService:
+class SearchVideoResolutionService:
     def __init__(self):
         self._manticore = ManticoreSearchService()
         self._related_expansion = RelatedTagExpansionService()
         self._semantic_scoring = VideoSemanticScoringService()
 
-    def resolve_video_ids_by_tag_slugs(self, tags: dict, limit: int = 300) -> list[int]:
-        """Return plain video IDs ranked by tag match score, highest first."""
-        return self.resolve_scored_videos_by_tag_slugs(tags, limit).get_video_ids()
-
-    def resolve_scored_videos_by_tag_slugs(self, tags: dict, limit: int = 300) -> VideoRankingResult:
-        """Run the full scoring pipeline: expand tags, search directly and via related tags, merge and rank results."""
-        expanded_tags = self._related_expansion.expand_tags(
-            canonical_tags=tags.get("canonical_tags", []),
-        )
-
-        tag_groups = self._resolve_tag_groups(tags)
-        query_groups = self._build_query_groups(tag_groups)
-        direct_raw_tags = [m.raw_tag for g in query_groups.values() for m in g.tag_aliases]
-
-        if not direct_raw_tags:
+    def resolve_videos(self, search_uuid: str | None, limit: int = 300) -> VideoRankingResult:
+        search: SearchQuery = SearchQuery.objects.filter(uuid=search_uuid).first()
+        if not search:
             return VideoRankingResult(items=[])
 
-        direct_scores, direct_matched = self._score_direct_results(
-            direct_raw_tags, query_groups, limit
-        )
-        related_scores, related_matched = self._score_related_results(
-            expanded_tags, direct_raw_tags, limit
-        )
+        data = json.loads(search.structured_search_query)
+        scene = data['scene']
+        participants = data['participants']
 
-        video_ids = set(direct_scores) | set(related_scores)
+        is_gay = 'gay' in scene['categories']
+
+        for group in TagGroupEnum.keys():
+            if group in scene and scene[group]:
+                print(scene[group])
+
+        for participant in participants:
+            print(participant['roles'])
+            print(participant['appearance'])
+
+        video_ids = []
         scored_videos = sorted(
             [
                 VideoRankingScore(

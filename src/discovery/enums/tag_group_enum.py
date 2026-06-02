@@ -18,3 +18,7 @@ class TagGroupEnum(Enum):
     acts            → what happens,
     categories      → weak fallback label
     """
+
+    @staticmethod
+    def keys():
+        return list(TagGroupEnum.__members__.keys())
