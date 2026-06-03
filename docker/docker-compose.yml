@@ -59,6 +59,9 @@ services:
     restart: unless-stopped
     environment:
       PMA_HOST: mysql
+      UPLOAD_LIMIT: 500M
+      MEMORY_LIMIT: 512M
+      MAX_EXECUTION_TIME: 600
       VIRTUAL_HOST: ${PMA_HOST_DOMAIN}
       LETSENCRYPT_HOST: ${LETSENCRYPT_HOST_PMA}
       LETSENCRYPT_EMAIL: ${LETSENCRYPT_EMAIL}

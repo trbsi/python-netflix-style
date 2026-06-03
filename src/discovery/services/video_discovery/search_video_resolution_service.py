@@ -1,6 +1,9 @@
-import json
 from collections import defaultdict
 
+import spacy
+from spacy.cli import download
+
+from src.core.utils.utils import dump_debug
 from src.discovery.enums.tag_group_enum import TagGroupEnum
 from src.discovery.models import TagAlias, SearchQuery
 from src.discovery.services.video_discovery.legacy.related_tag_expansion_service import RelatedTagExpansionService
@@ -8,9 +11,9 @@ from src.discovery.services.video_discovery.legacy.video_semantic_scoring_servic
     VideoSemanticScoringService,
 )
 from src.discovery.services.video_discovery.value_objects import (
-    ExpandedRelatedTags,
     VideoRankingResult,
     VideoRankingScore,
+    ResolvedTagAlias,
     TagAliasMeta,
     TagGroupMeta,
 )
@@ -23,24 +26,20 @@ class SearchVideoResolutionService:
         self._related_expansion = RelatedTagExpansionService()
         self._semantic_scoring = VideoSemanticScoringService()
 
-    def resolve_videos(self, search_uuid: str | None, limit: int = 300) -> VideoRankingResult:
-        search: SearchQuery = SearchQuery.objects.filter(uuid=search_uuid).first()
+    def resolve_videos(self, tags: dict | None, limit: int = 300) -> list:
+        search: SearchQuery = SearchQuery.objects.filter(uuid=tags['id']).first()
         if not search:
-            return VideoRankingResult(items=[])
+            return VideoRankingResult(items=[]).get_video_ids()
 
-        data = json.loads(search.structured_search_query)
-        scene = data['scene']
-        participants = data['participants']
-
-        is_gay = 'gay' in scene['categories']
-
-        for group in TagGroupEnum.keys():
-            if group in scene and scene[group]:
-                print(scene[group])
-
-        for participant in participants:
-            print(participant['roles'])
-            print(participant['appearance'])
+        """
+        example: "black guy,cums,in,twink's ass"
+        """
+        grouped_query = search.structured_search_query
+        grouped_words = self._to_tokens(grouped_query)
+        is_gay = 'gay' in search.raw_search_query
+        dump_debug(grouped_words)
+        resolved_tags = self._resolve_tag_aliases(grouped_words)
+        dump_debug(resolved_tags)
 
         video_ids = []
         scored_videos = sorted(
@@ -92,6 +91,98 @@ class SearchVideoResolutionService:
 
         return query_groups
 
+    def _resolve_tag_aliases(self, raw_tags: list[str]) -> list[ResolvedTagAlias]:
+        result = []
+        for raw_tag in raw_tags:
+            dump_debug(raw_tag)
+            alias: TagAlias | None = (
+                TagAlias.objects
+                .select_related("canonical_tag")
+                .filter(
+                    raw_tag=raw_tag,
+                    canonical_tag__isnull=False,
+                )
+                .first()
+            )
+
+            if not alias:
+                continue
+
+            result.append(ResolvedTagAlias(
+                raw_tag=alias.raw_tag,
+                canonical_tag=alias.canonical_tag.slug,
+                tag_group=alias.canonical_tag.tag_group,
+            ))
+
+        return result
+
+    def _to_tokens(self, grouped_query: str) -> list[str]:
+        model_name = 'en_core_web_sm'
+        try:
+            nlp = spacy.load(model_name)
+        except OSError:
+            download(model_name)
+            nlp = spacy.load(model_name)
+
+        tokens = []
+        groups = [
+            group.strip() for group in grouped_query.split(',')
+            if group.strip() and group != 'gay'
+        ]
+
+        for group in groups:
+            doc = nlp(group)
+            filtered = [
+                (token.text, token.lemma_)
+                for token in doc
+                if not token.is_stop and token.text.strip()
+            ]
+
+            original_words = [t[0] for t in filtered]
+            lemma_words = [t[1] for t in filtered]
+
+            tokens.extend(self.make_ngrams(original_words))
+            tokens.extend(self.make_ngrams(lemma_words))
+
+        return list(dict.fromkeys(tokens))
+
+    def make_ngrams(self, words: list) -> list:
+        # This function generates all forward-combination n-grams (not just adjacent ones)
+        # It builds:
+        # - 1-grams: single words
+        # - 2-grams: all pairs where i < j
+        # - 3-grams: all triplets where i < j < k
+
+        ngrams = []
+
+        # -------------------------
+        # 1-grams (unigrams)
+        # -------------------------
+        # Each word is kept as-is
+        if len(words) == 1:
+            ngrams.extend(words)
+
+        # -------------------------
+        # 2-grams (bigrams)
+        # -------------------------
+        # Create all combinations of two words where the second word comes after the first
+        # Example: [a, b, c] → a-b, a-c, b-c
+        for i in range(len(words)):
+            for j in range(i + 1, len(words)):
+                ngrams.append(f"{words[i]}-{words[j]}")
+
+        # -------------------------
+        # 3-grams (trigrams)
+        # -------------------------
+        # Create all combinations of three words in forward order (i < j < k)
+        # Example: [a, b, c, d] → a-b-c, a-b-d, a-c-d, b-c-d
+        for i in range(len(words)):
+            for j in range(i + 1, len(words)):
+                for k in range(j + 1, len(words)):
+                    ngrams.append(f"{words[i]}-{words[j]}-{words[k]}")
+
+        return ngrams
+
     def _score_direct_results(
             self,
             raw_tags: list[str],
@@ -128,83 +219,6 @@ class SearchVideoResolutionService:
                 matched_tags[video_id] = item.matched_tags
 
         return scores, matched_tags
-
-    def _score_related_results(
-            self,
-            expanded_tags: ExpandedRelatedTags,
-            direct_raw_tags: list[str],
-            limit: int,
-    ) -> tuple[dict[int, float], dict[int, list[str]]]:
-        """Search for videos matching semantically related tags and score them via semantic similarity.
-
-        Videos with a related_score of 0 are excluded. Returns ({}, {}) when no related tags exist.
-        """
-        related_result = self._search_related_tags(expanded_tags, direct_raw_tags, limit)
-        if not related_result:
-            return {}, {}
-
-        all_matched_raw_tags = {
-            tag for item in related_result.items.values() for tag in item.matched_tags
-        }
-        canonical_ids_by_raw_tag = self._canonical_ids_by_raw_tag(all_matched_raw_tags)
-
-        scores: dict[int, float] = {}
-        matched_tags: dict[int, list[str]] = {}
-
-        for video_id, item in related_result.items.items():
-            video_canonical_tag_ids = {
-                canonical_ids_by_raw_tag[tag]
-                for tag in item.matched_tags
-                if tag in canonical_ids_by_raw_tag
-            }
-            semantic_score = self._semantic_scoring.score_semantic(
-                video_canonical_tag_ids=video_canonical_tag_ids,
-                expanded_tags=expanded_tags,
-            )
-            if semantic_score.related_score <= 0:
-                continue
-
-            scores[video_id] = semantic_score.related_score
-            matched_tags[video_id] = [
-                tag for tag in item.matched_tags
-                if canonical_ids_by_raw_tag.get(tag) in semantic_score.related_tag_ids
-            ]
-
-        return scores, matched_tags
-
-    def _search_related_tags(self, expanded_tags: ExpandedRelatedTags, direct_raw_tags: list[str], limit: int):
-        """Resolve related canonical tag IDs to raw tags (excluding direct ones) and search Manticore.
-
-        Returns None when there are no related tags to search.
-        """
-        if not expanded_tags.related_tag_ids:
-            return None
-
-        related_raw_tags = list(
-            TagAlias.objects
-            .filter(canonical_tag_id__in=expanded_tags.related_tag_ids)
-            .exclude(raw_tag__in=direct_raw_tags)
-            .values_list('raw_tag', flat=True)
-        )
-
-        if not related_raw_tags:
-            return None
-
-        return self._manticore.search_tags(tags=related_raw_tags, limit=limit)
-
-    def _canonical_ids_by_raw_tag(self, raw_tags: set[str]) -> dict[str, int]:
-        """Map raw tag strings to their canonical tag IDs, skipping any without a canonical tag."""
-        if not raw_tags:
-            return {}
-
-        return {
-            raw_tag: canonical_tag_id
-            for raw_tag, canonical_tag_id in (
-                TagAlias.objects
-                .filter(raw_tag__in=raw_tags, canonical_tag__isnull=False)
-                .values_list('raw_tag', 'canonical_tag_id')
-            )
-        }
 
     def _resolve_tag_groups(self, tags: dict) -> dict[str, list[str]]:
         """Resolve canonical tag slugs to raw tags, grouped by their TagGroup.

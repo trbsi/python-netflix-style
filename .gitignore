@@ -28,6 +28,9 @@ static/lora_models/*
 /geoip/
 /media-asset/
 /assets-root/
+.agents
+.codex
+.claude
 
 # Backup files #
 *.bak

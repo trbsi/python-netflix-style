@@ -1,13 +1,13 @@
 from django.core.cache import cache
 from django.db.models import Case, When, IntegerField
 
-from src.discovery.services.video_discovery.legacy.tag_video_resolution_service import TagVideoResolutionService
+from src.discovery.services.video_discovery.search_video_resolution_service import SearchVideoResolutionService
 from src.media.models import VideoItem, VideoCategoryPivot
 
 
 class ListMediaService:
     def __init__(self) -> None:
-        self.tag_video_resolution_service = TagVideoResolutionService()
+        self.search_video_resolution_service = SearchVideoResolutionService()
 
     def _get_videos(self, qs, count, used_ids):
         """
@@ -26,7 +26,7 @@ class ListMediaService:
 
     def _resolve_video_ids(self, tags: dict | None):
         if tags:
-            video_ids = self.tag_video_resolution_service.resolve_video_ids_by_tag_slugs(tags)
+            video_ids = self.search_video_resolution_service.resolve_videos(tags)
             if video_ids:
                 return video_ids
 
