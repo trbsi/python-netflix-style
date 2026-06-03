@@ -19,7 +19,7 @@ class IndexNowService:
         videos: list[VideoItem] = list(
             VideoItem.objects.order_by('id')
             .filter(id__in=limited_video_ids())
-            # .filter(id__gt=last_id)
+            .filter(id__gt=last_id)
             .filter(slug_rewritten__isnull=False)[:self.BATCH]
         )
 
