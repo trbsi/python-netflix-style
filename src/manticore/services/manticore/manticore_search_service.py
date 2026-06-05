@@ -1,7 +1,7 @@
 from manticoresearch import SearchResponse, SqlResponse
 
+from src.discovery.services.search_tags.dataclass.tag_dataclass import TagDataclass, TagsDataclass
 from src.manticore.services.manticore.manticore_base_service import ManticoreBaseService
-from src.media.value_objects.search.tag_dataclass import TagDataclass, TagsDataclass
 from src.media.value_objects.search.video_search_item import VideoSearchItem
 from src.media.value_objects.search.video_search_result import VideoSearchResult
 from src.media.value_objects.search.video_tag_search_item import VideoTagSearchItem
@@ -44,42 +44,47 @@ class ManticoreSearchService(ManticoreBaseService):
 
         return VideoSearchResult(result.scroll, items)
 
-    def search_video_tags(self, tags: list, limit: int = 1000) -> VideoTagSearchResult:
+    def search_video_tags(self, tags: list, is_gay: bool, limit: int = 300) -> VideoTagSearchResult:
         tags_sql = ','.join(
             f"'{tag.replace('\\', '\\\\').replace('\'', '\\\'')}'"
             for tag in tags
         )
-        tag_set = set(tags)
 
-        if 'gay' in tags_sql:
+        if is_gay:
             category_sql = "category = 'gay'"
         else:
             category_sql = "category != 'gay'"
 
         result: SqlResponse = self.utils.sql(
             f"""
-            SELECT video_id, tag
+            SELECT
+                video_id,
+                COUNT(DISTINCT tag) AS matched_tags_count
             FROM {self._video_tag_table()}
             WHERE tag IN ({tags_sql}) AND {category_sql}
+            GROUP BY video_id
+            ORDER BY matched_tags_count DESC
             LIMIT {limit}
             """,
             raw_response=False,
         )
 
         hits: list = result.actual_instance.hits['hits']
-        video_tags: dict[int, list[str]] = {}
+        video_tags: dict[int, int] = {}
         for hit in hits:
             video_id = int(hit['_source']['video_id'])
-            tag = hit['_source']['tag']
-            if tag in tag_set:
-                video_tags.setdefault(video_id, []).append(tag)
+            matched_tags_count = int(hit['_source']['matched_tags_count'])
+            video_tags[video_id] = matched_tags_count
+            # tag = hit['_source']['tag']
+            # if tag in tag_set:
+            #     video_tags.setdefault(video_id, []).append(tag)
 
         matches = {
             video_id: VideoTagSearchItem(
                 video_id=video_id,
-                matched_tags=matched_tags,
+                matched_tags_count=matched_tags_count,
             )
-            for video_id, matched_tags in video_tags.items()
+            for video_id, matched_tags_count in video_tags.items()
         }
 
         return VideoTagSearchResult(matches)

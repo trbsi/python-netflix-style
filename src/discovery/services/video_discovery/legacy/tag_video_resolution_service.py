@@ -10,8 +10,7 @@ from src.discovery.services.video_discovery.value_objects import (
     ExpandedRelatedTags,
     VideoRankingResult,
     VideoRankingScore,
-    TagAliasMeta,
-    TagGroupMeta,
+    TagAliasDataclass, TagGroupDataclass,
 )
 from src.manticore.services.manticore.manticore_search_service import ManticoreSearchService
 
@@ -65,7 +64,7 @@ class TagVideoResolutionService:
 
         return VideoRankingResult(items=scored_videos[:limit])
 
-    def _build_query_groups(self, tag_groups: dict[str, list[str]]) -> dict[str, TagGroupMeta]:
+    def _build_query_groups(self, tag_groups: dict[str, list[str]]) -> dict[str, TagGroupDataclass]:
         """Build per-group metadata needed for direct scoring.
 
         Each group holds its weight and the full list of TagAliasMeta (raw_tag + rarity),
@@ -78,28 +77,28 @@ class TagVideoResolutionService:
             for alias in TagAlias.objects.filter(raw_tag__in=all_raw_tags).only("raw_tag", "rarity_score")
         }
 
-        query_groups: dict[str, TagGroupMeta] = {}
+        query_groups: dict[str, TagGroupDataclass] = {}
 
         for group_name, group_raw_tags in tag_groups.items():
             if group_name not in TagGroupEnum.__members__:
                 continue
 
             query_group = query_groups.setdefault(
-                group_name, TagGroupMeta(weight=TagGroupEnum[group_name].value)
+                group_name, TagGroupDataclass(weight=TagGroupEnum[group_name].value)
             )
 
             for raw_tag in group_raw_tags:
                 rarity = rarity_by_raw_tag.get(raw_tag)
                 if rarity is None:
                     continue
-                query_group.tag_aliases.append(TagAliasMeta(raw_tag=raw_tag, rarity_score=rarity))
+                query_group.tag_aliases.append(TagAliasDataclass(raw_tag=raw_tag, rarity_score=rarity))
 
         return query_groups
 
     def _score_direct_results(
             self,
             raw_tags: list[str],
-            query_groups: dict[str, TagGroupMeta],
+            query_groups: dict[str, TagGroupDataclass],
             limit: int,
     ) -> tuple[dict[int, float], dict[int, list[str]]]:
         """Search Manticore for videos matching raw_tags and score each by group coverage × rarity.
@@ -111,12 +110,12 @@ class TagVideoResolutionService:
         low-weight group tags from outscoring a single high-weight group match.
         Returns (scores_by_video_id, matched_tags_by_video_id).
         """
-        result = self._manticore.search_video_tags(tags=raw_tags, limit=limit)
+        result = self._manticore.search_video_tags(tags=raw_tags, is_gay=False, limit=limit)
         scores: dict[int, float] = {}
         matched_tags: dict[int, list[str]] = {}
 
         for video_id, item in result.items.items():
-            matched_set = set(item.matched_tags)
+            matched_set = set(item.matched_tags_count)
             score = 0.0
 
             for query_group in query_groups.values():
@@ -129,7 +128,7 @@ class TagVideoResolutionService:
 
             if score > 0:
                 scores[video_id] = score
-                matched_tags[video_id] = item.matched_tags
+                matched_tags[video_id] = item.matched_tags_count
 
         return scores, matched_tags
 
@@ -148,7 +147,7 @@ class TagVideoResolutionService:
             return {}, {}
 
         all_matched_raw_tags = {
-            tag for item in related_result.items.values() for tag in item.matched_tags
+            tag for item in related_result.items.values() for tag in item.matched_tags_count
         }
         canonical_ids_by_raw_tag = self._canonical_ids_by_raw_tag(all_matched_raw_tags)
 
@@ -158,7 +157,7 @@ class TagVideoResolutionService:
         for video_id, item in related_result.items.items():
             video_canonical_tag_ids = {
                 canonical_ids_by_raw_tag[tag]
-                for tag in item.matched_tags
+                for tag in item.matched_tags_count
                 if tag in canonical_ids_by_raw_tag
             }
             semantic_score = self._semantic_scoring.score_semantic(
@@ -170,7 +169,7 @@ class TagVideoResolutionService:
 
             scores[video_id] = semantic_score.related_score
             matched_tags[video_id] = [
-                tag for tag in item.matched_tags
+                tag for tag in item.matched_tags_count
                 if canonical_ids_by_raw_tag.get(tag) in semantic_score.related_tag_ids
             ]
 
@@ -194,7 +193,7 @@ class TagVideoResolutionService:
         if not related_raw_tags:
             return None
 
-        return self._manticore.search_video_tags(tags=related_raw_tags, limit=limit)
+        return self._manticore.search_video_tags(tags=related_raw_tags, is_gay=False, limit=limit)
 
     def _canonical_ids_by_raw_tag(self, raw_tags: set[str]) -> dict[str, int]:
         """Map raw tag strings to their canonical tag IDs, skipping any without a canonical tag."""

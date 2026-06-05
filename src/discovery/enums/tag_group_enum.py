@@ -22,3 +22,7 @@ class TagGroupEnum(Enum):
     @staticmethod
     def keys():
         return list(TagGroupEnum.__members__.keys())
+
+    @staticmethod
+    def weight(group: str):
+        return TagGroupEnum[group].value
