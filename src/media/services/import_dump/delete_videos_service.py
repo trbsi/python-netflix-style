@@ -4,9 +4,9 @@ import sys
 
 from tqdm import tqdm
 
+from src.manticore.services.manticore.manticore_index_service import ManticoreIndexService
 from src.media.models import VideoItem
 from src.media.services.import_dump.download_zip_service import DownloadZipService
-from src.media.services.manticore.manticore_index_service import ManticoreIndexService
 
 
 class DeleteVideosService:

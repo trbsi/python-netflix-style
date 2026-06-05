@@ -5,8 +5,11 @@
                 type="text"
                 class="form-control magic-input"
                 id="promptInput"
+                autocomplete="off"
                 placeholder="Describe your favorite porn"
         >
+        <input type="hidden" id="selectedTagIdsInput" name="selected_tag_ids" value="">
+        <div id="magicTagSuggestions" class="magic-tag-suggestions d-none" role="listbox"></div>
 
         <button type="submit" class="magic-submit-btn">
             <i class="fa-regular fa-circle-right"></i>

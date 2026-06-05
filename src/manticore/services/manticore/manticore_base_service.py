@@ -6,6 +6,7 @@ from src.core.utils.lang import get_active_language
 class ManticoreBaseService:
     VIDEOS_INDEX = 'videos_index'
     VIDEO_TAGS = 'video_tags'
+    TAGS_ALIAS = 'tags_alias'
 
     def __init__(self):
         config = manticoresearch.Configuration(host="http://manticore:9308")

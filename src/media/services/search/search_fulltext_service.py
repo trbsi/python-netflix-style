@@ -1,5 +1,5 @@
 from src.events.events import enqueue_search_event
-from src.media.services.manticore.manticore_search_service import ManticoreSearchService
+from src.manticore.services.manticore.manticore_search_service import ManticoreSearchService
 from src.media.value_objects.search.video_search_result import VideoSearchResult
 
 

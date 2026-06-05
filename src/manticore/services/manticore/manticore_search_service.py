@@ -1,6 +1,7 @@
 from manticoresearch import SearchResponse, SqlResponse
 
-from src.media.services.manticore.manticore_base_service import ManticoreBaseService
+from src.manticore.services.manticore.manticore_base_service import ManticoreBaseService
+from src.media.value_objects.search.tag_dataclass import TagDataclass, TagsDataclass
 from src.media.value_objects.search.video_search_item import VideoSearchItem
 from src.media.value_objects.search.video_search_result import VideoSearchResult
 from src.media.value_objects.search.video_tag_search_item import VideoTagSearchItem
@@ -43,7 +44,7 @@ class ManticoreSearchService(ManticoreBaseService):
 
         return VideoSearchResult(result.scroll, items)
 
-    def search_tags(self, tags: list, limit: int = 1000) -> VideoTagSearchResult:
+    def search_video_tags(self, tags: list, limit: int = 1000) -> VideoTagSearchResult:
         tags_sql = ','.join(
             f"'{tag.replace('\\', '\\\\').replace('\'', '\\\'')}'"
             for tag in tags
@@ -82,3 +83,31 @@ class ManticoreSearchService(ManticoreBaseService):
         }
 
         return VideoTagSearchResult(matches)
+
+    def search_tags(self, tag: str, limit: int = 50) -> TagsDataclass:
+        tag = tag.lower()
+        result: SqlResponse = self.utils.sql(
+            f"""
+           SELECT *
+            FROM {self.TAGS_ALIAS}
+            WHERE MATCH('*{tag}*')
+            LIMIT {limit}
+            """,
+            raw_response=False,
+        )
+
+        hits: list = result.actual_instance.hits['hits']
+        tags_list: list = []
+        for hit in hits:
+            tag_id = int(hit['_id'])
+            raw_tag = hit['_source']['raw_tag']
+            tags_list.append((tag_id, raw_tag))
+
+        return TagsDataclass(
+            tags=[
+                TagDataclass(
+                    id=tag_id,
+                    raw_tag=raw_tag,
+                )
+                for tag_id, raw_tag in tags_list
+            ])

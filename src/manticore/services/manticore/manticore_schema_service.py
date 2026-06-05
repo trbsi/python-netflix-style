@@ -1,5 +1,5 @@
 from src.core.utils.lang import get_language_codes
-from src.media.services.manticore.manticore_base_service import ManticoreBaseService
+from src.manticore.services.manticore.manticore_base_service import ManticoreBaseService
 
 
 class ManticoreSchemaService(ManticoreBaseService):
@@ -27,3 +27,15 @@ class ManticoreSchemaService(ManticoreBaseService):
                 category STRING,
                 tag STRING
             )""")
+
+    def create_tags_index(self, drop_indexes: bool = False):
+        if drop_indexes:
+            self.utils.sql(f"DROP TABLE IF EXISTS {self.TAGS_ALIAS}")
+
+        self.utils.sql(f"""
+            CREATE TABLE IF NOT EXISTS {self.TAGS_ALIAS} (
+            id BIGINT,
+            raw_tag TEXT
+        )
+        min_infix_len='2'
+        """)

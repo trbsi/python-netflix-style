@@ -17,7 +17,7 @@ from src.discovery.services.video_discovery.value_objects import (
     TagAliasMeta,
     TagGroupMeta,
 )
-from src.media.services.manticore.manticore_search_service import ManticoreSearchService
+from src.manticore.services.manticore.manticore_search_service import ManticoreSearchService
 
 
 class SearchVideoResolutionService:
@@ -27,6 +27,7 @@ class SearchVideoResolutionService:
         self._semantic_scoring = VideoSemanticScoringService()
 
     def resolve_videos(self, tags: dict | None, limit: int = 300) -> list:
+        return VideoRankingResult(items=[]).get_video_ids()
         search: SearchQuery = SearchQuery.objects.filter(uuid=tags['id']).first()
         if not search:
             return VideoRankingResult(items=[]).get_video_ids()
@@ -198,7 +199,7 @@ class SearchVideoResolutionService:
         low-weight group tags from outscoring a single high-weight group match.
         Returns (scores_by_video_id, matched_tags_by_video_id).
         """
-        result = self._manticore.search_tags(tags=raw_tags, limit=limit)
+        result = self._manticore.search_video_tags(tags=raw_tags, limit=limit)
         scores: dict[int, float] = {}
         matched_tags: dict[int, list[str]] = {}
 

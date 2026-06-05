@@ -3,6 +3,9 @@ from collections import defaultdict
 from src.discovery.enums.tag_group_enum import TagGroupEnum
 from src.discovery.models import TagAlias
 from src.discovery.services.video_discovery.legacy.related_tag_expansion_service import RelatedTagExpansionService
+from src.discovery.services.video_discovery.legacy.video_semantic_scoring_service import (
+    VideoSemanticScoringService,
+)
 from src.discovery.services.video_discovery.value_objects import (
     ExpandedRelatedTags,
     VideoRankingResult,
@@ -10,10 +13,7 @@ from src.discovery.services.video_discovery.value_objects import (
     TagAliasMeta,
     TagGroupMeta,
 )
-from src.discovery.services.video_discovery.legacy.video_semantic_scoring_service import (
-    VideoSemanticScoringService,
-)
-from src.media.services.manticore.manticore_search_service import ManticoreSearchService
+from src.manticore.services.manticore.manticore_search_service import ManticoreSearchService
 
 
 class TagVideoResolutionService:
@@ -111,7 +111,7 @@ class TagVideoResolutionService:
         low-weight group tags from outscoring a single high-weight group match.
         Returns (scores_by_video_id, matched_tags_by_video_id).
         """
-        result = self._manticore.search_tags(tags=raw_tags, limit=limit)
+        result = self._manticore.search_video_tags(tags=raw_tags, limit=limit)
         scores: dict[int, float] = {}
         matched_tags: dict[int, list[str]] = {}
 
@@ -194,7 +194,7 @@ class TagVideoResolutionService:
         if not related_raw_tags:
             return None
 
-        return self._manticore.search_tags(tags=related_raw_tags, limit=limit)
+        return self._manticore.search_video_tags(tags=related_raw_tags, limit=limit)
 
     def _canonical_ids_by_raw_tag(self, raw_tags: set[str]) -> dict[str, int]:
         """Map raw tag strings to their canonical tag IDs, skipping any without a canonical tag."""

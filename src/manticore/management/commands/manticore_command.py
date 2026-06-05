@@ -1,6 +1,6 @@
 from src.core.management.commands.base_command import BaseCommand
-from src.media.services.manticore.manticore_index_service import ManticoreIndexService
-from src.media.services.manticore.manticore_schema_service import ManticoreSchemaService
+from src.manticore.services.manticore.manticore_index_service import ManticoreIndexService
+from src.manticore.services.manticore.manticore_schema_service import ManticoreSchemaService
 
 
 class Command(BaseCommand):
@@ -12,12 +12,18 @@ class Command(BaseCommand):
         action = options['action']
         drop_indexes = options['drop_indexes']
         schema_service = ManticoreSchemaService()
+        index_service = ManticoreIndexService()
 
         if action == 'create_index':
             schema_service.create_indexes(drop_indexes)
             print('Indexes created')
 
+        if action == 'reindex_tags':
+            schema_service.create_tags_index(drop_indexes)
+            index_service.reindex_tags()
+            print('Tag index created and reindexed')
+
         if action == 'reindex':
             schema_service.create_indexes(drop_indexes)
-            ManticoreIndexService().reindex_all()
+            index_service.reindex_all()
             print('Reindexing done')

@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'src.age_verification.apps.AgeVerificationConfig',
     'src.events.apps.EventsConfig',
     'src.discovery.apps.DiscoveryConfig',
+    'src.manticore.apps.ManticoreConfig',
 
     'django.contrib.sitemaps',
     'django_celery_beat',

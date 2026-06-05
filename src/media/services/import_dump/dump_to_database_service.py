@@ -10,8 +10,8 @@ from django.utils.text import slugify
 from tqdm import tqdm
 
 from src.core.utils.utils import safe_get
+from src.manticore.services.manticore.manticore_index_service import ManticoreIndexService
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
-from src.media.services.manticore.manticore_index_service import ManticoreIndexService
 
 
 class DumpToDatabaseService:
