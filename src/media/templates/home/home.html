@@ -18,11 +18,6 @@
         const particlesContainer = document.querySelector(".particles");
         const button = document.querySelector(".magic-submit-btn");
         const promptInput = document.getElementById("promptInput");
-        const selectedTagIdsInput = document.getElementById("selectedTagIdsInput");
-        const suggestionsBox = document.getElementById("magicTagSuggestions");
-        const selectedTags = [];
-        let searchDebounceTimer = null;
-        let searchAbortController = null;
 
         form.addEventListener("submit", async function (e) {
             e.preventDefault();
@@ -48,7 +43,6 @@
                     credentials: "same-origin", // important for Django sessions
                     body: JSON.stringify({
                         text: value,
-                        selected_tag_ids: selectedTagIdsInput.value
                     })
                 });
 
@@ -70,164 +64,5 @@
                 button.innerHTML = `<i class="fa-regular fa-circle-right"></i>`;
             }
         });
-
-        promptInput.addEventListener("input", function () {
-            window.clearTimeout(searchDebounceTimer);
-            syncSelectedTagsFromInput();
-
-            const query = getCurrentTagQuery();
-            if (query.length < 3) {
-                clearSuggestions();
-                return;
-            }
-
-            searchDebounceTimer = window.setTimeout(() => {
-                searchTags(query);
-            }, 250);
-        });
-
-        document.addEventListener("click", function (event) {
-            if (!form.contains(event.target)) {
-                clearSuggestions();
-            }
-        });
-
-        async function searchTags(query) {
-            if (searchAbortController) {
-                searchAbortController.abort();
-            }
-
-            searchAbortController = new AbortController();
-
-            try {
-                const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
-                const response = await fetch("{% url 'media.api.search_tags' %}", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": csrfToken
-                    },
-                    credentials: "same-origin",
-                    signal: searchAbortController.signal,
-                    body: JSON.stringify({
-                        tag: query
-                    })
-                });
-
-                if (!response.ok) {
-                    clearSuggestions();
-                    return;
-                }
-
-                const data = await response.json();
-                renderSuggestions(data.tags || []);
-            } catch (err) {
-                if (err.name !== "AbortError") {
-                    console.error(err);
-                    clearSuggestions();
-                }
-            }
-        }
-
-        function renderSuggestions(tags) {
-            suggestionsBox.innerHTML = "";
-
-            const availableTags = tags.filter((tag) => {
-                return !selectedTags.some((selectedTag) => String(selectedTag.id) === String(tag.id));
-            });
-
-            if (!availableTags.length) {
-                clearSuggestions();
-                return;
-            }
-
-            availableTags.forEach((tag) => {
-                const option = document.createElement("button");
-                option.type = "button";
-                option.className = "magic-tag-suggestion";
-                option.setAttribute("role", "option");
-                option.textContent = tag.raw_tag;
-                option.addEventListener("click", function () {
-                    selectTag(tag);
-                });
-                suggestionsBox.appendChild(option);
-            });
-
-            suggestionsBox.classList.remove("d-none");
-        }
-
-        function selectTag(tag) {
-            selectedTags.push(tag);
-            selectedTagIdsInput.value = selectedTags.map((selectedTag) => selectedTag.id).join(",");
-            promptInput.value = selectedTags.map((selectedTag) => selectedTag.raw_tag).join(", ");
-            promptInput.focus();
-            clearSuggestions();
-        }
-
-        function syncSelectedTagsFromInput() {
-            const visibleTags = promptInput.value
-                .split(",")
-                .map((tag) => tag.trim())
-                .filter(Boolean);
-            const visibleTagSet = new Set(visibleTags);
-
-            for (let index = selectedTags.length - 1; index >= 0; index--) {
-                if (!visibleTagSet.has(selectedTags[index].raw_tag)) {
-                    selectedTags.splice(index, 1);
-                }
-            }
-
-            selectedTagIdsInput.value = selectedTags.map((selectedTag) => selectedTag.id).join(",");
-        }
-
-        function getCurrentTagQuery() {
-            const parts = promptInput.value.split(",");
-            return parts[parts.length - 1].trim();
-        }
-
-        function clearSuggestions() {
-            suggestionsBox.innerHTML = "";
-            suggestionsBox.classList.add("d-none");
-        }
-
-        function hideVideos() {
-            const sections = document.querySelectorAll(".video-section-content");
-            sections.forEach((section, index) => {
-
-                // set current height so transition works
-                section.style.height = section.offsetHeight + "px";
-                section.style.overflow = "hidden";
-
-                section.style.transition = `
-                    opacity 0.8s ease,
-                    transform 0.8s ease,
-                    filter 0.8s ease,
-                    height 0.8s ease,
-                    margin 0.8s ease,
-                    padding 0.8s ease
-                `;
-
-                setTimeout(() => {
-
-                    // fade + move
-                    section.style.opacity = "0";
-                    section.style.transform = "translateY(40px) scale(.96)";
-                    section.style.filter = "blur(12px)";
-
-                    // collapse layout
-                    section.style.height = "0";
-                    section.style.margin = "0";
-                    section.style.paddingTop = "0";
-                    section.style.paddingBottom = "0";
-
-                }, index * 350);
-
-                // optional: fully remove from DOM after animation
-                setTimeout(() => {
-                    section.remove();
-                }, 1200 + (index * 350));
-
-            });
-        }
     </script>
 {% endblock javascript_include %}
