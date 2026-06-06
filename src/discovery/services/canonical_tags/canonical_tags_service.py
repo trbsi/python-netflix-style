@@ -73,7 +73,7 @@ class CanonicalTagsService():
             _flush(tags[index:index + BATCH_SIZE])
 
     def _connect_canonical(self):
-        files = ['canonical_tags.json', 'canonical_tags_gay.json']
+        files = ['canonical_tags_straight.json', 'canonical_tags_gay.json']
         for file_name in files:
             file = Path(__file__).resolve().parent / file_name
             with open(file, 'r') as f:
