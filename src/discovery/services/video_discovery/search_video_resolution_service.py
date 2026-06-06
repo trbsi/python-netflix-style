@@ -121,6 +121,7 @@ class SearchVideoResolutionService:
                 canonical_tag_slug,
                 CanonicalTagDataclass(
                     tag_group=canonical_tag_group,
+                    canonical_tag=canonical_tag_slug,
                     weight=TagGroupEnum.weight(canonical_tag_group)
                 )
             )
