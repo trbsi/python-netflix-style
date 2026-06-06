@@ -12,9 +12,10 @@ from src.discovery.services.video_discovery.value_objects import (
     VideoRankingResult,
     VideoRankingScore,
     TagAliasDataclass,
-    TagGroupDataclass,
+    CanonicalTagDataclass,
 )
 from src.manticore.services.manticore.manticore_search_service import ManticoreSearchService
+from src.media.value_objects.search.video_tag_search_result import VideoTagSearchResult
 
 
 class SearchVideoResolutionService:
@@ -29,21 +30,20 @@ class SearchVideoResolutionService:
             return VideoRankingResult(items=[]).get_video_ids()
 
         """
-        example: "black guy,cums,in,twink's ass"
+        example: structured_search_query -> "black guy,cums,in,twink's ass"
         """
-        grouped_query = search.structured_search_query
-        grouped_words = self._to_tokens(grouped_query)
+        grouped_words = self._to_tokens(search.structured_search_query)
         is_gay = 'gay' in search.raw_search_query
-        query_groups = self._resolve_tag_aliases(grouped_words)
+        query_groups = self._resolve_tag_into_groups(grouped_words)
         canonical_tags = [canonical_tag for canonical_tag in query_groups.keys()]
 
         if not canonical_tags:
             return VideoRankingResult(items=[]).get_video_ids()
 
+        video_result = self._manticore.search_video_tags(tags=canonical_tags, is_gay=is_gay)
         direct_scores = self._score_direct_results(
-            canonical_tags=canonical_tags,
+            video_result=video_result,
             query_groups=query_groups,
-            is_gay=is_gay
         )
 
         video_ids = set(direct_scores)
@@ -67,9 +67,8 @@ class SearchVideoResolutionService:
 
     def _score_direct_results(
             self,
-            is_gay: bool,
-            canonical_tags: list[str],
-            query_groups: dict[str, TagGroupDataclass],
+            video_result: VideoTagSearchResult,
+            query_groups: dict[str, CanonicalTagDataclass],
     ) -> dict[int, float]:
         """Search Manticore for videos matching raw_tags and score each by group coverage × rarity.
 
@@ -80,10 +79,9 @@ class SearchVideoResolutionService:
         low-weight group tags from outscoring a single high-weight group match.
         Returns (scores_by_video_id, matched_tags_by_video_id).
         """
-        result = self._manticore.search_video_tags(tags=canonical_tags, is_gay=is_gay)
         scores: dict[int, float] = {}
 
-        for video_id, item in result.items.items():
+        for video_id, item in video_result.items.items():
             matched_tags_count = item.matched_tags_count
             score = 0.0
 
@@ -98,7 +96,7 @@ class SearchVideoResolutionService:
 
         return scores
 
-    def _resolve_tag_aliases(self, raw_tags: list[str]) -> dict[str, TagGroupDataclass]:
+    def _resolve_tag_into_groups(self, raw_tags: list[str]) -> dict[str, CanonicalTagDataclass]:
         canonical_tags = (
             TagAlias.objects
             .filter(
@@ -114,14 +112,17 @@ class SearchVideoResolutionService:
             .only("raw_tag", "rarity_score", "canonical_tag__tag_group", "canonical_tag__slug")
         )
         alias_by_raw_tag: dict[str, TagAlias] = {alias.raw_tag: alias for alias in aliases}
-        query_groups: dict[str, TagGroupDataclass] = {}
+        query_groups: dict[str, CanonicalTagDataclass] = {}
 
         for raw_tag, alias in alias_by_raw_tag.items():
             canonical_tag_group = alias.canonical_tag.tag_group
             canonical_tag_slug = alias.canonical_tag.slug
             query_group = query_groups.setdefault(
                 canonical_tag_slug,
-                TagGroupDataclass(weight=TagGroupEnum.weight(canonical_tag_group))
+                CanonicalTagDataclass(
+                    tag_group=canonical_tag_group,
+                    weight=TagGroupEnum.weight(canonical_tag_group)
+                )
             )
             query_group.tag_aliases.append(
                 TagAliasDataclass(raw_tag=alias.raw_tag, rarity_score=alias.rarity_score)

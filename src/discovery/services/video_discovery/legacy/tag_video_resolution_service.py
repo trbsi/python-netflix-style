@@ -10,7 +10,7 @@ from src.discovery.services.video_discovery.value_objects import (
     ExpandedRelatedTags,
     VideoRankingResult,
     VideoRankingScore,
-    TagAliasDataclass, TagGroupDataclass,
+    TagAliasDataclass, CanonicalTagDataclass,
 )
 from src.manticore.services.manticore.manticore_search_service import ManticoreSearchService
 
@@ -64,7 +64,7 @@ class TagVideoResolutionService:
 
         return VideoRankingResult(items=scored_videos[:limit])
 
-    def _build_query_groups(self, tag_groups: dict[str, list[str]]) -> dict[str, TagGroupDataclass]:
+    def _build_query_groups(self, tag_groups: dict[str, list[str]]) -> dict[str, CanonicalTagDataclass]:
         """Build per-group metadata needed for direct scoring.
 
         Each group holds its weight and the full list of TagAliasMeta (raw_tag + rarity),
@@ -77,14 +77,14 @@ class TagVideoResolutionService:
             for alias in TagAlias.objects.filter(raw_tag__in=all_raw_tags).only("raw_tag", "rarity_score")
         }
 
-        query_groups: dict[str, TagGroupDataclass] = {}
+        query_groups: dict[str, CanonicalTagDataclass] = {}
 
         for group_name, group_raw_tags in tag_groups.items():
             if group_name not in TagGroupEnum.__members__:
                 continue
 
             query_group = query_groups.setdefault(
-                group_name, TagGroupDataclass(weight=TagGroupEnum[group_name].value)
+                group_name, CanonicalTagDataclass(weight=TagGroupEnum[group_name].value)
             )
 
             for raw_tag in group_raw_tags:
@@ -98,7 +98,7 @@ class TagVideoResolutionService:
     def _score_direct_results(
             self,
             raw_tags: list[str],
-            query_groups: dict[str, TagGroupDataclass],
+            query_groups: dict[str, CanonicalTagDataclass],
             limit: int,
     ) -> tuple[dict[int, float], dict[int, list[str]]]:
         """Search Manticore for videos matching raw_tags and score each by group coverage × rarity.

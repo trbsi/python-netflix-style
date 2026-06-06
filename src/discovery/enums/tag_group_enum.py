@@ -10,13 +10,13 @@ class TagGroupEnum(Enum):
     act = 2
     category = 1.5
     """
-    role           → who,
-    kink           → relational structure,
-    setting         → where,
-    appearance      → what they are,
-    position       → sex positions,
-    act            → what happens,
-    category        → weak fallback label
+    role → who,
+    kink → relational structure,
+    setting → where,
+    appearance → what they are,
+    position → sex positions,
+    act → what happens,
+    category → weak fallback label
     """
 
     @staticmethod
@@ -26,3 +26,8 @@ class TagGroupEnum(Enum):
     @staticmethod
     def weight(group: str):
         return TagGroupEnum[group].value
+
+    @staticmethod
+    def is_mandatory(group: str) -> bool:
+        mandatory = [TagGroupEnum.role.value]
+        return group in mandatory
