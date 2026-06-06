@@ -29,5 +29,10 @@ class TagGroupEnum(Enum):
 
     @staticmethod
     def is_mandatory(group: str) -> bool:
-        mandatory = [TagGroupEnum.role.value]
+        mandatory = [TagGroupEnum.role.name, TagGroupEnum.appearance.name, TagGroupEnum.position.name]
         return group in mandatory
+
+    @staticmethod
+    def is_to_ignore(group: str) -> bool:
+        to_ignore = [TagGroupEnum.category.name]
+        return group in to_ignore

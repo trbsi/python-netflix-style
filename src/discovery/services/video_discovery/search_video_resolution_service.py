@@ -34,13 +34,12 @@ class SearchVideoResolutionService:
         """
         grouped_words = self._to_tokens(search.structured_search_query)
         is_gay = 'gay' in search.raw_search_query
-        query_groups = self._resolve_tag_into_groups(grouped_words)
-        canonical_tags = [canonical_tag for canonical_tag in query_groups.keys()]
+        query_groups = self._resolve_tag_into_groups(grouped_words, is_gay)
 
-        if not canonical_tags:
+        if not query_groups:
             return VideoRankingResult(items=[]).get_video_ids()
 
-        video_result = self._manticore.search_video_tags(tags=canonical_tags, is_gay=is_gay)
+        video_result = self._manticore.search_video_tags(tags=query_groups, is_gay=is_gay)
         direct_scores = self._score_direct_results(
             video_result=video_result,
             query_groups=query_groups,
@@ -68,7 +67,7 @@ class SearchVideoResolutionService:
     def _score_direct_results(
             self,
             video_result: VideoTagSearchResult,
-            query_groups: dict[str, CanonicalTagDataclass],
+            query_groups: list[CanonicalTagDataclass],
     ) -> dict[int, float]:
         """Search Manticore for videos matching raw_tags and score each by group coverage × rarity.
 
@@ -85,7 +84,7 @@ class SearchVideoResolutionService:
             matched_tags_count = item.matched_tags_count
             score = 0.0
 
-            for query_group in query_groups.values():
+            for query_group in query_groups:
                 group_coverage = matched_tags_count / len(query_group.tag_aliases)
                 # avg_rarity = sum(m.rarity_score for m in matched_metas) / len(matched_metas)
                 avg_rarity = 1
@@ -96,15 +95,17 @@ class SearchVideoResolutionService:
 
         return scores
 
-    def _resolve_tag_into_groups(self, raw_tags: list[str]) -> dict[str, CanonicalTagDataclass]:
+    def _resolve_tag_into_groups(self, raw_tags: list[str], is_gay: bool) -> list[CanonicalTagDataclass]:
         canonical_tags = (
             TagAlias.objects
             .filter(
                 raw_tag__in=raw_tags,
                 canonical_tag__isnull=False,
+                canonical_tag__is_gay=is_gay
             )
             .values_list('canonical_tag_id', flat=True)
         )
+
         aliases = (
             TagAlias.objects
             .select_related("canonical_tag")
@@ -116,6 +117,8 @@ class SearchVideoResolutionService:
 
         for raw_tag, alias in alias_by_raw_tag.items():
             canonical_tag_group = alias.canonical_tag.tag_group
+            if TagGroupEnum.is_to_ignore(canonical_tag_group):
+                continue
             canonical_tag_slug = alias.canonical_tag.slug
             query_group = query_groups.setdefault(
                 canonical_tag_slug,
@@ -129,7 +132,7 @@ class SearchVideoResolutionService:
                 TagAliasDataclass(raw_tag=alias.raw_tag, rarity_score=alias.rarity_score)
             )
 
-        return query_groups
+        return list(query_groups.values())
 
     def _to_tokens(self, grouped_query: str) -> list[str]:
         model_name = 'en_core_web_sm'
@@ -140,9 +143,15 @@ class SearchVideoResolutionService:
             nlp = spacy.load(model_name)
 
         tokens = []
+        raw_groups = [
+            group.strip()
+            for group in grouped_query.split(',')
+            if group.strip()
+        ]
+        has_gay_modifier = any(group.lower() == 'gay' for group in raw_groups)
         groups = [
-            group.strip() for group in grouped_query.split(',')
-            if group.strip() and group != 'gay'
+            group for group in raw_groups
+            if group.lower() != 'gay'
         ]
 
         for group in groups:
@@ -156,8 +165,16 @@ class SearchVideoResolutionService:
             original_words = [t[0] for t in filtered]
             lemma_words = [t[1] for t in filtered]
 
-            tokens.extend(self.make_ngrams(original_words))
-            tokens.extend(self.make_ngrams(lemma_words))
+            original_ngrams = self.make_ngrams(original_words)
+            lemma_ngrams = self.make_ngrams(lemma_words)
+
+            tokens.extend(original_ngrams)
+            tokens.extend(lemma_ngrams)
+
+            if has_gay_modifier:
+                for ngram in original_ngrams + lemma_ngrams:
+                    tokens.append(f"gay-{ngram}")
+                    tokens.append(f"{ngram}-gay")
 
         return list(dict.fromkeys(tokens))
 
