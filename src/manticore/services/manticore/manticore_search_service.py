@@ -1,5 +1,6 @@
 from manticoresearch import SearchResponse, SqlResponse
 
+from src.core.utils.utils import dump_debug
 from src.discovery.services.search_tags.dataclass.tag_dataclass import TagDataclass, TagsDataclass
 from src.manticore.services.manticore.manticore_base_service import ManticoreBaseService
 from src.media.value_objects.search.video_search_item import VideoSearchItem
@@ -59,9 +60,9 @@ class ManticoreSearchService(ManticoreBaseService):
             f"""
             SELECT
                 video_id,
-                COUNT(DISTINCT tag) AS matched_tags_count
+                COUNT(DISTINCT canonical_tag) AS matched_tags_count
             FROM {self._video_tag_table()}
-            WHERE tag IN ({tags_sql}) AND {category_sql}
+            WHERE canonical_tag IN ({tags_sql}) AND {category_sql}
             GROUP BY video_id
             ORDER BY matched_tags_count DESC
             LIMIT {limit}
@@ -75,10 +76,8 @@ class ManticoreSearchService(ManticoreBaseService):
             video_id = int(hit['_source']['video_id'])
             matched_tags_count = int(hit['_source']['matched_tags_count'])
             video_tags[video_id] = matched_tags_count
-            # tag = hit['_source']['tag']
-            # if tag in tag_set:
-            #     video_tags.setdefault(video_id, []).append(tag)
 
+        dump_debug(video_tags)
         matches = {
             video_id: VideoTagSearchItem(
                 video_id=video_id,

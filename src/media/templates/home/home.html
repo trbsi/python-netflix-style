@@ -64,5 +64,45 @@
                 button.innerHTML = `<i class="fa-regular fa-circle-right"></i>`;
             }
         });
+
+        function hideVideos() {
+            const sections = document.querySelectorAll(".video-section-content");
+            sections.forEach((section, index) => {
+
+                // set current height so transition works
+                section.style.height = section.offsetHeight + "px";
+                section.style.overflow = "hidden";
+
+                section.style.transition = `
+                    opacity 0.8s ease,
+                    transform 0.8s ease,
+                    filter 0.8s ease,
+                    height 0.8s ease,
+                    margin 0.8s ease,
+                    padding 0.8s ease
+                `;
+
+                setTimeout(() => {
+
+                    // fade + move
+                    section.style.opacity = "0";
+                    section.style.transform = "translateY(40px) scale(.96)";
+                    section.style.filter = "blur(12px)";
+
+                    // collapse layout
+                    section.style.height = "0";
+                    section.style.margin = "0";
+                    section.style.paddingTop = "0";
+                    section.style.paddingBottom = "0";
+
+                }, index * 350);
+
+                // optional: fully remove from DOM after animation
+                setTimeout(() => {
+                    section.remove();
+                }, 1200 + (index * 350));
+
+            });
+        }
     </script>
 {% endblock javascript_include %}

@@ -35,13 +35,13 @@ class SearchVideoResolutionService:
         grouped_words = self._to_tokens(grouped_query)
         is_gay = 'gay' in search.raw_search_query
         query_groups = self._resolve_tag_aliases(grouped_words)
-        direct_raw_tags = [m.raw_tag for g in query_groups.values() for m in g.tag_aliases]
+        canonical_tags = [canonical_tag for canonical_tag in query_groups.keys()]
 
-        if not direct_raw_tags:
+        if not canonical_tags:
             return VideoRankingResult(items=[]).get_video_ids()
 
         direct_scores = self._score_direct_results(
-            raw_tags=direct_raw_tags,
+            canonical_tags=canonical_tags,
             query_groups=query_groups,
             is_gay=is_gay
         )
@@ -68,7 +68,7 @@ class SearchVideoResolutionService:
     def _score_direct_results(
             self,
             is_gay: bool,
-            raw_tags: list[str],
+            canonical_tags: list[str],
             query_groups: dict[str, TagGroupDataclass],
     ) -> dict[int, float]:
         """Search Manticore for videos matching raw_tags and score each by group coverage × rarity.
@@ -80,7 +80,7 @@ class SearchVideoResolutionService:
         low-weight group tags from outscoring a single high-weight group match.
         Returns (scores_by_video_id, matched_tags_by_video_id).
         """
-        result = self._manticore.search_video_tags(tags=raw_tags, is_gay=is_gay)
+        result = self._manticore.search_video_tags(tags=canonical_tags, is_gay=is_gay)
         scores: dict[int, float] = {}
 
         for video_id, item in result.items.items():
@@ -110,17 +110,18 @@ class SearchVideoResolutionService:
         aliases = (
             TagAlias.objects
             .select_related("canonical_tag")
-            .filter(canonical_tag_id__in=canonical_tags, )
-            .only("raw_tag", "rarity_score", "canonical_tag__tag_group")
+            .filter(canonical_tag_id__in=list(canonical_tags))
+            .only("raw_tag", "rarity_score", "canonical_tag__tag_group", "canonical_tag__slug")
         )
         alias_by_raw_tag: dict[str, TagAlias] = {alias.raw_tag: alias for alias in aliases}
         query_groups: dict[str, TagGroupDataclass] = {}
 
         for raw_tag, alias in alias_by_raw_tag.items():
-            tag_group = alias.canonical_tag.tag_group
+            canonical_tag_group = alias.canonical_tag.tag_group
+            canonical_tag_slug = alias.canonical_tag.slug
             query_group = query_groups.setdefault(
-                tag_group,
-                TagGroupDataclass(weight=TagGroupEnum.weight(tag_group))
+                canonical_tag_slug,
+                TagGroupDataclass(weight=TagGroupEnum.weight(canonical_tag_group))
             )
             query_group.tag_aliases.append(
                 TagAliasDataclass(raw_tag=alias.raw_tag, rarity_score=alias.rarity_score)

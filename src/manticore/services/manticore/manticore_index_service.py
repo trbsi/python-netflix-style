@@ -118,9 +118,20 @@ class ManticoreIndexService(ManticoreBaseService):
                 }
             })
 
-            for tag in video.categories_and_tags():
-                category = "gay" if video.has_gay_category() else video.category_slugs()[0]
-                doc_id = zlib.crc32(f"{video.id}:{tag}".encode())
+            # <QuerySet[{'canonical_tag__slug': 'handjob'}, {'canonical_tag__slug': 'hentai-3d-anime'}]>
+            raw_tags: QuerySet[dict] = (
+                TagAlias.objects
+                .prefetch_related('canonical_tag')
+                .filter(raw_tag__in=video.categories_and_tags())
+                .filter(canonical_tag__isnull=False)
+                .values('canonical_tag__slug')
+                .distinct()
+            )
+            category = "gay" if video.has_gay_category() else video.category_slugs()[0]
+
+            for tag in raw_tags:
+                canonical = tag['canonical_tag__slug']
+                doc_id = zlib.crc32(f"{video.id}:{canonical}".encode())
                 video_tag_docs.append({
                     "replace": {
                         "table": self._video_tag_table(lang),
@@ -128,7 +139,7 @@ class ManticoreIndexService(ManticoreBaseService):
                         "doc": {
                             "video_id": video.id,
                             "category": category,
-                            "tag": tag,
+                            "canonical_tag": canonical,
                         }
                     }
                 })

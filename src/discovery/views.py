@@ -3,14 +3,14 @@ import json
 
 from django.http import HttpRequest, JsonResponse
 from django.utils import timezone
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST
 
 from src.core.utils.utils import get_or_create_session
 from src.discovery.services.personalization.llm_personalize_site_service import LlmPersonalizeSiteService
 from src.discovery.services.search_tags.search_tags_service import SearchTagsService
 
 
-@require_GET
+@require_POST
 def discover_videos_api(request: HttpRequest) -> JsonResponse:
     body = json.loads(request.body)
     text = body.get('text')

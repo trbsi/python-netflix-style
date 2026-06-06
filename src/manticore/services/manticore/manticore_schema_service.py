@@ -25,7 +25,7 @@ class ManticoreSchemaService(ManticoreBaseService):
                 id BIGINT,
                 video_id BIGINT,
                 category STRING,
-                tag STRING
+                canonical_tag STRING
             )""")
 
     def create_tags_index(self, drop_indexes: bool = False):
