@@ -21,6 +21,9 @@ from src.media.services.title_rewrite.local_rewrite import LocalRewriteService
 @require_GET
 def media_home(request: HttpRequest) -> HttpResponse:
     USE_CACHE = False
+    USE_BLOG_HOME = True
+
+    template = 'home/home-blog-style.html' if USE_BLOG_HOME else 'home/home.html'
     personalized_tags = request.COOKIES.get('personalized_tags')
     if personalized_tags:
         personalized_tags = signing.loads(personalized_tags)
@@ -28,17 +31,18 @@ def media_home(request: HttpRequest) -> HttpResponse:
 
     if USE_CACHE:
         lang = get_active_language()
-        html = cache.get(f'frontpage_html_{lang}')
+        cache_key = f'frontpage_html_{lang}_{template}'
+        html = cache.get(cache_key)
 
         if not html:
             service = ListMediaService()
-            videos = service.home_video_list()
-            html = render(request, 'home/home.html', videos).content
-            cache.set(f'frontpage_html_{lang}', html, 60 * 60)
+            videos = service.home_video_list(flatten=USE_BLOG_HOME)
+            html = render(request, template, videos).content
+            cache.set(cache_key, html, 60 * 60)
     else:
         service = ListMediaService()
-        videos = service.home_video_list(personalized_tags)
-        html = render(request, 'home/home.html', videos).content
+        videos = service.home_video_list(personalized_tags, flatten=USE_BLOG_HOME)
+        html = render(request, template, videos).content
 
     return HttpResponse(html)
 

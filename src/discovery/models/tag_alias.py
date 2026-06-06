@@ -8,6 +8,7 @@ class TagAlias(models.Model):
     raw_tag = models.CharField(max_length=255, unique=True)
     canonical_tag = models.ForeignKey(CanonicalTag, on_delete=models.CASCADE, null=True)
     rarity_score = models.FloatField(default=0)
+    occurrence_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     objects = models.Manager()

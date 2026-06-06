@@ -34,26 +34,43 @@ class CanonicalTagsService():
     def _extract_raw(self):
         pattern = re.compile(r'^[a-z0-9]+(?:-[a-z0-9]+)*$')
         BATCH_SIZE = 1000
-        batch: set[str] = set()
+        tag_counts: dict[str, int] = defaultdict(int)
 
-        def _flush(tags: set[str]) -> None:
-            existing = set(TagAlias.objects.filter(raw_tag__in=tags).values_list('raw_tag', flat=True))
-            new = tags - existing
+        def _flush(tags: list[str]) -> None:
+            existing_aliases = {
+                alias.raw_tag: alias
+                for alias in TagAlias.objects.filter(raw_tag__in=tags)
+            }
+            new = set(tags) - set(existing_aliases)
             if new:
-                TagAlias.objects.bulk_create([TagAlias(raw_tag=t) for t in new], batch_size=BATCH_SIZE)
+                TagAlias.objects.bulk_create([
+                    TagAlias(
+                        raw_tag=tag,
+                        occurrence_count=tag_counts[tag],
+                    )
+                    for tag in new
+                ], batch_size=BATCH_SIZE)
+
+            to_update = []
+            for tag, alias in existing_aliases.items():
+                alias.occurrence_count = tag_counts[tag]
+                to_update.append(alias)
+
+            if to_update:
+                TagAlias.objects.bulk_update(
+                    to_update,
+                    ['occurrence_count', 'categories'],
+                    batch_size=BATCH_SIZE,
+                )
 
         for video in VideoItem.objects.only('tags', 'categories').iterator(chunk_size=BATCH_SIZE):
-            for raw in video.tags.split(',') + video.categories.split(','):
-                tag = raw.strip().lower()
+            for tag in video.tags.split(','):
                 if pattern.fullmatch(tag):
-                    batch.add(tag)
+                    tag_counts[tag] += 1
 
-            if len(batch) >= BATCH_SIZE:
-                _flush(batch)
-                batch.clear()
-
-        if batch:
-            _flush(batch)
+        tags = list(tag_counts)
+        for index in range(0, len(tags), BATCH_SIZE):
+            _flush(tags[index:index + BATCH_SIZE])
 
     def _connect_canonical(self):
         files = ['canonical_tags.json', 'canonical_tags_gay.json']

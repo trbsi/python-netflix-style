@@ -50,7 +50,7 @@ class ListMediaService:
         # fallback default feed
         return VideoItem.objects.order_by('-id')
 
-    def home_video_list(self, tags: dict | None = None) -> dict:
+    def home_video_list(self, tags: dict | None = None, flatten: bool = False) -> dict:
         used_ids = set()
         base_qs = self.get_frontpage_queryset(tags)
 
@@ -108,7 +108,27 @@ class ListMediaService:
             ),
         }
 
+        if flatten:
+            context['video_list'] = self._flatten_home_videos(context)
+
         return context
+
+    def _flatten_home_videos(self, videos: dict) -> list:
+        video_list = []
+        used_ids = set()
+
+        for section_videos in videos.values():
+            if not isinstance(section_videos, list):
+                continue
+
+            for video in section_videos:
+                if video.id in used_ids:
+                    continue
+
+                video_list.append(video)
+                used_ids.add(video.id)
+
+        return video_list
 
     def single_video_list(self, video: VideoItem) -> dict:
         used_ids = set()

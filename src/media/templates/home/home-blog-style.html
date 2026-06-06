@@ -1,0 +1,77 @@
+{% extends "core/layout.html" %}
+{% load static %}
+{% block title %}Unlimited Porn Streaming Platform{% endblock %}
+
+{% block content %}
+    {% include "home/components/magic-search.html" %}
+
+    <div class="blog-column-pages section-padding video-section-content">
+        <div class="container">
+            <div class="row row-cols-xl-3 row-cols-md-3 row-cols-1 gy-4">
+                {% for video in video_list %}
+                    <div class="col">
+                        <div class="iq-blog-box">
+                            <div class="iq-blog-image clearfix">
+                                <a href="{{ video.video_url }}">
+                                    <img src="{{ video.thumbnail_large }}"
+                                         alt="{{ video.main_title }}"
+                                         class="img-fluid w-100 rounded-3"
+                                         loading="lazy">
+                                </a>
+                            </div>
+                            <div class="iq-blog-detail">
+                                <div class="iq-blog-meta d-flex align-item-center flex-wrap">
+                                    <ul class="list-inline mb-0">
+                                        <li class="posted-by">
+                                            <span class="post-date d-flex align-item-center gap-1">
+                                                <i class="ph ph-user"></i>
+                                                <a href="{{ video.video_url }}">{{ video.site }}</a>
+                                            </span>
+                                        </li>
+                                        <li class="posted-on">
+                                            <span class="post-author d-flex align-item-center gap-1">
+                                                <i class="icon icon-calendar-2"></i>
+                                                <a href="{{ video.video_url }}">
+                                                    <span>{{ video.duration_formatted }}</span>
+                                                </a>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <h4 class="mb-3 blog-heading">
+                                    <a href="{{ video.video_url }}">{{ video.main_title|safe }}</a>
+                                </h4>
+
+                                {% if video.main_description %}
+                                    <p class="line-count-2">{{ video.main_description|safe|truncatechars:180 }}</p>
+                                {% else %}
+                                    <p class="line-count-2">{{ video.categories_formatted }}</p>
+                                {% endif %}
+
+                                <div>
+                                    <a href="{{ video.video_url }}"
+                                       class="btn btn-link blog-readMore p-0 text-capitalize position-relative font-size-14">
+                                        <span>Watch Now</span>
+                                        <span><i class="ph ph-caret-right align-middle"></i></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <p class="mb-0">No videos found.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascript_include %}
+    <script>
+        const discoverVideosUrl = "{% url 'media.api.discover_videos' %}";
+    </script>
+    <script src="{% static 'js/media/search-input.js' %}"></script>
+{% endblock javascript_include %}
