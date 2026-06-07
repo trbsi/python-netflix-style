@@ -5,7 +5,7 @@ from src.media.models import VideoCategory, VideoCategoryPivot
 
 
 def limited_video_ids():
-    video_ids = cache.get('fixed_video_ids_v2')
+    video_ids = cache.get('fixed_video_ids_v3')
     if video_ids:
         return video_ids
 
@@ -19,5 +19,5 @@ def limited_video_ids():
             .values_list('video_id', flat=True)[:settings.FIXED_HARD_LIMIT_PER_CATEGORY]
         )
 
-    cache.set('fixed_video_ids_v2', list(video_ids), 60 * 60)
+    cache.set('fixed_video_ids_v3', list(video_ids), 60 * 60)
     return video_ids
