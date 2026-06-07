@@ -69,7 +69,7 @@ class LocalRewriteService:
                     video_category_links__category_id__in=list(category_ids),
                     slug_rewritten__isnull=True,
                 )
-                .order_by('id')
+                .order_by('video_category_links__video_id')
                 .distinct()
                 [:limit]
             )
