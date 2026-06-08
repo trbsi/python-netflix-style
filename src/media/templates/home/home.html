@@ -17,4 +17,14 @@
         const discoverVideosUrl = "{% url 'media.api.discover_videos' %}";
     </script>
     <script src="{% static 'js/media/search-input.js' %}"></script>
+    <script src="{% static 'js/media/tag-suggestion.js' %}"></script>
+    <script>
+        initTagSuggestions({
+            form: document.getElementById("magicForm"),
+            promptInput: document.getElementById("promptInput"),
+            selectedTagIdsInput: document.getElementById("selectedTagIdsInput"),
+            suggestionsBox: document.getElementById("magicTagSuggestions"),
+            searchTagsUrl: "{% url 'media.api.search_tags' %}"
+        });
+    </script>
 {% endblock javascript_include %}
