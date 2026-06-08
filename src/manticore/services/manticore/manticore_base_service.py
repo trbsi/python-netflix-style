@@ -5,6 +5,7 @@ from src.core.utils.lang import get_active_language
 
 class ManticoreBaseService:
     VIDEOS_INDEX = 'videos_index'
+    VIDEOS_STRUCTURED = 'videos_structured'
     VIDEO_TAGS = 'video_tags'
     TAGS_ALIAS = 'tags_alias'
 
@@ -24,3 +25,8 @@ class ManticoreBaseService:
         if not lang:
             lang = get_active_language()
         return f'{self.VIDEO_TAGS}_{lang}'
+
+    def _video_structured_table(self, lang: str | None = None):
+        if not lang:
+            lang = get_active_language()
+        return f'{self.VIDEOS_STRUCTURED}_{lang}'

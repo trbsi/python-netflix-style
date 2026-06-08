@@ -37,6 +37,22 @@ class LlmPersonalizeSiteService():
             base_url="https://api.groq.com/openai/v1",
         )
 
+        """
+        Analyze the porn search query:
+        "{user_query}"
+
+        Split it into meaningful intent chunks.
+
+        Rules:
+        - Each chunk must represent ONE concept (person, action, or descriptor group).
+        - Keep original words only.
+        - Do NOT explain.
+        - Do NOT classify into tags.
+        - Preserve word order inside chunks.
+
+        Output format:
+        chunk1 | chunk2 | chunk3
+        """
         prompt = 'Analyze porn search query and split the query into meaningful groups: "{user_query}". Output only as string of original words grouped and separated by comma, without explanation.'
 
         formatted_prompt = prompt.format(user_query=tags)

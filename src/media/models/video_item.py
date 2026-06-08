@@ -10,6 +10,33 @@ from src.core.utils.lang import get_active_language
 from src.core.utils.utils import full_url_for_route
 
 
+def _default_video_metadata():
+    return {
+        "participants": [
+            {
+                "roles": [],
+                "appearance": [],
+                "traits": []
+            },
+            {
+                "roles": [],
+                "appearance": [],
+                "traits": []
+            }
+        ],
+        "interactions": [
+            {
+                "type": "",
+                "from": 1,
+                "to": 2,
+                "position": "",
+                "kinks": []
+            }
+        ],
+        "setting": []
+    }
+
+
 class VideoItemQuerySet(models.QuerySet):
     def with_relations(self):
         return self.prefetch_related("translations_relation")
@@ -37,6 +64,7 @@ class VideoItem(models.Model):
     external_created_at = models.DateField(null=True, blank=True)
     tags = models.TextField()
     categories = models.TextField()
+    video_metadata = models.JSONField(default=_default_video_metadata, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
