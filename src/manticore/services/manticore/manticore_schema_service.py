@@ -45,15 +45,3 @@ class ManticoreSchemaService(ManticoreBaseService):
                     all_text TEXT
                 ) engine='rt'
             """)
-
-    def create_tags_index(self, drop_indexes: bool = False):
-        if drop_indexes:
-            self.utils.sql(f"DROP TABLE IF EXISTS {self.TAGS_ALIAS}")
-
-        self.utils.sql(f"""
-            CREATE TABLE IF NOT EXISTS {self.TAGS_ALIAS} (
-            id BIGINT,
-            raw_tag TEXT
-        )
-        min_infix_len='2'
-        """)

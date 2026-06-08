@@ -27,41 +27,6 @@ class ManticoreIndexService(ManticoreBaseService):
         }
         self.indexApi.replace(doc)
 
-    def reindex_tags(self):
-        batch = 10_000
-        tags = TagAlias.objects.iterator(chunk_size=batch)
-        items = []
-        for item in tags:
-            items.append(item)
-
-            if len(items) >= batch:
-                self.index_batch_tags(items)
-                items.clear()
-
-        if items:
-            self.index_batch_tags(items)
-            items.clear()
-
-    def index_batch_tags(self, rows: list[TagAlias]) -> None:
-        tag_docs = []
-
-        if not rows:
-            return
-
-        for tag in rows:
-            tag_docs.append({
-                "replace": {
-                    "table": self.TAGS_ALIAS,
-                    "id": tag.id,
-                    "doc": {
-                        "raw_tag": tag.raw_tag.replace('-', ' '),
-                    }
-                }
-            })
-
-        payload = '\n'.join(map(json.dumps, tag_docs)) + '\n'
-        self.indexApi.bulk(payload)
-
     def reindex_all(self):
         codes = get_language_codes()
         for code in codes:

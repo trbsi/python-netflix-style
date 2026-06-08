@@ -18,11 +18,6 @@ class Command(BaseCommand):
             schema_service.create_indexes(drop_indexes)
             print('Indexes created')
 
-        if action == 'reindex_tags':
-            schema_service.create_tags_index(drop_indexes)
-            index_service.reindex_tags()
-            print('Tag index created and reindexed')
-
         if action == 'reindex':
             schema_service.create_indexes(drop_indexes)
             index_service.reindex_all()

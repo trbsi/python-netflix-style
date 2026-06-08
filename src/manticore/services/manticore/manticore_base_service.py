@@ -7,7 +7,6 @@ class ManticoreBaseService:
     VIDEOS_INDEX = 'videos_index'
     VIDEOS_STRUCTURED = 'videos_structured'
     VIDEO_TAGS = 'video_tags'
-    TAGS_ALIAS = 'tags_alias'
 
     def __init__(self):
         config = manticoresearch.Configuration(host="http://manticore:9308")

@@ -1,7 +1,6 @@
 from manticoresearch import SearchResponse, SqlResponse
 
 from src.core.utils.utils import dump_debug
-from src.discovery.services.search_tags.dataclass.tag_dataclass import TagDataclass, TagsDataclass
 from src.discovery.services.video_discovery.value_objects import CanonicalTagDataclass
 from src.manticore.services.manticore.manticore_base_service import ManticoreBaseService
 from src.media.value_objects.search.video_search_item import VideoSearchItem
@@ -152,31 +151,3 @@ class ManticoreSearchService(ManticoreBaseService):
     def _quote_sql_string(self, value: str) -> str:
         escaped = value.replace('\\', '\\\\').replace("'", "\\'")
         return f"'{escaped}'"
-
-    def search_tags(self, tag: str, limit: int = 50) -> TagsDataclass:
-        tag = tag.lower()
-        result: SqlResponse = self.utils.sql(
-            f"""
-           SELECT *
-            FROM {self.TAGS_ALIAS}
-            WHERE MATCH('*{tag}*')
-            LIMIT {limit}
-            """,
-            raw_response=False,
-        )
-
-        hits: list = result.actual_instance.hits['hits']
-        tags_list: list = []
-        for hit in hits:
-            tag_id = int(hit['_id'])
-            raw_tag = hit['_source']['raw_tag']
-            tags_list.append((tag_id, raw_tag))
-
-        return TagsDataclass(
-            tags=[
-                TagDataclass(
-                    id=tag_id,
-                    raw_tag=raw_tag,
-                )
-                for tag_id, raw_tag in tags_list
-            ])
