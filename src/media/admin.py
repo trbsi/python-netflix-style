@@ -1,5 +1,7 @@
+import json
 from collections import defaultdict
 
+from django import forms
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
@@ -29,7 +31,9 @@ class VideoItemAdminForm(forms.ModelForm):
 @admin.register(VideoItem)
 class VideoItemAdmin(admin.ModelAdmin):
     form = VideoItemAdminForm
-    list_display = ['id', 'title', 'site', 'external_id']
+    list_display = ['id', 'title_rewritten', 'site']
+    list_filter = ['site']
+    ordering = ['id']
     search_fields = ['title', 'external_id']
     readonly_fields = ['video_preview', 'tags_by_canonical']
     fields = ['video_preview', 'video_metadata', 'tags_by_canonical']

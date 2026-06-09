@@ -1,15 +1,12 @@
 from manticoresearch import SearchResponse, SqlResponse
 
 from src.core.utils.utils import dump_debug
-from src.discovery.services.video_discovery.value_objects import CanonicalTagDataclass
 from src.discovery.services.video_discovery.value_objects.structured_query_intent import StructuredQueryIntent
 from src.manticore.services.manticore.manticore_base_service import ManticoreBaseService
 from src.media.value_objects.search.video_search_item import VideoSearchItem
 from src.media.value_objects.search.video_search_result import VideoSearchResult
 from src.media.value_objects.search.video_structured_match import VideoStructuredMatch
 from src.media.value_objects.search.video_structured_match_result import VideoStructuredMatchResult
-from src.media.value_objects.search.video_tag_search_item import VideoTagSearchItem
-from src.media.value_objects.search.video_tag_search_result import VideoTagSearchResult
 
 
 class ManticoreSearchService(ManticoreBaseService):
@@ -47,91 +44,6 @@ class ManticoreSearchService(ManticoreBaseService):
             ))
 
         return VideoSearchResult(result.scroll, items)
-
-    def search_video_tags(
-            self,
-            tags: list[CanonicalTagDataclass],
-            is_gay: bool,
-            limit: int = 300,
-    ) -> VideoTagSearchResult:
-        mandatory_tags = self._unique_tags([
-            tag.canonical_tag
-            for tag in tags
-            if tag.is_mandatory()
-        ])
-        optional_tags = self._unique_tags([
-            tag.canonical_tag
-            for tag in tags
-            if not tag.is_mandatory()
-        ])
-        query_tags = self._unique_tags(mandatory_tags + optional_tags)
-
-        if not query_tags:
-            return VideoTagSearchResult({})
-
-        tags_sql = self._to_sql_list(query_tags)
-
-        if is_gay:
-            category_sql = "category = 'gay'"
-        else:
-            category_sql = "category != 'gay'"
-
-        mandatory_select_sql = ''
-        mandatory_having_sql = ''
-        if mandatory_tags:
-            mandatory_tags_sql = self._to_sql_list(mandatory_tags)
-            mandatory_select_sql = (
-                f",\n                SUM(canonical_tag IN ({mandatory_tags_sql})) AS mandatory_tags_count"
-            )
-            mandatory_having_sql = f"HAVING mandatory_tags_count >= {len(mandatory_tags)}"
-
-        """
-        Example:
-          SELECT
-              video_id,
-              COUNT(DISTINCT canonical_tag) AS matched_tags_count,
-              SUM(canonical_tag IN ('teen','anal')) AS mandatory_tags_count
-          FROM video_tags
-          WHERE canonical_tag IN ('teen', 'anal', 'blowjob')
-          GROUP BY video_id
-          HAVING mandatory_tags_count >= 2
-        """
-        query = f"""
-                    SELECT
-                        video_id,
-                        COUNT(DISTINCT canonical_tag) AS matched_tags_count
-                        {mandatory_select_sql}
-                    FROM {self._video_tag_table()}
-                    WHERE canonical_tag IN ({tags_sql}) AND {category_sql}
-                    GROUP BY video_id
-                    {mandatory_having_sql}
-                    ORDER BY matched_tags_count DESC
-                    LIMIT {limit}
-                    """
-
-        dump_debug(query)
-
-        result: SqlResponse = self.utils.sql(
-            query,
-            raw_response=False,
-        )
-
-        hits: list = result.actual_instance.hits['hits']
-        video_tags: dict[int, int] = {}
-        for hit in hits:
-            video_id = int(hit['_source']['video_id'])
-            matched_tags_count = int(hit['_source']['matched_tags_count'])
-            video_tags[video_id] = matched_tags_count
-
-        matches = {
-            video_id: VideoTagSearchItem(
-                video_id=video_id,
-                matched_tags_count=matched_tags_count,
-            )
-            for video_id, matched_tags_count in video_tags.items()
-        }
-
-        return VideoTagSearchResult(matches)
 
     def search_video_structured(
             self,

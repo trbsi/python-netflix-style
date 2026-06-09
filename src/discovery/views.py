@@ -7,6 +7,7 @@ from django.views.decorators.http import require_POST
 
 from src.core.utils.utils import get_or_create_session
 from src.discovery.services.personalization.llm_personalize_site_service import LlmPersonalizeSiteService
+from src.discovery.services.personalization.personalize_site_service import PersonalizeSiteService
 from src.discovery.services.search_tags.search_tags_service import SearchTagsService
 
 
@@ -14,10 +15,15 @@ from src.discovery.services.search_tags.search_tags_service import SearchTagsSer
 def discover_videos_api(request: HttpRequest) -> JsonResponse:
     body = json.loads(request.body)
     text = body.get('text')
+    selected_tag_ids = body.get('selected_tag_ids')
     get_or_create_session(request)
 
-    service = LlmPersonalizeSiteService()
-    cookie_value = service.personalize_site(text, request.session.session_key)
+    if selected_tag_ids:
+        service = PersonalizeSiteService()
+        cookie_value = service.personalize_site(text, selected_tag_ids, request.session.session_key)
+    else:
+        service = LlmPersonalizeSiteService()
+        cookie_value = service.personalize_site(text, request.session.session_key)
 
     response = JsonResponse({})
     if cookie_value:

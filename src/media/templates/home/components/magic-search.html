@@ -1,13 +1,16 @@
 <form id="magicForm" class="position-relative my-4">
     {% csrf_token %}
     <div class="magic-input-wrapper position-relative">
-        <input
-                type="text"
-                class="form-control magic-input"
-                id="promptInput"
-                autocomplete="off"
-                placeholder="What do you want to watch?"
-        >
+        <div class="magic-token-field" id="magicTokenField">
+            <div class="magic-selected-tags" id="magicSelectedTags"></div>
+            <input
+                    type="text"
+                    class="form-control magic-input"
+                    id="promptInput"
+                    autocomplete="off"
+                    placeholder="What do you want to watch?"
+            >
+        </div>
         <input type="hidden" id="selectedTagIdsInput" name="selected_tag_ids" value="">
         <div id="magicTagSuggestions" class="magic-tag-suggestions d-none" role="listbox"></div>
 

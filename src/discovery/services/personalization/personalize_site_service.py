@@ -1,106 +1,54 @@
-import re
+import uuid
 
-import spacy
 from django.core import signing
-from django.db.models import QuerySet
-from spacy.cli import download
 
-from src.discovery.models import TagAlias
+from src.discovery.models import SearchQuery, TagAlias
 from src.events.events import enqueue_search_event
 
 
 class PersonalizeSiteService():
-    def personalize_site(self, text: str, session_id: str | None) -> str | None:
-        enqueue_search_event(session_id, text)
+    def personalize_site(self, text: str, selected_tag_ids: str | list, session_id: str | None) -> str | None:
+        tag_ids = self._normalize_tag_ids(selected_tag_ids)
+        if not tag_ids:
+            return None
 
-        text = self.clean_query(text)
-        text_array = self.to_tokens(text)
-        canonical_tags = self.get_canonical_tags(text_array)
-        extra_tags = [tag for tag in text_array if tag not in canonical_tags]
-
-        signed_value = signing.dumps({
-            "query": text,
-            "canonical_tags": canonical_tags,
-            "extra_tags": extra_tags,
-        })
-
-        return signed_value
-
-    def clean_query(self, text: str) -> str:
-        text = text.lower()
-        text = re.sub(r"[^a-z0-9\s]", " ", text)
-        text = re.sub(r"\s+", " ", text)
-
-        return text.strip()
-
-    def to_tokens(self, text: str) -> list:
-        model_name = 'en_core_web_sm'
-        try:
-            nlp = spacy.load(model_name)
-        except OSError:
-            download(model_name)
-            nlp = spacy.load(model_name)
-
-        doc = nlp(text)
-
-        filtered = [
-            (token.text, token.lemma_)
-            for token in doc
-            if not token.is_stop and token.text.strip()
-        ]
-
-        original_words = [t[0] for t in filtered]
-        lemma_words = [t[1] for t in filtered]
-
-        tokens = self.make_ngrams(original_words) + self.make_ngrams(lemma_words)
-
-        return tokens
-
-    def make_ngrams(self, words: list) -> list:
-        # This function generates all forward-combination n-grams (not just adjacent ones)
-        # It builds:
-        # - 1-grams: single words
-        # - 2-grams: all pairs where i < j
-        # - 3-grams: all triplets where i < j < k
-
-        ngrams = []
-
-        # -------------------------
-        # 1-grams (unigrams)
-        # -------------------------
-        # Each word is kept as-is
-        # ngrams.extend(words)
-
-        # -------------------------
-        # 2-grams (bigrams)
-        # -------------------------
-        # Create all combinations of two words where the second word comes after the first
-        # Example: [a, b, c] → a-b, a-c, b-c
-        for i in range(len(words)):
-            for j in range(i + 1, len(words)):
-                ngrams.append(f"{words[i]}-{words[j]}")
-
-        # -------------------------
-        # 3-grams (trigrams)
-        # -------------------------
-        # Create all combinations of three words in forward order (i < j < k)
-        # Example: [a, b, c, d] → a-b-c, a-b-d, a-c-d, b-c-d
-        for i in range(len(words)):
-            for j in range(i + 1, len(words)):
-                for k in range(j + 1, len(words)):
-                    ngrams.append(f"{words[i]}-{words[j]}-{words[k]}")
-
-        return ngrams
-
-    def get_canonical_tags(self, query_tags: list) -> list:
-        tags: QuerySet[TagAlias] = (
+        tags = list(
             TagAlias.objects
-            .filter(raw_tag__in=list(query_tags))
-            .filter(canonical_tag__isnull=False)
-            .values_list('canonical_tag__slug', flat=True)
+            .filter(id__in=tag_ids)
+            .order_by('raw_tag')
+            .values_list('raw_tag', flat=True)
+        )
+        if not tags:
+            return None
+
+        search_text = ', '.join(tags)
+        enqueue_search_event(session_id, search_text)
+
+        uuid_str = str(uuid.uuid4())
+        SearchQuery.objects.create(
+            uuid=uuid_str,
+            raw_search_query=search_text,
+            structured_search_query=','.join(tags),
+            search_type=SearchQuery.SEARCH_TYPE_TAGS
         )
 
-        if tags:
-            return list(set(tags))
+        return signing.dumps({
+            "query": search_text,
+            "id": uuid_str,
+        })
 
-        return []
+    def _normalize_tag_ids(self, selected_tag_ids: str | list) -> list[int]:
+        if not selected_tag_ids:
+            return []
+
+        if isinstance(selected_tag_ids, str):
+            selected_tag_ids = selected_tag_ids.split(',')
+
+        tag_ids = []
+        for tag_id in selected_tag_ids:
+            try:
+                tag_ids.append(int(tag_id))
+            except (TypeError, ValueError):
+                continue
+
+        return list(dict.fromkeys(tag_ids))

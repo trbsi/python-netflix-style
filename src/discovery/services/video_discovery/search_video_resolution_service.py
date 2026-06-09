@@ -1,4 +1,3 @@
-from src.core.utils.utils import dump_debug
 from src.discovery.enums.tag_group_enum import TagGroupEnum
 from src.discovery.models import TagAlias, SearchQuery
 from src.discovery.services.video_discovery.value_objects.structured_query_intent import StructuredQueryIntent
@@ -21,13 +20,10 @@ class SearchVideoResolutionService:
 
         result = self._manticore.search_video_structured(intent=intent, limit=limit)
 
-        for video_id in result.get_video_ids():
-            dump_debug(f"vid:{video_id}")
-
         return result.get_video_ids()
 
     def _resolve_intent(self, structured_query: str) -> StructuredQueryIntent:
-        chunks = [c.strip() for c in structured_query.split('|') if c.strip()]
+        chunks = [c.strip() for c in structured_query.split(',') if c.strip()]
         if not chunks:
             return StructuredQueryIntent()
 
@@ -42,7 +38,7 @@ class SearchVideoResolutionService:
 
         for alias in aliases:
             group = alias.canonical_tag.tag_group
-            slug = alias.canonical_tag.slug
+            slug = alias.raw_tag
             if group == TagGroupEnum.role.name:
                 roles.append(slug)
             elif group == TagGroupEnum.appearance.name:

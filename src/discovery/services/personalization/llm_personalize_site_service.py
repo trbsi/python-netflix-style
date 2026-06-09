@@ -23,6 +23,7 @@ class LlmPersonalizeSiteService():
             uuid=uuid_str,
             raw_search_query=text,
             structured_search_query=response,
+            search_type=SearchQuery.SEARCH_TYPE_RAW
         )
         signed_value = signing.dumps({
             "query": text,
@@ -51,7 +52,7 @@ class LlmPersonalizeSiteService():
         - Preserve word order inside chunks.
 
         Output format:
-        chunk1 | chunk2 | chunk3
+        chunk1,chunk2,chunk3
         """
 
         formatted_prompt = prompt.format(user_query=tags)

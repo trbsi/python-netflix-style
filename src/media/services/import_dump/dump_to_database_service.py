@@ -9,6 +9,7 @@ from django.db.models import QuerySet
 from django.utils.text import slugify
 from tqdm import tqdm
 
+from automationapp import settings
 from src.core.utils.utils import safe_get
 from src.manticore.services.manticore.manticore_index_service import ManticoreIndexService
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
@@ -63,8 +64,11 @@ class DumpToDatabaseService:
                 fields = line.split(fields_map['fields_split_by'])
 
                 try:
-                    embed_code = self._embed_code(site, fields, fields_map).strip()
                     categories = self._get_categories(fields, fields_map)
+                    if not self._has_fixed_category(categories):
+                        continue
+
+                    embed_code = self._embed_code(site, fields, fields_map).strip()
                     tags = self._get_tags(fields, fields_map)
                     external_created_at = self._extract_created_at(site, fields, fields_map)
                     duration = self._duration(site, fields, fields_map)
@@ -153,6 +157,19 @@ class DumpToDatabaseService:
                 pivots_to_create.clear()
 
         return self.total_imported
+
+    def _has_fixed_category(self, categories: str) -> bool:
+        if not categories:
+            return False
+
+        fixed_category_slugs = {category for category in settings.FIXED_CATEGORIES}
+        category_slugs = {
+            slugify(category.strip())
+            for category in categories.split(',')
+            if category.strip()
+        }
+
+        return bool(fixed_category_slugs & category_slugs)
 
     def _insert_video_category_pivot(self, pivots_to_create: list, saved_videos: QuerySet[VideoItem]) -> list:
         categories_queryset = VideoCategory.objects.all()

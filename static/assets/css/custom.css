@@ -9367,15 +9367,19 @@ body.modal-open #ageModal ~ .main-content {
 }
 
 /* INPUT */
-.magic-input {
+.magic-token-field {
     position: relative;
     z-index: 2;
 
     width: 100%;
-    height: 72px;
+    min-height: 72px;
 
-    padding-left: 24px;
-    padding-right: 160px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+
+    padding: 12px 160px 12px 24px;
 
     border: none;
     border-radius: 24px;
@@ -9390,12 +9394,74 @@ body.modal-open #ageModal ~ .main-content {
     transition: .3s ease;
 }
 
-.magic-input:focus {
+.magic-token-field:focus-within {
     outline: none;
 
     background: #111827;
 
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .08);
+}
+
+.magic-selected-tags {
+    display: contents;
+}
+
+.magic-selected-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 100%;
+    min-height: 34px;
+    padding: 0 4px 0 0;
+    color: white;
+    font-size: 1.05rem;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.magic-selected-tag-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.magic-selected-tag-remove {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .08);
+    color: rgba(255, 255, 255, .72);
+    line-height: 1;
+    cursor: pointer;
+}
+
+.magic-selected-tag-remove:hover,
+.magic-selected-tag-remove:focus {
+    outline: none;
+    background: rgba(255, 255, 255, .16);
+    color: white;
+}
+
+.magic-input {
+    flex: 1 1 160px;
+    min-width: 140px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: white;
+    font-size: 1.05rem;
+    box-shadow: none;
+}
+
+.magic-input:focus {
+    outline: none;
+    background: transparent;
+    box-shadow: none;
 }
 
 .magic-tag-suggestions {
@@ -9430,6 +9496,12 @@ body.modal-open #ageModal ~ .main-content {
 .magic-tag-suggestion:focus {
     outline: none;
     background: rgba(255, 255, 255, .08);
+}
+
+.magic-tag-suggestion-hint {
+    padding: 8px 14px 4px;
+    color: rgba(255, 255, 255, .55);
+    font-size: .78rem;
 }
 
 /* BUTTON INSIDE INPUT */

@@ -1,13 +1,17 @@
-function initTagSuggestions({ form, promptInput, selectedTagIdsInput, suggestionsBox, searchTagsUrl }) {
+function initTagSuggestions({form, promptInput, selectedTagIdsInput, selectedTagsList, suggestionsBox, searchTagsUrl}) {
     const selectedTags = [];
+    let visibleSuggestions = [];
     let searchDebounceTimer = null;
     let searchAbortController = null;
 
+    syncFormValues();
+
     promptInput.addEventListener("input", function () {
         window.clearTimeout(searchDebounceTimer);
-        syncSelectedTagsFromInput();
 
         const query = getCurrentTagQuery();
+        syncFormValues();
+
         if (query.length < 3) {
             clearSuggestions();
             return;
@@ -16,6 +20,27 @@ function initTagSuggestions({ form, promptInput, selectedTagIdsInput, suggestion
         searchDebounceTimer = window.setTimeout(() => {
             searchTags(query);
         }, 250);
+    });
+
+    promptInput.addEventListener("keydown", function (event) {
+        if (event.key === "Tab" && visibleSuggestions.length) {
+            event.preventDefault();
+            selectTag(visibleSuggestions[0]);
+            return;
+        }
+
+        if (event.key === "Backspace" && !promptInput.value && selectedTags.length) {
+            selectedTags.pop();
+            renderSelectedTags();
+            syncFormValues();
+            clearSuggestions();
+        }
+    });
+
+    form.addEventListener("click", function (event) {
+        if (!event.target.closest(".magic-tag-suggestion")) {
+            promptInput.focus();
+        }
     });
 
     document.addEventListener("click", function (event) {
@@ -67,6 +92,7 @@ function initTagSuggestions({ form, promptInput, selectedTagIdsInput, suggestion
         const availableTags = tags.filter((tag) => {
             return !selectedTags.some((selectedTag) => String(selectedTag.id) === String(tag.id));
         });
+        visibleSuggestions = availableTags;
 
         if (!availableTags.length) {
             clearSuggestions();
@@ -85,39 +111,66 @@ function initTagSuggestions({ form, promptInput, selectedTagIdsInput, suggestion
             suggestionsBox.appendChild(option);
         });
 
+        const hint = document.createElement("div");
+        hint.className = "magic-tag-suggestion-hint";
+        hint.textContent = "Press Tab to choose the first tag";
+        suggestionsBox.appendChild(hint);
+
         suggestionsBox.classList.remove("d-none");
     }
 
     function selectTag(tag) {
         selectedTags.push(tag);
-        selectedTagIdsInput.value = selectedTags.map((selectedTag) => selectedTag.id).join(",");
-        promptInput.value = selectedTags.map((selectedTag) => selectedTag.raw_tag).join(", ");
+        promptInput.value = "";
+        renderSelectedTags();
+        syncFormValues();
         promptInput.focus();
         clearSuggestions();
     }
 
-    function syncSelectedTagsFromInput() {
-        const visibleTags = promptInput.value
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter(Boolean);
-        const visibleTagSet = new Set(visibleTags);
+    function renderSelectedTags() {
+        selectedTagsList.innerHTML = "";
 
-        for (let index = selectedTags.length - 1; index >= 0; index--) {
-            if (!visibleTagSet.has(selectedTags[index].raw_tag)) {
-                selectedTags.splice(index, 1);
-            }
-        }
+        selectedTags.forEach((tag, index) => {
+            const tagElement = document.createElement("span");
+            tagElement.className = "magic-selected-tag";
 
+            const text = document.createElement("span");
+            text.className = "magic-selected-tag-text";
+            text.textContent = tag.raw_tag;
+
+            // const removeButton = document.createElement("button");
+            // removeButton.type = "button";
+            // removeButton.className = "magic-selected-tag-remove";
+            // removeButton.setAttribute("aria-label", `Remove ${tag.raw_tag}`);
+            // removeButton.innerHTML = "&times;";
+            // removeButton.addEventListener("click", function () {
+            //     selectedTags.splice(index, 1);
+            //     renderSelectedTags();
+            //     syncFormValues();
+            //     promptInput.focus();
+            // });
+
+            tagElement.appendChild(text);
+            // tagElement.appendChild(removeButton);
+            selectedTagsList.appendChild(tagElement);
+        });
+    }
+
+    function syncFormValues() {
         selectedTagIdsInput.value = selectedTags.map((selectedTag) => selectedTag.id).join(",");
+        promptInput.dataset.searchText = [
+            ...selectedTags.map((selectedTag) => selectedTag.raw_tag),
+            promptInput.value.trim()
+        ].filter(Boolean).join(", ");
     }
 
     function getCurrentTagQuery() {
-        const parts = promptInput.value.split(",");
-        return parts[parts.length - 1].trim();
+        return promptInput.value.trim();
     }
 
     function clearSuggestions() {
+        visibleSuggestions = [];
         suggestionsBox.innerHTML = "";
         suggestionsBox.classList.add("d-none");
     }

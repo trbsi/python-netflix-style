@@ -1,10 +1,11 @@
 const form = document.getElementById("magicForm");
 const button = document.querySelector(".magic-submit-btn");
 const promptInput = document.getElementById("promptInput");
+const selectedTagIdsInput = document.getElementById("selectedTagIdsInput");
 
 form.addEventListener("submit", async function (e) {
     e.preventDefault();
-    const value = promptInput.value;
+    const value = promptInput.dataset.searchText || promptInput.value.trim();
     if (!value) {
         alert('Describe your favorite porn');
         return;
@@ -25,6 +26,7 @@ form.addEventListener("submit", async function (e) {
             credentials: "same-origin",
             body: JSON.stringify({
                 text: value,
+                selected_tag_ids: selectedTagIdsInput ? selectedTagIdsInput.value : "",
             })
         });
 
