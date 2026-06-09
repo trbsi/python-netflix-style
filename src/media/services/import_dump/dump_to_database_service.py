@@ -17,6 +17,7 @@ from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
 
 class DumpToDatabaseService:
     MAX_VIDEOS_IN_DATABASE = 100_000
+    MAX_VIDEOS_PER_SITE = 1000
 
     def __init__(self):
         self.search_index_service = ManticoreIndexService()
@@ -33,7 +34,16 @@ class DumpToDatabaseService:
                 f"Database already contains {current_count} videos (limit: {self.MAX_VIDEOS_IN_DATABASE}). Skipping import.")
             return 0
 
-        import_limit = self.MAX_VIDEOS_IN_DATABASE - current_count
+        current_site_count = VideoItem.objects.filter(site=site).count()
+        if current_site_count >= self.MAX_VIDEOS_PER_SITE:
+            print(
+                f"Site {site} already contains {current_site_count} videos (limit: {self.MAX_VIDEOS_PER_SITE}). Skipping import.")
+            return 0
+
+        import_limit = min(
+            self.MAX_VIDEOS_IN_DATABASE - current_count,
+            self.MAX_VIDEOS_PER_SITE - current_site_count,
+        )
         self.site = site
         videos_batch = 10_000
         categories_batch = 1000
@@ -50,7 +60,7 @@ class DumpToDatabaseService:
 
             f.seek(0)  # reset to first line
             for index, line in enumerate(f):
-                if self.total_imported >= import_limit:
+                if self.total_imported + len(videos_array) >= import_limit:
                     print(f"Import limit of {import_limit} videos reached. Stopping.")
                     break
 
@@ -100,7 +110,7 @@ class DumpToDatabaseService:
                     continue
 
                 if len(videos_array) >= videos_batch:
-                    saved_videos = self._insert_batch_videos(videos_array)
+                    saved_videos = self._insert_batch_videos(videos_array, import_limit)
                     self.search_index_service.index_batch(saved_videos)
                     videos_array.clear()
 
@@ -138,7 +148,7 @@ class DumpToDatabaseService:
             pbar.close()
 
             if videos_array:
-                saved_videos = self._insert_batch_videos(videos_array)
+                saved_videos = self._insert_batch_videos(videos_array, import_limit)
                 self.search_index_service.index_batch(saved_videos)
 
                 pivots_to_create = self._insert_video_category_pivot(pivots_to_create, saved_videos)
@@ -207,7 +217,7 @@ class DumpToDatabaseService:
             update_fields=['title', 'image']
         )
 
-    def _insert_batch_videos(self, items: list[VideoItem]) -> QuerySet[VideoItem]:
+    def _insert_batch_videos(self, items: list[VideoItem], import_limit: int) -> QuerySet[VideoItem]:
         """
         VideoItem.objects.bulk_create(
             items,
@@ -227,12 +237,15 @@ class DumpToDatabaseService:
         # Mysql reserve values before insert and then skips them if there are duplicates
         inserted_external_ids = []
         for video in items:
+            if self.total_imported + len(inserted_external_ids) >= import_limit:
+                break
+
             exists = VideoItem.objects.filter(external_id=video.external_id).filter(site=self.site).exists()
             if not exists:
                 video.save()
                 inserted_external_ids.append(video.external_id)
 
-        result = VideoItem.objects.filter(external_id__in=inserted_external_ids)
+        result = VideoItem.objects.filter(external_id__in=inserted_external_ids).filter(site=self.site)
         self.total_imported += result.count()
 
         return result
