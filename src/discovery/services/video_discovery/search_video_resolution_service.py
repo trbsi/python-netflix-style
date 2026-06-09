@@ -4,10 +4,6 @@ from spacy.cli import download
 from src.core.utils.utils import dump_debug
 from src.discovery.enums.tag_group_enum import TagGroupEnum
 from src.discovery.models import TagAlias, SearchQuery
-from src.discovery.services.video_discovery.legacy.related_tag_expansion_service import RelatedTagExpansionService
-from src.discovery.services.video_discovery.legacy.video_semantic_scoring_service import (
-    VideoSemanticScoringService,
-)
 from src.discovery.services.video_discovery.value_objects import (
     VideoRankingResult,
     VideoRankingScore,
@@ -21,8 +17,6 @@ from src.media.value_objects.search.video_tag_search_result import VideoTagSearc
 class SearchVideoResolutionService:
     def __init__(self):
         self._manticore = ManticoreSearchService()
-        self._related_expansion = RelatedTagExpansionService()
-        self._semantic_scoring = VideoSemanticScoringService()
 
     def resolve_videos(self, tags: dict | None, limit: int = 300) -> list:
         search: SearchQuery = SearchQuery.objects.filter(uuid=tags['id']).first()

@@ -1,9 +1,7 @@
 import random
-from datetime import timedelta
 
 import bugsnag
 from django.core.cache import cache
-from django.utils import timezone
 
 from automationapp import settings
 from src.media.models import VideoItem
@@ -12,14 +10,11 @@ from src.media.utils.utils import limited_video_ids
 
 class FrontpageService:
     def generate_frontpage(self) -> int:
-        week = timezone.now() - timedelta(days=7)
         total_videos = 200
 
         # 1. Try getting all videos from last week
-        # @todo-revert this
         candidates = list(
             VideoItem.objects
-            # .filter(external_created_at__gte=week)
             .filter(id__in=limited_video_ids())
             .order_by('-id')
             .values_list('id', flat=True)[:total_videos]

@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 
 from automationapp import settings
-from src.discovery.models import TagAlias, CanonicalTag, RelatedTag
+from src.discovery.models import TagAlias, CanonicalTag
 from src.media.models import VideoItem
 
 
