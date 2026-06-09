@@ -115,6 +115,66 @@ class ManticoreIndexService(ManticoreBaseService):
         payload = '\n'.join(map(json.dumps, video_tag_docs)) + '\n'
         self.indexApi.bulk(payload)
 
+    def reindex_structured_all(self):
+        self.utils.sql(f"TRUNCATE TABLE {self._video_structured_table()}")
+
+        items = []
+        batch = 10_000
+        videos = VideoItem.objects.iterator(chunk_size=batch)
+        for item in videos:
+            items.append(item)
+
+            if len(items) >= batch:
+                self.index_structured_batch(items)
+                items.clear()
+
+        if items:
+            self.index_structured_batch(items)
+            items.clear()
+
+    def index_structured_batch(self, rows: list[VideoItem] | QuerySet[VideoItem]):
+        if not rows:
+            return
+
+        docs = []
+        for video in rows:
+            metadata = video.video_metadata or {}
+            participants = metadata.get("participants", [])
+            interactions = metadata.get("interactions", [])
+
+            roles = ' '.join(role for p in participants for role in p.get("roles", []))
+            appearance = ' '.join(item for p in participants for item in p.get("appearance", []))
+            traits = ' '.join(trait for p in participants for trait in p.get("traits", []))
+            acts = ' '.join(i.get("type", "") for i in interactions if i.get("type"))
+            positions = ' '.join(i.get("position", "") for i in interactions if i.get("position"))
+            kinks = ' '.join(kink for i in interactions for kink in i.get("kinks", []))
+            setting = ' '.join(metadata.get("setting", []))
+            categories = ', '.join(video.category_slugs())
+            title = video.main_title
+            all_text = ' '.join(filter(None, [title, roles, appearance, traits, acts, positions, kinks, setting, categories]))
+
+            docs.append({
+                "replace": {
+                    "table": self._video_structured_table(),
+                    "id": video.id,
+                    "doc": {
+                        "title": title,
+                        "roles": roles,
+                        "appearance": appearance,
+                        "traits": traits,
+                        "acts": acts,
+                        "positions": positions,
+                        "kinks": kinks,
+                        "setting": setting,
+                        "categories": categories,
+                        "all_text": all_text,
+                    }
+                }
+            })
+
+        payload = '\n'.join(map(json.dumps, docs)) + '\n'
+        self.indexApi.bulk(payload)
+
     def delete_by_id(self, id: int) -> None:
         codes = get_language_codes()
         for code in codes:

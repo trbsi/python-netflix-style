@@ -22,3 +22,7 @@ class Command(BaseCommand):
             schema_service.create_indexes(drop_indexes)
             index_service.reindex_all()
             print('Reindexing done')
+
+        if action == 'reindex_structured':
+            index_service.reindex_structured_all()
+            print('Structured reindexing done')
