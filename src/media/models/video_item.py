@@ -73,7 +73,7 @@ class VideoItem(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=["link"]),
-            models.Index(fields=['external_created_at']),
+            models.Index(fields=['categories']),
             models.Index(fields=['slug_rewritten']),
         ]
 
