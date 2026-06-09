@@ -2,9 +2,12 @@ from manticoresearch import SearchResponse, SqlResponse
 
 from src.core.utils.utils import dump_debug
 from src.discovery.services.video_discovery.value_objects import CanonicalTagDataclass
+from src.discovery.services.video_discovery.value_objects.structured_query_intent import StructuredQueryIntent
 from src.manticore.services.manticore.manticore_base_service import ManticoreBaseService
 from src.media.value_objects.search.video_search_item import VideoSearchItem
 from src.media.value_objects.search.video_search_result import VideoSearchResult
+from src.media.value_objects.search.video_structured_match import VideoStructuredMatch
+from src.media.value_objects.search.video_structured_match_result import VideoStructuredMatchResult
 from src.media.value_objects.search.video_tag_search_item import VideoTagSearchItem
 from src.media.value_objects.search.video_tag_search_result import VideoTagSearchResult
 
@@ -130,14 +133,56 @@ class ManticoreSearchService(ManticoreBaseService):
 
         return VideoTagSearchResult(matches)
 
-    def _build_video_tag_search_sql(
+    def search_video_structured(
             self,
-            query_tags: list[str],
-            mandatory_tags: list[str],
-            is_gay: bool,
-            limit: int,
-    ) -> str:
-        pass
+            intent: StructuredQueryIntent,
+            limit: int = 300,
+    ) -> VideoStructuredMatchResult:
+        match_expr = self._build_match_expression(intent)
+        if not match_expr:
+            return VideoStructuredMatchResult({})
+
+        query = f"""
+                    SELECT *
+                    FROM {self._video_structured_table()}
+                    WHERE MATCH('{match_expr}')
+                    ORDER BY WEIGHT() DESC
+                    LIMIT {limit}
+                    """
+
+        dump_debug(query)
+
+        result: SqlResponse = self.utils.sql(query, raw_response=False)
+        hits: list = result.actual_instance.hits['hits']
+
+        matches = {}
+        for hit in hits:
+            src = hit['_source']
+            video_id = int(src['video_id'])
+            matches[video_id] = VideoStructuredMatch(video_id=video_id)
+
+        return VideoStructuredMatchResult(matches)
+
+    def _build_match_expression(self, intent: StructuredQueryIntent) -> str:
+        parts = []
+
+        def field_expr(field: str, terms: list[str]) -> str:
+            joined = ' & '.join(terms)
+            expr = f'({joined})' if len(terms) > 1 else joined
+            return f'@{field} {expr}'
+
+        if intent.roles:
+            parts.append(field_expr('roles', intent.roles))
+        if intent.interactions:
+            parts.append(field_expr('acts', intent.interactions))
+        if intent.appearances:
+            parts.append(field_expr('appearance', intent.appearances))
+        if intent.traits:
+            parts.append(field_expr('traits', intent.traits))
+        if intent.settings:
+            parts.append(field_expr('setting', intent.settings))
+
+        return ' '.join(parts)
 
     def _to_sql_list(self, values: list[str]) -> str:
         return ','.join(

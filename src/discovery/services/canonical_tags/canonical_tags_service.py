@@ -1,11 +1,10 @@
 import json
 import re
 from collections import defaultdict
-from datetime import datetime
 from pathlib import Path
 
 from automationapp import settings
-from src.discovery.models import TagAlias, CanonicalTag, RelatedTag
+from src.discovery.models import TagAlias, CanonicalTag
 from src.media.models import VideoItem
 
 
@@ -13,6 +12,7 @@ class CanonicalTagsService():
     STEPS = [
         'extract_raw',
         'connect_canonical',
+        'insert_clean_tags',
         'update_rarity_scores',
         'insert_related_tags',
         'extract_uncategorized',
@@ -22,6 +22,7 @@ class CanonicalTagsService():
         step_map = {
             'extract_raw': (self._extract_raw, 'Extract raw tags'),
             'connect_canonical': (self._connect_canonical, 'Connecting canonicals'),
+            'insert_clean_tags': (self._insert_clean_tags, 'Inserting clean tags'),
             'update_rarity_scores': (self._update_rarity_scores, 'Updating rarity scores'),
             'extract_uncategorized': (self._extract_uncategorized, 'Extracting uncategorized'),
         }
@@ -90,7 +91,6 @@ class CanonicalTagsService():
                     defaults={
                         'display_name': canonical.title(),
                         'tag_group': group,
-                        'is_gay': True if file_name == 'canonical_tags_gay.json' else False,
                     }
                 )
 
@@ -101,6 +101,41 @@ class CanonicalTagsService():
                     (TagAlias.objects
                      .filter(raw_tag=synonym)
                      .update(canonical_tag=canonical_tag))
+
+    def _insert_clean_tags(self):
+        file = Path(__file__).resolve().parent / 'canonical_tags_gay_cleaned.json'
+        with open(file, 'r') as f:
+            data = json.load(f)
+
+        for canonical_slug, aliases in data.items():
+            try:
+                canonical_tag = CanonicalTag.objects.get(slug=canonical_slug)
+            except CanonicalTag.DoesNotExist:
+                canonical_tag = CanonicalTag.objects.create(
+                    slug=canonical_slug,
+                    display_name=canonical_slug.title(),
+                    tag_group=canonical_slug,
+                )
+
+            existing = {
+                alias.raw_tag: alias
+                for alias in TagAlias.objects.filter(raw_tag__in=aliases)
+            }
+
+            to_create = []
+            to_update = []
+            for alias in aliases:
+                if alias in existing:
+                    obj = existing[alias]
+                    obj.canonical_tag = canonical_tag
+                    to_update.append(obj)
+                else:
+                    to_create.append(TagAlias(raw_tag=alias, canonical_tag=canonical_tag))
+
+            if to_create:
+                TagAlias.objects.bulk_create(to_create, batch_size=1000)
+            if to_update:
+                TagAlias.objects.bulk_update(to_update, ['canonical_tag'], batch_size=1000)
 
     def _update_rarity_scores(self):
         tag_counts: dict[str, int] = defaultdict(int)
@@ -127,13 +162,11 @@ class CanonicalTagsService():
         TagAlias.objects.bulk_update(to_update, ['rarity_score'], batch_size=1000)
 
     def _extract_uncategorized(self):
-        time = datetime(2026, 5, 28, 0, 0, 0)
         id = TagAlias.objects.filter(canonical_tag__isnull=False).order_by('-id').first().id
 
         tags = list(
             TagAlias.objects
-            # .filter(id__gte=id)
-            .filter(created_at__gte=time)
+            .filter(id__gte=id)
             .filter(canonical_tag__isnull=True)
             .order_by('id')
             .values_list('raw_tag', flat=True)

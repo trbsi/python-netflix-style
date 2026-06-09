@@ -37,7 +37,7 @@ class LlmPersonalizeSiteService():
             base_url="https://api.groq.com/openai/v1",
         )
 
-        """
+        prompt = """
         Analyze the porn search query:
         "{user_query}"
 
@@ -53,7 +53,6 @@ class LlmPersonalizeSiteService():
         Output format:
         chunk1 | chunk2 | chunk3
         """
-        prompt = 'Analyze porn search query and split the query into meaningful groups: "{user_query}". Output only as string of original words grouped and separated by comma, without explanation.'
 
         formatted_prompt = prompt.format(user_query=tags)
 

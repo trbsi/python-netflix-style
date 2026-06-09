@@ -6,6 +6,5 @@ class CanonicalTag(models.Model):
     slug = models.CharField(max_length=100, unique=True)
     display_name = models.CharField(max_length=100)
     tag_group = models.CharField(max_length=100, null=True)
-    is_gay = models.BooleanField(default=False)
 
     objects = models.Manager()

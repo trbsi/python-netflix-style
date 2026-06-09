@@ -2,13 +2,13 @@ from enum import Enum
 
 
 class TagGroupEnum(Enum):
-    role = 4.5
-    kink = 4
-    setting = 3.5
-    appearance = 3
-    position = 2.5
+    role = 7
+    kink = 6
+    setting = 5
+    appearance = 4
+    position = 3
     act = 2
-    category = 1.5
+    category = 1
     """
     role → who,
     kink → relational structure,
