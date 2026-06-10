@@ -69,22 +69,32 @@ class ManticoreSearchService(ManticoreBaseService):
 
         matches = {}
         for hit in hits:
+            video_id = int(hit['_id'])
             src = hit['_source']
-            video_id = int(src['video_id'])
-            matches[video_id] = VideoStructuredMatch(video_id=video_id)
+            matches[video_id] = VideoStructuredMatch(
+                video_id=video_id,
+                roles=self._parse_spaced(src.get('roles')),
+                appearance=self._parse_spaced(src.get('appearance')),
+                traits=self._parse_spaced(src.get('traits')),
+                acts=self._parse_spaced(src.get('acts')),
+                positions=self._parse_spaced(src.get('positions')),
+                kinks=self._parse_spaced(src.get('kinks')),
+                setting=self._parse_spaced(src.get('setting')),
+                categories=self._parse_csv(src.get('categories')),
+            )
 
         return VideoStructuredMatchResult(matches)
 
     def _build_match_expression(self, intent: StructuredQueryIntent) -> str:
         parts = []
 
-        def field_expr(field: str, terms: list[str]) -> str:
-            joined = ' & '.join(terms)
+        def field_expr(field: str, terms: list[str], op: str = '|') -> str:
+            joined = f' {op} '.join(terms)
             expr = f'({joined})' if len(terms) > 1 else joined
             return f'@{field} {expr}'
 
         if intent.roles:
-            parts.append(field_expr('roles', intent.roles))
+            parts.append(field_expr('roles', intent.roles, '&'))
         if intent.interactions:
             parts.append(field_expr('acts', intent.interactions))
         if intent.appearances:
@@ -93,8 +103,20 @@ class ManticoreSearchService(ManticoreBaseService):
             parts.append(field_expr('traits', intent.traits))
         if intent.settings:
             parts.append(field_expr('setting', intent.settings))
+        if intent.categories:
+            parts.append(field_expr('categories', intent.categories))
 
         return ' '.join(parts)
+
+    def _parse_spaced(self, value: str | None) -> frozenset:
+        if not value:
+            return frozenset()
+        return frozenset(t for t in value.split() if t)
+
+    def _parse_csv(self, value: str | None) -> frozenset:
+        if not value:
+            return frozenset()
+        return frozenset(c.strip() for c in value.split(',') if c.strip())
 
     def _to_sql_list(self, values: list[str]) -> str:
         return ','.join(

@@ -1,11 +1,9 @@
 import json
-import zlib
 
 from django.db.models import QuerySet
 from manticoresearch import DeleteDocumentRequest
 
 from src.core.utils.lang import get_language_codes, get_active_language
-from src.discovery.models import TagAlias
 from src.manticore.services.manticore.manticore_base_service import ManticoreBaseService
 from src.media.models import VideoItem
 
@@ -31,7 +29,6 @@ class ManticoreIndexService(ManticoreBaseService):
         codes = get_language_codes()
         for code in codes:
             self.utils.sql(f"TRUNCATE TABLE {self._video_table(code)}")
-            self.utils.sql(f"TRUNCATE TABLE {self._video_tag_table(code)}")
 
         items = []
         batch = 10_000
@@ -52,7 +49,6 @@ class ManticoreIndexService(ManticoreBaseService):
     def index_batch(self, rows: list[VideoItem] | QuerySet[VideoItem]):
         lang = get_active_language()
         video_docs = []
-        video_tag_docs = []
 
         if not rows:
             return
@@ -83,36 +79,7 @@ class ManticoreIndexService(ManticoreBaseService):
                 }
             })
 
-            # <QuerySet[{'canonical_tag__slug': 'handjob'}, {'canonical_tag__slug': 'hentai-3d-anime'}]>
-            raw_tags: QuerySet[dict] = (
-                TagAlias.objects
-                .prefetch_related('canonical_tag')
-                .filter(raw_tag__in=video.categories_and_tags())
-                .filter(canonical_tag__isnull=False)
-                .values('canonical_tag__slug')
-                .distinct()
-            )
-            category = "gay" if video.has_gay_category() else video.category_slugs()[0]
-
-            for tag in raw_tags:
-                canonical = tag['canonical_tag__slug']
-                doc_id = zlib.crc32(f"{video.id}:{canonical}".encode())
-                video_tag_docs.append({
-                    "replace": {
-                        "table": self._video_tag_table(lang),
-                        "id": doc_id,
-                        "doc": {
-                            "video_id": video.id,
-                            "category": category,
-                            "canonical_tag": canonical,
-                        }
-                    }
-                })
-
         payload = '\n'.join(map(json.dumps, video_docs)) + '\n'
-        self.indexApi.bulk(payload)
-
-        payload = '\n'.join(map(json.dumps, video_tag_docs)) + '\n'
         self.indexApi.bulk(payload)
 
     def reindex_structured_all(self):
@@ -151,7 +118,8 @@ class ManticoreIndexService(ManticoreBaseService):
             setting = ' '.join(metadata.get("setting", []))
             categories = ', '.join(video.category_slugs())
             title = video.main_title
-            all_text = ' '.join(filter(None, [title, roles, appearance, traits, acts, positions, kinks, setting, categories]))
+            all_text = ' '.join(
+                filter(None, [title, roles, appearance, traits, acts, positions, kinks, setting, categories]))
 
             docs.append({
                 "replace": {
