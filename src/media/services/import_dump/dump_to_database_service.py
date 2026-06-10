@@ -13,6 +13,7 @@ from automationapp import settings
 from src.core.utils.utils import safe_get
 from src.manticore.services.manticore.manticore_index_service import ManticoreIndexService
 from src.media.models import VideoItem, VideoCategory, VideoCategoryPivot
+from src.media.models.video_item import _default_video_metadata
 
 
 class DumpToDatabaseService:
@@ -101,6 +102,7 @@ class DumpToDatabaseService:
                         site=site,
                         external_id=external_id,
                         external_created_at=external_created_at,
+                        video_metadata=_default_video_metadata()
                     )
 
                     videos_array.append(video)

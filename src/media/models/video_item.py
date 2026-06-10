@@ -66,7 +66,7 @@ class VideoItem(models.Model):
     external_created_at = models.DateField(null=True, blank=True)
     tags = models.TextField()
     categories = models.TextField()
-    video_metadata = models.JSONField(default=_default_video_metadata, blank=True)
+    video_metadata = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
