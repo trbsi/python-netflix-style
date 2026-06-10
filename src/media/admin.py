@@ -44,24 +44,22 @@ class VideoItemAdmin(admin.ModelAdmin):
     video_preview.short_description = 'Video'
 
     def tags_by_canonical(self, obj):
-        raw_tags = [t.strip() for t in obj.tags.split(',') if t.strip()]
-        if not raw_tags:
-            return '-'
-
         aliases = (
             TagAlias.objects
-            .filter(raw_tag__in=raw_tags)
             .select_related('canonical_tag')
+            .order_by('canonical_tag__slug', 'raw_tag')
         )
 
         grouped = defaultdict(list)
         for alias in aliases:
-            tag = alias.canonical_tag.slug
-            grouped[tag].append(alias.raw_tag)
+            grouped[alias.canonical_tag.slug].append(alias.raw_tag)
+
+        if not grouped:
+            return '-'
 
         lines = []
         for canonical, tags in sorted(grouped.items()):
-            lines.append(f'<strong>{canonical}</strong>: {", ".join(sorted(tags))}')
+            lines.append(f'<strong>{canonical}</strong>: {", ".join(tags)}')
 
         return mark_safe('<br>'.join(lines))
 
