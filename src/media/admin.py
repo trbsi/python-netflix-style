@@ -31,17 +31,19 @@ class VideoItemAdminForm(forms.ModelForm):
 @admin.register(VideoItem)
 class VideoItemAdmin(admin.ModelAdmin):
     form = VideoItemAdminForm
-    list_display = ['id', 'title_rewritten', 'site']
+    list_display = ['id', 'has_metadata', 'title_rewritten', 'site']
     list_filter = ['site']
     ordering = ['id']
     search_fields = ['title', 'external_id']
     readonly_fields = ['video_preview', 'tags_by_canonical']
     fields = ['video_preview', 'video_metadata', 'tags_by_canonical']
 
-    def get_row_css(self, obj, index):
+    def has_metadata(self, obj):
         if obj.video_metadata is None:
-            return 'background-color: orange;'
-        return ''
+            return mark_safe('<div style="background:red; color: white;">&#10007;</div>')
+        return mark_safe('&#10003;')
+
+    has_metadata.short_description = 'Metadata'
 
     def video_preview(self, obj):
         return mark_safe(obj.embed_code)
