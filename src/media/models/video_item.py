@@ -14,11 +14,13 @@ def _default_video_metadata():
     return {
         "participants": [
             {
+                "id": 1,
                 "roles": [],
                 "appearance": [],
                 "traits": []
             },
             {
+                "id": 2,
                 "roles": [],
                 "appearance": [],
                 "traits": []
