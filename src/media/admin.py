@@ -38,6 +38,11 @@ class VideoItemAdmin(admin.ModelAdmin):
     readonly_fields = ['video_preview', 'tags_by_canonical']
     fields = ['video_preview', 'video_metadata', 'tags_by_canonical']
 
+    def get_row_css(self, obj, index):
+        if obj.video_metadata is None:
+            return 'background-color: orange;'
+        return ''
+
     def video_preview(self, obj):
         return mark_safe(obj.embed_code)
 
