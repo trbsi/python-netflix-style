@@ -11,7 +11,6 @@ from src.media.models import VideoItem
 class CanonicalTagsService():
     STEPS = [
         'extract_raw',
-        'connect_canonical',
         'insert_clean_tags',
         'update_rarity_scores',
         'insert_related_tags',
@@ -21,7 +20,6 @@ class CanonicalTagsService():
     def extract_tags(self, steps=None):
         step_map = {
             'extract_raw': (self._extract_raw, 'Extract raw tags'),
-            'connect_canonical': (self._connect_canonical, 'Connecting canonicals'),
             'insert_clean_tags': (self._insert_clean_tags, 'Inserting clean tags'),
             'update_rarity_scores': (self._update_rarity_scores, 'Updating rarity scores'),
             'extract_uncategorized': (self._extract_uncategorized, 'Extracting uncategorized'),
@@ -117,36 +115,6 @@ class CanonicalTagsService():
         TagAlias.objects.update(is_in_use=False)
         for index in range(0, len(tags), BATCH_SIZE):
             TagAlias.objects.filter(raw_tag__in=tags[index:index + BATCH_SIZE]).update(is_in_use=True)
-
-    def _connect_canonical(self):
-        files = ['canonical_tags_straight.json', 'canonical_tags_gay.json']
-        for file_name in files:
-            file = Path(__file__).resolve().parent / file_name
-            with open(file, 'r') as f:
-                data = json.load(f)
-
-            tags = data['canonical_tags']
-            for canonical, data in tags.items():
-                if 'group' not in data:
-                    print(f'Group does not exist for {canonical}')
-                    group = None
-                else:
-                    group = data['group']
-                canonical_tag, created = CanonicalTag.objects.update_or_create(
-                    slug=canonical,
-                    defaults={
-                        'display_name': canonical.title(),
-                        'tag_group': group,
-                    }
-                )
-
-                # if there is canonical tag among raw_tag then update canonical_tag to itself
-                TagAlias.objects.filter(raw_tag=canonical).update(canonical_tag=canonical_tag)
-
-                for synonym in data['synonyms']:
-                    (TagAlias.objects
-                     .filter(raw_tag=synonym)
-                     .update(canonical_tag=canonical_tag))
 
     def _insert_clean_tags(self):
         file = Path(__file__).resolve().parent / 'canonical_tags_gay_cleaned.json'
