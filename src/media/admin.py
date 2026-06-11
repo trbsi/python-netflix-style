@@ -46,7 +46,12 @@ class VideoItemAdmin(admin.ModelAdmin):
     has_metadata.short_description = 'Metadata'
 
     def video_preview(self, obj):
-        return mark_safe(obj.embed_code)
+        return mark_safe(
+            '<div style="position:relative;padding-top:56.25%;max-width:100%;overflow:hidden;">'
+            f'<div style="position:absolute;inset:0;">{obj.embed_code}</div>'
+            '</div>'
+            '<style>.field-video_preview iframe{width:100%!important;height:100%!important;}</style>'
+        )
 
     video_preview.short_description = 'Video'
 
