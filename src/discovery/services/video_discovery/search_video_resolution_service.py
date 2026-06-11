@@ -78,7 +78,7 @@ class SearchVideoResolutionService:
 
         for alias in aliases:
             group = alias.canonical_tag.tag_group
-            slug = alias.canonical_tag.slug
+            slug = alias.raw_tag
             if group == TagGroupEnum.role.name:
                 roles.append(slug)
             elif group == TagGroupEnum.appearance.name:

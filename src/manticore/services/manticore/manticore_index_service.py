@@ -103,20 +103,58 @@ class ManticoreIndexService(ManticoreBaseService):
         if not rows:
             return
 
+        def values(value) -> list[str]:
+            if value is None:
+                return []
+
+            if isinstance(value, list):
+                return [str(item).strip() for item in value if item is not None and str(item).strip()]
+
+            value = str(value).strip()
+            return [value] if value else []
+
+        def unique(items: list[str]) -> list[str]:
+            return list(dict.fromkeys(items))
+
         docs = []
         for video in rows:
             metadata = video.video_metadata or {}
             participants = metadata.get("participants", [])
-            interactions = metadata.get("interactions", [])
+            acts_metadata = metadata.get("acts", [])
 
-            roles = ' '.join(role for p in participants for role in p.get("roles", []))
-            appearance = ' '.join(item for p in participants for item in p.get("appearance", []))
-            traits = ' '.join(trait for p in participants for trait in p.get("traits", []))
-            acts = ' '.join(i.get("type", "") for i in interactions if i.get("type"))
-            positions = ' '.join(i.get("position", "") for i in interactions if i.get("position"))
-            kinks = ' '.join(kink for i in interactions for kink in i.get("kinks", []))
-            setting = ' '.join(metadata.get("setting", []))
-            categories = ', '.join(video.category_slugs())
+            roles = ' '.join(
+                role
+                for participant in participants
+                for role in values(participant.get("role"))
+            )
+            appearance = ' '.join(
+                item
+                for participant in participants
+                for item in values(participant.get("appearance"))
+            )
+            traits = ' '.join(
+                trait
+                for participant in participants
+                for trait in values(participant.get("traits"))
+            )
+            acts = ' '.join(
+                act
+                for item in acts_metadata
+                for act in values(item.get("act"))
+            )
+            positions = ' '.join(
+                position
+                for item in acts_metadata
+                for position in values(item.get("position"))
+            )
+            kinks = ' '.join(
+                kink
+                for item in acts_metadata
+                for kink in values(item.get("kink"))
+            )
+            setting = ' '.join(values(metadata.get("setting")))
+            category_slugs = unique(values(metadata.get("category")) + video.category_slugs())
+            categories = ', '.join(category_slugs)
             title = video.main_title
             all_text = ' '.join(
                 filter(None, [title, roles, appearance, traits, acts, positions, kinks, setting, categories]))
