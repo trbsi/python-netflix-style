@@ -37,11 +37,13 @@ class CanonicalTagsService():
         tag_counts: dict[str, int] = defaultdict(int)
 
         def _flush(tags: list[str]) -> None:
+            tags = [tag.lower() for tag in tags]
             existing_aliases = {
-                alias.raw_tag: alias
+                alias.raw_tag.lower(): alias
                 for alias in TagAlias.objects.filter(raw_tag__in=tags)
             }
             new = set(tags) - set(existing_aliases)
+
             if new:
                 TagAlias.objects.bulk_create([
                     TagAlias(
@@ -59,18 +61,62 @@ class CanonicalTagsService():
             if to_update:
                 TagAlias.objects.bulk_update(
                     to_update,
-                    ['occurrence_count', 'categories'],
+                    ['occurrence_count'],
                     batch_size=BATCH_SIZE,
                 )
 
-        for video in VideoItem.objects.only('tags', 'categories').iterator(chunk_size=BATCH_SIZE):
-            for tag in video.tags.split(','):
-                if pattern.fullmatch(tag):
-                    tag_counts[tag] += 1
+        def _as_tags(value) -> list[str]:
+            if value is None:
+                return []
+
+            if isinstance(value, list):
+                return [
+                    str(item).strip().lower()
+                    for item in value
+                    if item is not None and str(item).strip()
+                ]
+
+            value = str(value).strip().lower()
+            return [value] if value else []
+
+        def _extract_metadata_tags(metadata: dict | None) -> set[str]:
+            if not metadata:
+                return set()
+
+            tags = set()
+
+            for participant in metadata.get('participants', []):
+                if not isinstance(participant, dict):
+                    continue
+
+                tags.update(_as_tags(participant.get('role')))
+                tags.update(_as_tags(participant.get('appearance')))
+
+            for act in metadata.get('acts', []):
+                if not isinstance(act, dict):
+                    continue
+
+                tags.update(_as_tags(act.get('act')))
+                tags.update(_as_tags(act.get('position')))
+                tags.update(_as_tags(act.get('kink')))
+
+            tags.update(_as_tags(metadata.get('setting')))
+            tags.update(_as_tags(metadata.get('category')))
+
+            return {tag for tag in tags if pattern.fullmatch(tag)}
+
+        for video in VideoItem.objects.only('video_metadata').iterator(chunk_size=BATCH_SIZE):
+            for tag in _extract_metadata_tags(video.video_metadata):
+                tag_counts[tag] += 1
 
         tags = list(tag_counts)
         for index in range(0, len(tags), BATCH_SIZE):
-            _flush(tags[index:index + BATCH_SIZE])
+            batch = tags[index:index + BATCH_SIZE]
+            _flush(batch)
+
+        TagAlias.objects.update(is_in_use=False)
+        for index in range(0, len(tags), BATCH_SIZE):
+            TagAlias.objects.filter(raw_tag__in=tags[index:index + BATCH_SIZE]).update(is_in_use=True)
 
     def _connect_canonical(self):
         files = ['canonical_tags_straight.json', 'canonical_tags_gay.json']
