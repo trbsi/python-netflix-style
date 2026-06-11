@@ -15,27 +15,21 @@ def _default_video_metadata():
         "participants": [
             {
                 "id": 1,
-                "roles": [],
-                "appearance": [],
-                "traits": []
-            },
-            {
-                "id": 2,
-                "roles": [],
-                "appearance": [],
-                "traits": []
+                "role": [""],
+                "appearance": [""]
             }
         ],
-        "interactions": [
+        "acts": [
             {
-                "type": "",
+                "act": "",
                 "from": 1,
                 "to": 2,
                 "position": "",
-                "kinks": []
+                "kink": []
             }
         ],
-        "setting": []
+        "setting": [""],
+        "category": [""]
     }
 
 

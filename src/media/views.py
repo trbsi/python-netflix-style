@@ -56,7 +56,10 @@ def single_video(request: HttpRequest, id: int, slug: str) -> HttpResponse:
         response.status_code = 410
         return response
 
-    if (video.slug_rewritten and video.slug_rewritten != slug) or video.slug != slug:
+    if (
+            (video.slug_rewritten and video.slug_rewritten != slug)
+            or (video.slug_rewritten is None and video.slug != slug)
+    ):
         response = render(request, "410.html")
         response.status_code = 410
         return response
