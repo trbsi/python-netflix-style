@@ -14,7 +14,7 @@ class SearchTagsService:
 
         tags = (
             TagAlias.objects
-            .filter(raw_tag__istartswith=tag)
+            .filter(raw_tag__icontains=tag)
             .order_by('raw_tag')
             .values('id', 'raw_tag')[:self.limit]
         )
