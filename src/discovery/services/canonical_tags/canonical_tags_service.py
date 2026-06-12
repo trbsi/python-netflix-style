@@ -121,35 +121,23 @@ class CanonicalTagsService():
         with open(file, 'r') as f:
             data = json.load(f)
 
-        for canonical_slug, aliases in data.items():
-            try:
-                canonical_tag = CanonicalTag.objects.get(slug=canonical_slug)
-            except CanonicalTag.DoesNotExist:
-                canonical_tag = CanonicalTag.objects.create(
-                    slug=canonical_slug,
-                    display_name=canonical_slug.title(),
-                    tag_group=canonical_slug,
-                )
+        tags = [
+            CanonicalTag(slug=slug, display_name=slug.title(), tag_group=group)
+            for group, slugs in data.items()
+            for slug in slugs
+            if slug.strip()
+        ]
 
-            existing = {
-                alias.raw_tag: alias
-                for alias in TagAlias.objects.filter(raw_tag__in=aliases)
-            }
+        if tags:
+            CanonicalTag.objects.bulk_create(
+                tags,
+                batch_size=1000,
+                update_conflicts=True,
+                update_fields=['display_name', 'tag_group'],
+                unique_fields=['slug'],
+            )
 
-            to_create = []
-            to_update = []
-            for alias in aliases:
-                if alias in existing:
-                    obj = existing[alias]
-                    obj.canonical_tag = canonical_tag
-                    to_update.append(obj)
-                else:
-                    to_create.append(TagAlias(raw_tag=alias, canonical_tag=canonical_tag))
-
-            if to_create:
-                TagAlias.objects.bulk_create(to_create, batch_size=1000)
-            if to_update:
-                TagAlias.objects.bulk_update(to_update, ['canonical_tag'], batch_size=1000)
+        return len(tags)
 
     def _update_rarity_scores(self):
         tag_counts: dict[str, int] = defaultdict(int)

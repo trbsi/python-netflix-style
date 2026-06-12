@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'src.events.apps.EventsConfig',
     'src.discovery.apps.DiscoveryConfig',
     'src.manticore.apps.ManticoreConfig',
+    'src.media_discovery.apps.MediaGraphConfig',
 
     'django.contrib.sitemaps',
     'django_celery_beat',

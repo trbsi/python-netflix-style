@@ -1,4 +1,4 @@
-from src.discovery.models import TagAlias
+from src.media_discovery.models import Tag
 
 
 class SearchTagsService:
@@ -13,10 +13,10 @@ class SearchTagsService:
             return []
 
         tags = (
-            TagAlias.objects
-            .filter( is_in_use=True,raw_tag__icontains=tag)
-            .order_by('raw_tag')
-            .values('id', 'raw_tag')[:self.limit]
+            Tag.objects
+            .filter(is_in_use=True, name__icontains=tag)
+            .order_by('name')
+            .values('id', 'name')[:self.limit]
         )
 
         return list(tags)
