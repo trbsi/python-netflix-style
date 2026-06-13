@@ -1,4 +1,14 @@
-function initTagSuggestions({form, promptInput, selectedTagIdsInput, selectedTagsList, suggestionsBox, searchTagsUrl}) {
+function initTagSuggestions({searchTagsUrl}) {
+    const form = document.getElementById("magicForm");
+    const promptInput = document.getElementById("promptInput");
+    const selectedTagIdsInput = document.getElementById("selectedTagIdsInput");
+    const selectedTagsList = document.getElementById("magicSelectedTags");
+    const suggestionsBox = document.getElementById("magicTagSuggestions");
+
+    if (!form || !promptInput || !selectedTagIdsInput || !selectedTagsList || !suggestionsBox || !searchTagsUrl) {
+        return;
+    }
+
     const selectedTags = [];
     const tagInputs = Array.from(form.querySelectorAll(".magic-tag-input"));
     const tokenLists = Array.from(form.querySelectorAll("[data-token-list]")).reduce((lists, element) => {

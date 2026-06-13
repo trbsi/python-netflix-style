@@ -9552,3 +9552,103 @@ body.modal-open #ageModal ~ .main-content {
         transform: rotate(360deg);
     }
 }
+
+/* --------------- SINGLE VIDEO EXPAND ----------------- */
+.single-video-result {
+    height: 100%;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+
+.single-video-result:hover,
+.single-video-result.is-expanded {
+    background-color: rgba(255, 255, 255, .035);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, .24);
+    transform: translateY(-2px);
+}
+
+.single-video-result:focus-visible {
+    outline: 2px solid var(--bs-primary);
+    outline-offset: 4px;
+}
+
+.single-video-result .blog-heading {
+    transition: color .2s ease;
+}
+
+.single-video-result:hover .blog-heading,
+.single-video-result.is-expanded .blog-heading {
+    color: var(--bs-primary);
+}
+
+.single-video-result .single-video-action {
+    color: var(--bs-primary);
+}
+
+.single-video-expanded-row {
+    width: 100%;
+    max-height: 600px;
+}
+
+.single-video-expanded {
+    position: relative;
+    margin-top: .875rem;
+    max-height: 600px;
+    padding: 2.75rem .875rem .875rem;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 12px;
+    background: #101218;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, .28);
+}
+
+.single-video-close {
+    position: absolute;
+    top: .625rem;
+    right: .625rem;
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .07);
+    color: var(--bs-white);
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+.single-video-close:hover,
+.single-video-close:focus {
+    outline: none;
+    border-color: rgba(var(--bs-primary-rgb), .7);
+    background: var(--bs-primary);
+    color: var(--bs-white);
+}
+
+.single-video-embed {
+    width: 100%;
+    max-height: 520px;
+    min-height: 180px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #000;
+}
+
+.single-video-embed iframe,
+.single-video-embed video,
+.single-video-embed embed,
+.single-video-embed object {
+    width: 100% !important;
+    max-width: 100%;
+    aspect-ratio: 16 / 9;
+    height: min(520px, 56.25vw) !important;
+    display: block;
+    border: 0;
+}
+
+.single-video-embed iframe {
+    min-height: 180px;
+}
