@@ -10,7 +10,8 @@
                     <div class="d-flex align-items-center gap-2 gap-md-3">
                         <div class="logo-default">
                             <a class="navbar-brand text-primary me-0" href="/">
-                                <img src="{% static 'assets/images/logo.png' %}" class="logo" alt="{{ TEMPLATE_APP_NAME }}">
+                                <img src="{% static 'assets/images/logo.png' %}" class="logo"
+                                     alt="{{ TEMPLATE_APP_NAME }}">
                             </a>
                         </div>
                     </div>
@@ -22,7 +23,8 @@
                             <div class="navbar-brand ms-3">
                                 <div class="logo-default">
                                     <a class="navbar-brand text-primary me-0" href="/">
-                                        <img src="{% static 'assets/images/logo.png' %}" class="logo" alt="{{ TEMPLATE_APP_NAME }}">
+                                        <img src="{% static 'assets/images/logo.png' %}" class="logo"
+                                             alt="{{ TEMPLATE_APP_NAME }}">
                                     </a>
                                 </div>
                             </div>
@@ -51,26 +53,6 @@
                                         <span class="item-name">All movies</span>
                                     </div>
                                 </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="collapse" href="#languages" role="button"
-                                   aria-expanded="false" aria-controls="languages">
-                                    <div class="d-flex justify-content-between">
-                                        <span class="item-name">Languages</span>
-                                        <span class="menu-icon">
-                                            <i class="ph ph-caret-down align-middle"></i>
-                                        </span>
-                                    </div>
-                                </a>
-
-                                <ul class="sub-nav collapse list-unstyled" id="languages">
-                                    <li class="nav-item">
-                                        <a class="nav-link " href="javsacript:;" onclick="setLanguage('en')">
-                                            🇬🇧 English
-                                        </a>
-                                    </li>
-                                </ul>
                             </li>
                             {% comment %}
                             <li class="nav-item">
