@@ -87,4 +87,4 @@ class RawTagsService:
 
         Tag.objects.update(is_in_use=False)
         for index in range(0, len(tags), BATCH_SIZE):
-            Tag.objects.filter(raw_tag__in=tags[index:index + BATCH_SIZE]).update(is_in_use=True)
+            Tag.objects.filter(name__in=tags[index:index + BATCH_SIZE]).update(is_in_use=True)

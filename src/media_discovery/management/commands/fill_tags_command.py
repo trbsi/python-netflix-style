@@ -7,4 +7,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         RawTagsService().handle_tags()
-        self.success(f"Inserted media graph tags")
+        self.success(f"Inserted media raw tags")
