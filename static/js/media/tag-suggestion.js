@@ -1,45 +1,84 @@
 function initTagSuggestions({form, promptInput, selectedTagIdsInput, selectedTagsList, suggestionsBox, searchTagsUrl}) {
     const selectedTags = [];
+    const tagInputs = Array.from(form.querySelectorAll(".magic-tag-input"));
+    const tokenLists = Array.from(form.querySelectorAll("[data-token-list]")).reduce((lists, element) => {
+        lists[element.dataset.tokenList] = element;
+        return lists;
+    }, {});
     let visibleSuggestions = [];
     let searchDebounceTimer = null;
     let searchAbortController = null;
+    let activeInput = tagInputs[0] || promptInput;
 
     syncFormValues();
 
-    promptInput.addEventListener("input", function () {
-        window.clearTimeout(searchDebounceTimer);
+    tagInputs.forEach((input) => {
+        input.addEventListener("focus", function () {
+            activeInput = input;
+            if (!suggestionsBox.classList.contains("d-none")) {
+                positionSuggestionsBox();
+            }
+        });
 
-        const query = getCurrentTagQuery();
-        syncFormValues();
+        input.addEventListener("input", function () {
+            activeInput = input;
+            window.clearTimeout(searchDebounceTimer);
 
-        if (query.length < 3) {
-            clearSuggestions();
-            return;
-        }
-
-        searchDebounceTimer = window.setTimeout(() => {
-            searchTags(query);
-        }, 250);
-    });
-
-    promptInput.addEventListener("keydown", function (event) {
-        if (event.key === "Tab" && visibleSuggestions.length) {
-            event.preventDefault();
-            selectTag(visibleSuggestions[0]);
-            return;
-        }
-
-        if (event.key === "Backspace" && !promptInput.value && selectedTags.length) {
-            selectedTags.pop();
-            renderSelectedTags();
+            const query = getCurrentTagQuery();
             syncFormValues();
-            clearSuggestions();
-        }
+
+            if (query.length < 3) {
+                clearSuggestions();
+                return;
+            }
+
+            searchDebounceTimer = window.setTimeout(() => {
+                searchTags(query);
+            }, 250);
+        });
+
+        input.addEventListener("keydown", function (event) {
+            activeInput = input;
+
+            if (event.key === "Tab" && visibleSuggestions.length) {
+                event.preventDefault();
+                selectTag(visibleSuggestions[0]);
+                return;
+            }
+
+            if (event.key === "Backspace" && !input.value) {
+                const group = getInputGroup(input);
+                let lastTagIndex = -1;
+
+                for (let index = selectedTags.length - 1; index >= 0; index--) {
+                    if (selectedTags[index].group === group) {
+                        lastTagIndex = index;
+                        break;
+                    }
+                }
+
+                if (lastTagIndex !== -1) {
+                    selectedTags.splice(lastTagIndex, 1);
+                    renderSelectedTags();
+                    syncFormValues();
+                    clearSuggestions();
+                }
+            }
+        });
     });
 
     form.addEventListener("click", function (event) {
-        if (!event.target.closest(".magic-tag-suggestion")) {
-            promptInput.focus();
+        if (event.target.closest(".magic-tag-suggestion")) {
+            return;
+        }
+
+        const panel = event.target.closest("[data-tag-group]");
+        if (panel) {
+            const input = panel.querySelector(".magic-tag-input");
+            if (input) {
+                activeInput = input;
+                input.focus();
+            }
         }
     });
 
@@ -67,7 +106,8 @@ function initTagSuggestions({form, promptInput, selectedTagIdsInput, selectedTag
                 credentials: "same-origin",
                 signal: searchAbortController.signal,
                 body: JSON.stringify({
-                    tag: query
+                    tag: query,
+                    tag_groups: getInputTagGroups(activeInput)
                 })
             });
 
@@ -90,7 +130,10 @@ function initTagSuggestions({form, promptInput, selectedTagIdsInput, selectedTag
         suggestionsBox.innerHTML = "";
 
         const availableTags = tags.filter((tag) => {
-            return !selectedTags.some((selectedTag) => String(selectedTag.id) === String(tag.id));
+            const group = getInputGroup(activeInput);
+            return !selectedTags.some((selectedTag) => {
+                return selectedTag.group === group && String(selectedTag.id) === String(tag.id);
+            });
         });
         visibleSuggestions = availableTags;
 
@@ -104,7 +147,7 @@ function initTagSuggestions({form, promptInput, selectedTagIdsInput, selectedTag
             option.type = "button";
             option.className = "magic-tag-suggestion";
             option.setAttribute("role", "option");
-            option.textContent = tag.raw_tag;
+            option.textContent = tag.name;
             option.addEventListener("click", function () {
                 selectTag(tag);
             });
@@ -116,57 +159,85 @@ function initTagSuggestions({form, promptInput, selectedTagIdsInput, selectedTag
         hint.textContent = "Press Tab to choose the first tag";
         suggestionsBox.appendChild(hint);
 
+        positionSuggestionsBox();
         suggestionsBox.classList.remove("d-none");
     }
 
     function selectTag(tag) {
-        selectedTags.push(tag);
-        promptInput.value = "";
+        const group = getInputGroup(activeInput);
+        selectedTags.push({
+            ...tag,
+            group
+        });
+        activeInput.value = "";
         renderSelectedTags();
         syncFormValues();
-        promptInput.focus();
+        activeInput.focus();
         clearSuggestions();
     }
 
     function renderSelectedTags() {
-        selectedTagsList.innerHTML = "";
+        Object.values(tokenLists).forEach((list) => {
+            list.innerHTML = "";
+        });
 
         selectedTags.forEach((tag, index) => {
+            const list = tokenLists[tag.group] || selectedTagsList;
             const tagElement = document.createElement("span");
             tagElement.className = "magic-selected-tag";
 
             const text = document.createElement("span");
             text.className = "magic-selected-tag-text";
-            text.textContent = tag.raw_tag;
-
-            // const removeButton = document.createElement("button");
-            // removeButton.type = "button";
-            // removeButton.className = "magic-selected-tag-remove";
-            // removeButton.setAttribute("aria-label", `Remove ${tag.raw_tag}`);
-            // removeButton.innerHTML = "&times;";
-            // removeButton.addEventListener("click", function () {
-            //     selectedTags.splice(index, 1);
-            //     renderSelectedTags();
-            //     syncFormValues();
-            //     promptInput.focus();
-            // });
+            text.textContent = tag.name;
 
             tagElement.appendChild(text);
-            // tagElement.appendChild(removeButton);
-            selectedTagsList.appendChild(tagElement);
+            list.appendChild(tagElement);
         });
     }
 
     function syncFormValues() {
         selectedTagIdsInput.value = selectedTags.map((selectedTag) => selectedTag.id).join(",");
         promptInput.dataset.searchText = [
-            ...selectedTags.map((selectedTag) => selectedTag.raw_tag),
-            promptInput.value.trim()
+            ...selectedTags.map((selectedTag) => selectedTag.name),
+            ...tagInputs.map((input) => input.value.trim())
         ].filter(Boolean).join(", ");
     }
 
     function getCurrentTagQuery() {
-        return promptInput.value.trim();
+        return activeInput.value.trim();
+    }
+
+    function getInputGroup(input) {
+        return input.dataset.tagGroup || "active";
+    }
+
+    function getInputTagGroups(input) {
+        if (getInputGroup(input) === "act") {
+            return ["act", "position"];
+        }
+
+        return ["role", "appearance"];
+    }
+
+    function positionSuggestionsBox() {
+        if (!activeInput) {
+            return;
+        }
+
+        const wrapper = form.querySelector(".magic-input-wrapper");
+        const inputRect = activeInput.getBoundingClientRect();
+        const wrapperRect = wrapper.getBoundingClientRect();
+        const minWidth = 220;
+        const maxWidth = wrapper.clientWidth - 24;
+        const width = Math.min(Math.max(inputRect.width, minWidth), maxWidth);
+        const left = Math.min(
+            Math.max(inputRect.left - wrapperRect.left, 12),
+            Math.max(wrapper.clientWidth - width - 12, 12)
+        );
+
+        suggestionsBox.style.top = `${inputRect.bottom - wrapperRect.top + 8}px`;
+        suggestionsBox.style.left = `${left}px`;
+        suggestionsBox.style.width = `${width}px`;
     }
 
     function clearSuggestions() {

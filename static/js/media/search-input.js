@@ -12,7 +12,7 @@ form.addEventListener("submit", async function (e) {
     }
 
     button.classList.add("loading");
-    button.innerHTML = '<i class="fa-solid fa-spinner"></i>';
+    button.textContent = "Searching...";
 
     try {
         const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
@@ -41,7 +41,7 @@ form.addEventListener("submit", async function (e) {
     } finally {
         button.classList.remove("loading");
         button.disabled = false;
-        button.innerHTML = `<i class="fa-regular fa-circle-right"></i>`;
+        button.textContent = "Search";
     }
 });
 

@@ -1,21 +1,57 @@
-<form id="magicForm" class="position-relative my-4">
+<form id="magicForm" class="magic-search-form position-relative my-4">
     {% csrf_token %}
-    <div class="magic-input-wrapper position-relative">
-        <div class="magic-token-field" id="magicTokenField">
-            <div class="magic-selected-tags" id="magicSelectedTags"></div>
-            <input
-                    type="text"
-                    class="form-control magic-input"
-                    id="promptInput"
-                    autocomplete="off"
-                    placeholder="What do you want to watch?"
-            >
+    <div class="magic-input-wrapper">
+        <div class="magic-search-grid">
+            <section class="magic-search-panel magic-search-panel-active" aria-labelledby="magicActiveHeading"
+                     data-tag-group="active">
+                <h2 class="magic-search-heading" id="magicActiveHeading">Active</h2>
+                <div class="magic-token-field">
+                    <div class="magic-selected-tags" id="magicSelectedTags" data-token-list="active"></div>
+                    <input
+                            type="text"
+                            class="form-control magic-input magic-tag-input"
+                            id="promptInput"
+                            data-tag-group="active"
+                            autocomplete="off"
+                            placeholder="daddy, twink, teen..."
+                    >
+                </div>
+            </section>
+
+            <section class="magic-search-panel magic-search-panel-act" aria-labelledby="magicActHeading"
+                     data-tag-group="act">
+                <h2 class="magic-search-heading" id="magicActHeading">Act</h2>
+                <div class="magic-token-field">
+                    <div class="magic-selected-tags" data-token-list="act"></div>
+                    <input
+                            type="text"
+                            class="form-control magic-input magic-tag-input"
+                            data-tag-group="act"
+                            autocomplete="off"
+                            placeholder="fuck, rimjob, blowjob..."
+                    >
+                </div>
+            </section>
+
+            <section class="magic-search-panel magic-search-panel-passive" aria-labelledby="magicPassiveHeading"
+                     data-tag-group="passive">
+                <h2 class="magic-search-heading" id="magicPassiveHeading">Passive</h2>
+                <div class="magic-token-field">
+                    <div class="magic-selected-tags" data-token-list="passive"></div>
+                    <input
+                            type="text"
+                            class="form-control magic-input magic-tag-input"
+                            data-tag-group="passive"
+                            autocomplete="off"
+                            placeholder="daddy, twink, teen..."
+                    >
+                </div>
+            </section>
         </div>
+
         <input type="hidden" id="selectedTagIdsInput" name="selected_tag_ids" value="">
         <div id="magicTagSuggestions" class="magic-tag-suggestions d-none" role="listbox"></div>
-
-        <button type="submit" class="magic-submit-btn">
-            <i class="fa-regular fa-circle-right"></i>
-        </button>
     </div>
+
+    <button type="submit" class="magic-submit-btn">Search</button>
 </form>

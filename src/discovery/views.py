@@ -37,6 +37,6 @@ def discover_videos_api(request: HttpRequest) -> JsonResponse:
 def search_tags_api(request: HttpRequest) -> JsonResponse:
     body = json.loads(request.body)
     service = SearchTagsService()
-    tags = service.search_tags(body.get('tag'))
+    tags = service.search_tags(body.get('tag'), body.get('tag_groups'))
 
     return JsonResponse({'tags': tags})

@@ -4,7 +4,7 @@ from src.media_discovery.models import Tag
 class SearchTagsService:
     limit = 10
 
-    def search_tags(self, tag: str | None) -> list[dict]:
+    def search_tags(self, tag: str | None, tag_groups: list[str] | None = None) -> list[dict]:
         if not tag:
             return []
 
@@ -12,9 +12,12 @@ class SearchTagsService:
         if not tag:
             return []
 
+        query = Tag.objects.filter(name__icontains=tag)
+        if isinstance(tag_groups, list) and tag_groups:
+            query = query.filter(group__in=tag_groups)
+
         tags = (
-            Tag.objects
-            .filter(is_in_use=True, name__icontains=tag)
+            query
             .order_by('name')
             .values('id', 'name')[:self.limit]
         )
